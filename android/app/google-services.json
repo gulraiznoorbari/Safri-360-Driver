@@ -1,0 +1,49 @@
+{
+  "project_info": {
+    "project_number": "940596832104",
+    "firebase_url": "https://safri360-85591-default-rtdb.asia-southeast1.firebasedatabase.app",
+    "project_id": "safri360-85591",
+    "storage_bucket": "safri360-85591.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:940596832104:android:b3e694b61e1804ba19d8dd",
+        "android_client_info": {
+          "package_name": "com.gulraizzz.safri360"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBwZ4K2YiVzEysl1f8b6r_TnmWRfKCP0U4"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:940596832104:android:4245c24cd333f13319d8dd",
+        "android_client_info": {
+          "package_name": "com.gulraizzz.safri360driver"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBwZ4K2YiVzEysl1f8b6r_TnmWRfKCP0U4"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
