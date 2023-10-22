@@ -1,21 +1,28 @@
 import "expo-dev-client";
 import { StatusBar } from "expo-status-bar";
-import { StyleSheet, Text, View } from "react-native";
+import { GestureHandlerRootView } from "react-native-gesture-handler";
+import { NavigationContainer } from "@react-navigation/native";
+import { createStackNavigator } from "@react-navigation/stack";
 
-export default function App() {
+import FontLoader from "./components/FontLoader";
+import HomeScreen from "./screens/HomeScreen";
+
+const Stack = createStackNavigator();
+navigator.geolocation = require("react-native-geolocation-service");
+
+const App = () => {
     return (
-        <View style={styles.container}>
-            <Text>Open up App.js to start working on your app!</Text>
-            <StatusBar style="auto" />
-        </View>
+        <GestureHandlerRootView style={{ flex: 1 }}>
+            <FontLoader>
+                <NavigationContainer>
+                    <StatusBar style="auto" />
+                    <Stack.Navigator screenOptions={{ headerShown: false, animation: "none" }}>
+                        <Stack.Screen name="Home" component={HomeScreen} />
+                    </Stack.Navigator>
+                </NavigationContainer>
+            </FontLoader>
+        </GestureHandlerRootView>
     );
-}
+};
 
-const styles = StyleSheet.create({
-    container: {
-        flex: 1,
-        backgroundColor: "#fff",
-        alignItems: "center",
-        justifyContent: "center",
-    },
-});
+export default App;
