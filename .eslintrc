@@ -1,0 +1,27 @@
+{
+    "extends": ["eslint:recommended"],
+    "plugins": ["react", "react-native"],
+    "parser": "@babel/eslint-parser",
+    "rules": {
+        "no-unused-expressions": "off",
+        "no-unused-vars": "off",
+        "no-undef": "off"
+    },
+    "parserOptions": {
+        "ecmaVersion": "latest",
+        "sourceType": "module",
+        "ecmaFeatures": {
+            "jsx": true
+        }
+    },
+    "env": {
+        "browser": true,
+        "react-native/react-native": true
+    },
+    "settings": {
+        "import/ignore": ["react-native"],
+        "react": {
+            "version": "detect"
+        }
+    }
+}
