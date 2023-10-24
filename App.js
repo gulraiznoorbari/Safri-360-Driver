@@ -63,7 +63,7 @@ const App = () => {
                         <FontLoader>
                             <NavigationContainer ref={() => navigationRef}>
                                 <SafeAreaProvider>
-                                    <StatusBar style="auto" animated={true} />
+                                    <StatusBar style="inverted" animated={true} />
                                     <Stack.Navigator
                                         initialRouteName={auth.currentUser === null ? "Login" : "Home"}
                                         screenOptions={{ headerShown: false, animation: "none" }}
