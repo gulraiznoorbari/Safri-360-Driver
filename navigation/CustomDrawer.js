@@ -1,17 +1,30 @@
 import { DEFAULT_PROFILE_IMAGE } from "@env";
+import { useState, useEffect } from "react";
 import Ionicons from "react-native-vector-icons/Ionicons";
-import { View, Text, StyleSheet, Image, TouchableOpacity, Share } from "react-native";
+import { View, Text, StyleSheet, Image, Switch, TouchableOpacity, Share } from "react-native";
 import { DrawerContentScrollView, DrawerItemList } from "@react-navigation/drawer";
 import { useNavigation } from "@react-navigation/native";
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
 
-import { selectUser } from "../store/slices/userSlice";
+import { selectUser, setUser } from "../store/slices/userSlice";
 import { useFirebase } from "../contexts/FirebaseContext";
 
 const CustomDrawer = (props) => {
     const user = useSelector(selectUser);
+    const dispatch = useDispatch();
     const navigation = useNavigation();
     const { logout } = useFirebase();
+
+    const [isEnabled, setIsEnabled] = useState(user.isOnline);
+    const toggleSwitch = () => {
+        const updatedIsOnline = !isEnabled;
+        setIsEnabled(updatedIsOnline);
+        dispatch(setUser({ isOnline: updatedIsOnline }));
+    };
+
+    useEffect(() => {
+        setIsEnabled(user.isOnline);
+    }, [user.isOnline]);
 
     const onShare = async () => {
         try {
@@ -64,6 +77,17 @@ const CustomDrawer = (props) => {
                 </View>
             </DrawerContentScrollView>
             <View style={styles.bottomMenu}>
+                <View style={styles.switchContainer}>
+                    <Text style={styles.isOnlineSwitchText}>Go {isEnabled ? "Offline" : "Online"}</Text>
+                    <Switch
+                        trackColor={{ false: "#767577", true: "#A7E92F" }}
+                        thumbColor={isEnabled ? "#A7E92F" : "#767577"}
+                        ios_backgroundColor="#3e3e3e"
+                        onValueChange={toggleSwitch}
+                        value={isEnabled}
+                        style={styles.isOnlineSwitch}
+                    />
+                </View>
                 <TouchableOpacity onPress={() => onShare()} style={styles.button}>
                     <View style={styles.buttonInner}>
                         <Ionicons name="share-social-outline" size={22} style={styles.icon} />
@@ -130,6 +154,22 @@ const styles = StyleSheet.create({
     buttonInner: {
         flexDirection: "row",
         alignItems: "center",
+    },
+    switchContainer: {
+        flexDirection: "row",
+        alignItems: "center",
+        justifyContent: "space-between",
+        paddingVertical: 15,
+        paddingHorizontal: 10,
+    },
+    isOnlineSwitch: {
+        marginLeft: "auto",
+    },
+    isOnlineSwitchText: {
+        fontSize: 15,
+        fontFamily: "SatoshiMedium",
+        fontWeight: "500",
+        marginRight: 15,
     },
     icon: {
         marginLeft: 10,
