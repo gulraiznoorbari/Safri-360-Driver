@@ -1,7 +1,6 @@
 import "expo-dev-client";
-import { StatusBar } from "expo-status-bar";
 import { useState, useEffect, createRef } from "react";
-import { ActivityIndicator } from "react-native";
+import { ActivityIndicator, StatusBar } from "react-native";
 import { SafeAreaProvider } from "react-native-safe-area-context";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import { useReduxDevToolsExtension } from "@react-navigation/devtools";
@@ -12,6 +11,7 @@ import { PersistGate } from "redux-persist/integration/react";
 
 import { auth } from "./firebase/config";
 import { FirebaseProvider } from "./contexts/FirebaseContext";
+import { MapProvider } from "./contexts/MapContext";
 import { store, persistor } from "./store/index";
 import FontLoader from "./components/FontLoader";
 import DrawerNavigation from "./navigation/DrawerNavigation";
@@ -60,34 +60,42 @@ const App = () => {
             <PersistGate loading={null} persistor={persistor}>
                 <GestureHandlerRootView style={{ flex: 1 }}>
                     <FirebaseProvider>
-                        <FontLoader>
-                            <NavigationContainer ref={() => navigationRef}>
-                                <SafeAreaProvider>
-                                    <StatusBar style="inverted" animated={true} />
-                                    <Stack.Navigator
-                                        initialRouteName={auth.currentUser === null ? "Login" : "Home"}
-                                        screenOptions={{ headerShown: false, animation: "none" }}
-                                    >
-                                        <Stack.Screen name="HomeScreen" component={DrawerNavigation} />
-                                        <Stack.Screen name="Login" component={LoginScreen} />
-                                        <Stack.Screen name="SignUp" component={SignUpScreen} />
-                                        <Stack.Screen name="PasswordReset" component={PasswordResetScreen} />
-                                        <Stack.Screen name="PhoneRegisterScreen" component={PhoneRegisterScreen} />
-                                        <Stack.Screen name="OTPVerificationScreen" component={OTPVerificationScreen} />
-                                        <Stack.Screen
-                                            name="TripHistoryDetailScreen"
-                                            component={TripHistoryDetailScreen}
-                                        />
-                                        <Stack.Screen name="ChangePasswordScreen" component={ChangePasswordScreen} />
-                                        <Stack.Screen name="EditProfileScreen" component={EditProfileScreen} />
-                                        <Stack.Screen
-                                            name="ChangePhoneNumberScreen"
-                                            component={ChangePhoneNumberScreen}
-                                        />
-                                    </Stack.Navigator>
-                                </SafeAreaProvider>
-                            </NavigationContainer>
-                        </FontLoader>
+                        <MapProvider>
+                            <FontLoader>
+                                <NavigationContainer ref={() => navigationRef}>
+                                    <SafeAreaProvider>
+                                        <StatusBar barStyle="default" animated={true} />
+                                        <Stack.Navigator
+                                            initialRouteName={auth.currentUser === null ? "Login" : "Home"}
+                                            screenOptions={{ headerShown: false, animation: "none" }}
+                                        >
+                                            <Stack.Screen name="HomeScreen" component={DrawerNavigation} />
+                                            <Stack.Screen name="Login" component={LoginScreen} />
+                                            <Stack.Screen name="SignUp" component={SignUpScreen} />
+                                            <Stack.Screen name="PasswordReset" component={PasswordResetScreen} />
+                                            <Stack.Screen name="PhoneRegisterScreen" component={PhoneRegisterScreen} />
+                                            <Stack.Screen
+                                                name="OTPVerificationScreen"
+                                                component={OTPVerificationScreen}
+                                            />
+                                            <Stack.Screen
+                                                name="TripHistoryDetailScreen"
+                                                component={TripHistoryDetailScreen}
+                                            />
+                                            <Stack.Screen
+                                                name="ChangePasswordScreen"
+                                                component={ChangePasswordScreen}
+                                            />
+                                            <Stack.Screen name="EditProfileScreen" component={EditProfileScreen} />
+                                            <Stack.Screen
+                                                name="ChangePhoneNumberScreen"
+                                                component={ChangePhoneNumberScreen}
+                                            />
+                                        </Stack.Navigator>
+                                    </SafeAreaProvider>
+                                </NavigationContainer>
+                            </FontLoader>
+                        </MapProvider>
                     </FirebaseProvider>
                 </GestureHandlerRootView>
             </PersistGate>
