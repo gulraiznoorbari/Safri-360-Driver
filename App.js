@@ -20,10 +20,10 @@ import SignUpScreen from "./screens/SignUpScreen";
 import PasswordResetScreen from "./screens/PasswordResetScreen";
 import PhoneRegisterScreen from "./screens/PhoneRegisterScreen";
 import OTPVerificationScreen from "./screens/OTPVerificationScreen";
-import TripHistoryDetailScreen from "./screens/TripHistoryDetailScreen";
-import ChangePasswordScreen from "./screens/ChangePasswordScreen";
-import EditProfileScreen from "./screens/EditProfileScreen";
-import ChangePhoneNumberScreen from "./screens/ChangePhoneNumberScreen";
+import TripHistoryDetailScreen from "./screens/DrawerScreens/TripsHistory/TripHistoryDetailScreen";
+import ChangePasswordScreen from "./screens/DrawerScreens/Settings/ChangePasswordScreen";
+import EditProfileScreen from "./screens/DrawerScreens/Settings/EditProfileScreen";
+import ChangePhoneNumberScreen from "./screens/DrawerScreens/Settings/ChangePhoneNumberScreen";
 
 const Stack = createStackNavigator();
 navigator.geolocation = require("react-native-geolocation-service");
@@ -68,7 +68,7 @@ const App = () => {
                                         initialRouteName={auth.currentUser === null ? "Login" : "Home"}
                                         screenOptions={{ headerShown: false, animation: "none" }}
                                     >
-                                        <Stack.Screen name="Home" component={DrawerNavigation} />
+                                        <Stack.Screen name="HomeScreen" component={DrawerNavigation} />
                                         <Stack.Screen name="Login" component={LoginScreen} />
                                         <Stack.Screen name="SignUp" component={SignUpScreen} />
                                         <Stack.Screen name="PasswordReset" component={PasswordResetScreen} />

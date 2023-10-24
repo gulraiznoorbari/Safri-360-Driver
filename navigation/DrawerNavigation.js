@@ -26,7 +26,7 @@ const DrawerNavigation = () => {
             }}
         >
             <Drawer.Screen
-                name="HomeScreen"
+                name="Home"
                 component={HomeScreen}
                 options={{
                     drawerIcon: ({ color }) => (
