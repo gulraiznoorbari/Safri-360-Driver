@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from "react";
-import { StyleSheet, View, Text, TextInput } from "react-native";
+import { StyleSheet, View, Text, TextInput, Pressable } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { PhoneAuthProvider, linkWithCredential } from "firebase/auth";
 import { ref, set, child } from "firebase/database";
@@ -163,6 +163,10 @@ const OTPVerificationScreen = ({ navigation }) => {
                         ))}
                     </View>
 
+                    <Pressable onPress={() => navigation.goBack()} style={styles.linkTextContainer}>
+                        <Text style={styles.linkText}>Resend OTP</Text>
+                    </Pressable>
+
                     <Text style={[{ color: messageColor }, message && styles.errorMessage]}>{message}</Text>
 
                     <PrimaryButton text="Verify" action={() => handleSubmit()} disabled={isDisabled} />
@@ -197,7 +201,7 @@ const styles = StyleSheet.create({
     codeInputContainer: {
         flexDirection: "row",
         justifyContent: "center",
-        marginVertical: 30,
+        marginVertical: 25,
     },
     codeInputField: {
         fontSize: 18,
@@ -208,6 +212,17 @@ const styles = StyleSheet.create({
         width: 40,
         borderWidth: 2,
         borderColor: "#D1D5DB",
+    },
+    linkTextContainer: {
+        textAlign: "right",
+        marginLeft: "auto",
+        marginHorizontal: 25,
+    },
+    linkText: {
+        fontFamily: "SatoshiMedium",
+        fontSize: 14,
+        fontWeight: "500",
+        color: "#1b2607",
     },
     errorMessage: {
         paddingVertical: 5,
