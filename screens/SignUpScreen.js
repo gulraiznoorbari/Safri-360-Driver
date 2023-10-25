@@ -60,7 +60,7 @@ const SignUpScreen = ({ navigation }) => {
     };
 
     const AddUserToDB = (user) => {
-        const userRef = ref(dbRealtime, "Riders/" + user.uid);
+        const userRef = ref(dbRealtime, "Drivers/" + user.uid);
         set(userRef, {
             firstName: firstName,
             lastName: lastName,
