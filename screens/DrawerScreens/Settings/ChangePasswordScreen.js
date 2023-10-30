@@ -92,16 +92,12 @@ const ChangePasswordScreen = ({ navigation }) => {
 
                 {errMessage && <ErrorMessage message={errMessage} marginVertical={10} />}
 
-                {oldPassword && newPassword && confirmNewPassword ? (
-                    <PrimaryButton
-                        text={"Update"}
-                        action={() => handleResetPassword()}
-                        fontSize={16}
-                        disabled={false}
-                    />
-                ) : (
-                    <PrimaryButton text={"Update"} action={() => handleResetPassword()} fontSize={16} disabled={true} />
-                )}
+                <PrimaryButton
+                    text={"Update"}
+                    action={() => handleResetPassword()}
+                    fontSize={16}
+                    disabled={!oldPassword && !newPassword && !confirmNewPassword}
+                />
             </View>
         </View>
     );

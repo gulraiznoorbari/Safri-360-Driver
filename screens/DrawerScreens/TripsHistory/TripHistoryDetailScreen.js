@@ -26,33 +26,33 @@ const TripHistoryDetailScreen = ({ route, navigation }) => {
     return (
         <View style={styles.container}>
             <View style={styles.content}>
-                <View style={styles.dateContainer}>
+                <View style={styles.infoContainer}>
                     <Ionicons name="calendar-outline" size={26} color="#333" />
-                    <Text style={styles.dateText}>{moment(Date.now()).format("LL")}</Text>
+                    <Text style={styles.infoText}>{moment(Date.now()).format("LL")}</Text>
                 </View>
-                <View style={styles.originContainer}>
+                <View style={styles.infoContainer}>
                     <Ionicons name="location" size={26} color="#0078d7" />
-                    <Text style={styles.originText}>Origin: {data?.origin}</Text>
+                    <Text style={styles.infoText}>Origin: {data?.origin}</Text>
                 </View>
-                <View style={styles.destinationContainer}>
+                <View style={styles.infoContainer}>
                     <Ionicons name="location" size={26} color="green" />
-                    <Text style={styles.destinationText}>Destination: {data?.destination}</Text>
+                    <Text style={styles.infoText}>Destination: {data?.destination}</Text>
                 </View>
-                <View style={styles.car}>
+                <View style={styles.infoContainer}>
                     <Ionicons name="car-outline" size={26} color="#333" />
-                    <Text style={styles.carText}>{data?.car}</Text>
+                    <Text style={styles.infoText}>{data?.car}</Text>
                 </View>
-                <View style={styles.rideDistance}>
+                <View style={styles.infoContainer}>
                     <Ionicons name="speedometer-outline" size={26} color="#333" />
-                    <Text style={styles.rideDistanceText}>Distance: {data?.distance}</Text>
+                    <Text style={styles.infoText}>Distance: {data?.distance}</Text>
                 </View>
-                <View style={styles.rideDuration}>
+                <View style={styles.infoContainer}>
                     <Ionicons name="stopwatch-outline" size={26} color="#333" />
-                    <Text style={styles.rideDurationText}>Duration: {data?.duration}</Text>
+                    <Text style={styles.infoText}>Duration: {data?.duration}</Text>
                 </View>
-                <View style={styles.rideFare}>
+                <View style={styles.infoContainer}>
                     <Ionicons name="cash-outline" size={26} color="#333" />
-                    <Text style={styles.rideFareText}>PKR {data?.fare}</Text>
+                    <Text style={styles.infoText}>PKR {data?.fare}</Text>
                 </View>
             </View>
             <View style={styles.buttonContainer}>
@@ -90,78 +90,12 @@ const styles = StyleSheet.create({
         shadowRadius: 3,
         elevation: 3,
     },
-    dateContainer: {
+    infoContainer: {
         flexDirection: "row",
         alignItems: "center",
         paddingVertical: 5,
     },
-    dateText: {
-        fontSize: 16,
-        fontFamily: "SatoshiBold",
-        fontWeight: "600",
-        marginLeft: 13,
-    },
-    originContainer: {
-        flexDirection: "row",
-        alignItems: "center",
-        paddingVertical: 5,
-    },
-    originText: {
-        fontSize: 16,
-        fontFamily: "SatoshiBold",
-        fontWeight: "600",
-        marginLeft: 13,
-    },
-    destinationContainer: {
-        flexDirection: "row",
-        alignItems: "center",
-        paddingVertical: 5,
-    },
-    destinationText: {
-        fontSize: 16,
-        fontFamily: "SatoshiBold",
-        fontWeight: "600",
-        marginLeft: 13,
-    },
-    car: {
-        flexDirection: "row",
-        alignItems: "center",
-        paddingVertical: 5,
-    },
-    carText: {
-        fontSize: 16,
-        fontFamily: "SatoshiBold",
-        fontWeight: "600",
-        marginLeft: 13,
-    },
-    rideDistance: {
-        flexDirection: "row",
-        alignItems: "center",
-        paddingVertical: 5,
-    },
-    rideDistanceText: {
-        fontSize: 16,
-        fontFamily: "SatoshiBold",
-        fontWeight: "600",
-        marginLeft: 13,
-    },
-    rideDuration: {
-        flexDirection: "row",
-        alignItems: "center",
-        paddingVertical: 5,
-    },
-    rideDurationText: {
-        fontSize: 16,
-        fontFamily: "SatoshiBold",
-        fontWeight: "600",
-        marginLeft: 13,
-    },
-    rideFare: {
-        flexDirection: "row",
-        alignItems: "center",
-        paddingVertical: 5,
-    },
-    rideFareText: {
+    infoText: {
         fontSize: 16,
         fontFamily: "SatoshiBold",
         fontWeight: "600",

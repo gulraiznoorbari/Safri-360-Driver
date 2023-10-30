@@ -1,4 +1,4 @@
-import { StyleSheet, Text, View, Pressable } from "react-native";
+import { StyleSheet, Text, View, TouchableOpacity } from "react-native";
 import { Divider } from "react-native-elements";
 import { useNavigation } from "@react-navigation/native";
 import Ionicons from "react-native-vector-icons/Ionicons";
@@ -22,7 +22,7 @@ const TripHistoryCard = ({ data }) => {
 
     const textColor = getStatusColor(data?.status);
     return (
-        <Pressable onPress={() => navigation.navigate("TripHistoryDetailScreen", { data: data })}>
+        <TouchableOpacity onPress={() => navigation.navigate("TripHistoryDetailScreen", { data: data })}>
             <View style={styles.tripContainer}>
                 <Text style={styles.tripDate}>{moment(Date.now()).format("ll")}</Text>
                 <View style={styles.infoContainer}>
@@ -42,7 +42,7 @@ const TripHistoryCard = ({ data }) => {
                 </View>
                 <Divider style={{ width: "100%" }} />
             </View>
-        </Pressable>
+        </TouchableOpacity>
     );
 };
 

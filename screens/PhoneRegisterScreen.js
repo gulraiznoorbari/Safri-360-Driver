@@ -163,11 +163,7 @@ const PhoneRegisterScreen = ({ navigation }) => {
                 </View>
                 {errorMessage && <ErrorMessage errorMessage={errorMessage} />}
 
-                {value?.length > 9 ? (
-                    <PrimaryButton text={"Next"} action={() => handleSubmit()} disabled={false} />
-                ) : (
-                    <PrimaryButton text={"Next"} action={() => handleSubmit()} disabled={true} />
-                )}
+                <PrimaryButton text={"Next"} action={() => handleSubmit()} disabled={!(value?.length > 9)} />
             </SafeAreaView>
         </KeyboardAvoidingWrapper>
     );

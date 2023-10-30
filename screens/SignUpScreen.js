@@ -209,11 +209,11 @@ const SignUpScreen = ({ navigation }) => {
 
                 {errMessage && <ErrorMessage errorMessage={errMessage} />}
 
-                {firstName && email && password && confirmPassword ? (
-                    <PrimaryButton text={"Continue"} action={() => handleSignup()} disabled={false} />
-                ) : (
-                    <PrimaryButton text={"Continue"} action={() => handleSignup()} disabled={true} />
-                )}
+                <PrimaryButton
+                    text={"Continue"}
+                    action={() => handleSignup()}
+                    disabled={!firstName && !email && !password && !confirmPassword}
+                />
                 <TransparentButton text="Already have an account" navigation={navigation} navigateTo={"Login"} />
             </SafeAreaView>
         </KeyboardAvoidingWrapper>

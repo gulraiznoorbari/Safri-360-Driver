@@ -67,11 +67,7 @@ const PasswordResetScreen = ({ navigation }) => {
                 />
                 {errMessage && <ErrorMessage message={errMessage} marginVertical={10} />}
 
-                {email ? (
-                    <PrimaryButton text={"Reset Password"} action={() => handleResetPassword()} disabled={false} />
-                ) : (
-                    <PrimaryButton text={"Reset Password"} action={() => handleResetPassword()} disabled={true} />
-                )}
+                <PrimaryButton text={"Reset Password"} action={() => handleResetPassword()} disabled={!email} />
                 <TransparentButton
                     text="Don't have an account? Sign up"
                     navigation={navigation}
