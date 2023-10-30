@@ -49,6 +49,7 @@ const AddCar = ({ navigation }) => {
                 console.log("Car added to DB");
                 ToastAndroid.show("Car Added Successfully", ToastAndroid.SHORT);
                 handleClear();
+                navigation.goBack();
             })
             .catch((error) => {
                 console.log("Error adding car to DB: ", error);
