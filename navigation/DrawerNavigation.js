@@ -5,6 +5,7 @@ import { createDrawerNavigator } from "@react-navigation/drawer";
 import HomeScreen from "../screens/HomeScreen";
 import TripsHistoryScreen from "../screens/DrawerScreens/TripsHistory/TripsHistoryScreen";
 import SettingsScreen from "../screens/DrawerScreens/Settings/SettingsScreen";
+import ManageScreen from "../screens/DrawerScreens/Manage/ManageScreen";
 import CustomDrawer from "./CustomDrawer";
 
 const Drawer = createDrawerNavigator();
@@ -43,6 +44,27 @@ const DrawerNavigation = () => {
                     ),
                     headerShown: true,
                     headerTitle: "Past Trips",
+                    headerTitleAlign: "center",
+                    headerTitleStyle: {
+                        fontSize: 21,
+                        fontFamily: "SatoshiBlack",
+                        fontWeight: "400",
+                    },
+                    headerStyle: {
+                        height: 70,
+                    },
+                    headerBackTitleVisible: false,
+                }}
+            />
+            <Drawer.Screen
+                name="Manage"
+                component={ManageScreen}
+                options={{
+                    drawerIcon: ({ color }) => (
+                        <Ionicons name="people-outline" size={22} color={color} style={styles.icon} />
+                    ),
+                    headerShown: true,
+                    headerTitle: "Manage",
                     headerTitleAlign: "center",
                     headerTitleStyle: {
                         fontSize: 21,
