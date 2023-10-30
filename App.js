@@ -14,6 +14,7 @@ import { FirebaseProvider } from "./contexts/FirebaseContext";
 import { store, persistor } from "./store/index";
 import FontLoader from "./components/FontLoader";
 import DrawerNavigation from "./navigation/DrawerNavigation";
+import WelcomeScreen from "./screens/WelcomeScreen";
 import LoginScreen from "./screens/LoginScreen";
 import SignUpScreen from "./screens/SignUpScreen";
 import PasswordResetScreen from "./screens/PasswordResetScreen";
@@ -23,6 +24,10 @@ import TripHistoryDetailScreen from "./screens/DrawerScreens/TripsHistory/TripHi
 import ChangePasswordScreen from "./screens/DrawerScreens/Settings/ChangePasswordScreen";
 import EditProfileScreen from "./screens/DrawerScreens/Settings/EditProfileScreen";
 import ChangePhoneNumberScreen from "./screens/DrawerScreens/Settings/ChangePhoneNumberScreen";
+import DisplayCarsScreen from "./screens/DrawerScreens/Manage/Cars/DisplayCarsScreen";
+import CarsDetailScreen from "./screens/DrawerScreens/Manage/Cars/CarsDetailScreen";
+import AddCar from "./screens/DrawerScreens/Manage/Cars/AddCar";
+import EditCarScreen from "./screens/DrawerScreens/Manage/Cars/EditCar";
 
 const Stack = createStackNavigator();
 navigator.geolocation = require("react-native-geolocation-service");
@@ -64,10 +69,11 @@ const App = () => {
                                 <SafeAreaProvider>
                                     <StatusBar barStyle="default" animated={true} />
                                     <Stack.Navigator
-                                        initialRouteName={auth.currentUser === null ? "Login" : "Home"}
-                                        screenOptions={{ headerShown: false, animation: "none" }}
+                                        initialRouteName={auth.currentUser === null ? "WelcomeScreen" : "Home"}
+                                        screenOptions={{ headerShown: false, animationEnabled: false }}
                                     >
                                         <Stack.Screen name="HomeScreen" component={DrawerNavigation} />
+                                        <Stack.Screen name="WelcomeScreen" component={WelcomeScreen} />
                                         <Stack.Screen name="Login" component={LoginScreen} />
                                         <Stack.Screen name="SignUp" component={SignUpScreen} />
                                         <Stack.Screen name="PasswordReset" component={PasswordResetScreen} />
@@ -83,6 +89,10 @@ const App = () => {
                                             name="ChangePhoneNumberScreen"
                                             component={ChangePhoneNumberScreen}
                                         />
+                                        <Stack.Screen name="DisplayCarsScreen" component={DisplayCarsScreen} />
+                                        <Stack.Screen name="AddCarScreen" component={AddCar} />
+                                        <Stack.Screen name="EditCarScreen" component={EditCarScreen} />
+                                        <Stack.Screen name="CarsDetailScreen" component={CarsDetailScreen} />
                                     </Stack.Navigator>
                                 </SafeAreaProvider>
                             </NavigationContainer>
