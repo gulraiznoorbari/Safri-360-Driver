@@ -1,5 +1,5 @@
 import { DEFAULT_PROFILE_IMAGE } from "@env";
-import { useState, useEffect } from "react";
+import { useEffect } from "react";
 import Ionicons from "react-native-vector-icons/Ionicons";
 import { View, Text, StyleSheet, Image, Switch, TouchableOpacity, Share } from "react-native";
 import { DrawerContentScrollView, DrawerItemList } from "@react-navigation/drawer";
@@ -15,15 +15,15 @@ const CustomDrawer = (props) => {
     const navigation = useNavigation();
     const { logout } = useFirebase();
 
-    const [isEnabled, setIsEnabled] = useState(user.isOnline);
     const toggleSwitch = () => {
-        const updatedIsOnline = !isEnabled;
-        setIsEnabled(updatedIsOnline);
-        dispatch(setUser({ isOnline: updatedIsOnline }));
+        const IsOnline = !user.isOnline;
+        dispatch(setUser({ isOnline: IsOnline }));
     };
 
     useEffect(() => {
-        setIsEnabled(user.isOnline);
+        if (user.isOnline) {
+            dispatch(setUser({ isOnline: user.isOnline }));
+        }
     }, [user.isOnline]);
 
     const onShare = async () => {
@@ -78,13 +78,13 @@ const CustomDrawer = (props) => {
             </DrawerContentScrollView>
             <View style={styles.bottomMenu}>
                 <View style={styles.switchContainer}>
-                    <Text style={styles.isOnlineSwitchText}>Go {isEnabled ? "Offline" : "Online"}</Text>
+                    <Text style={styles.isOnlineSwitchText}>Go {user.isOnline ? "Offline" : "Online"}</Text>
                     <Switch
                         trackColor={{ false: "#767577", true: "#A7E92F" }}
-                        thumbColor={isEnabled ? "#A7E92F" : "#767577"}
+                        thumbColor={user.isOnline ? "#A7E92F" : "#767577"}
                         ios_backgroundColor="#3e3e3e"
                         onValueChange={toggleSwitch}
-                        value={isEnabled}
+                        value={user.isOnline}
                         style={styles.isOnlineSwitch}
                     />
                 </View>
