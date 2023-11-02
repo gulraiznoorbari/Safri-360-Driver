@@ -2,7 +2,7 @@ import { DEFAULT_PROFILE_IMAGE } from "@env";
 import { useEffect, useState } from "react";
 import { StyleSheet, Text, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { ref, set } from "firebase/database";
+import { ref, set, push } from "firebase/database";
 import { useDispatch } from "react-redux";
 
 import { setUser, resetUser } from "../store/slices/userSlice";
@@ -60,7 +60,7 @@ const SignUpScreen = ({ navigation }) => {
     };
 
     const AddUserToDB = (user) => {
-        const userRef = ref(dbRealtime, "Drivers/" + user.uid);
+        const userRef = ref(dbRealtime, "Rent A Car/" + user.uid);
         set(userRef, {
             firstName: firstName,
             lastName: lastName,
@@ -70,7 +70,16 @@ const SignUpScreen = ({ navigation }) => {
             phoneNumber: "",
         })
             .then(() => {
-                console.log("User added to DB");
+                const sharedKeyRef = push(ref(dbRealtime, "Shared/"));
+                console.log("Shared ref: ", sharedKeyRef);
+                set(sharedKeyRef, { userID: user.uid })
+                    .then(() => {
+                        console.log("Shared ref set with key: ", sharedKeyRef.key);
+                        console.log("User added to DB");
+                    })
+                    .catch((error) => {
+                        console.log("Error setting shared ref: ", error);
+                    });
             })
             .catch((error) => {
                 console.log("Error adding user to DB: ", error);
