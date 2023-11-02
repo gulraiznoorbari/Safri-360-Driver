@@ -47,7 +47,7 @@ const OTPVerificationScreen = ({ navigation }) => {
     };
 
     const AddPhoneNumberToDB = (user) => {
-        const userRef = ref(dbRealtime, "Drivers/" + user.uid);
+        const userRef = ref(dbRealtime, "Rent A Car/" + user.uid);
         const phoneNumberRef = child(userRef, "phoneNumber");
         set(phoneNumberRef, phoneNumber)
             .then(() => {

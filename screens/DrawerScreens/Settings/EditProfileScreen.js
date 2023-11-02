@@ -41,7 +41,7 @@ const EditProfileScreen = ({ navigation }) => {
     }, [navigation]);
 
     const UpdateUserInfo = () => {
-        const userRef = rtdRef(dbRealtime, "Users/" + user.uid);
+        const userRef = rtdRef(dbRealtime, "Rent A Car/" + user.uid);
         update(userRef, {
             firstName: firstName,
             lastName: lastName,
