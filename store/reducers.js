@@ -11,7 +11,7 @@ const persistConfig = {
     storage: AsyncStorage,
     whitelist: ["user", "location", "navigation"],
     blacklist: [],
-    // timeout: 7000,
+    timeout: 7000,
 };
 
 const rootReducer = combineReducers({
