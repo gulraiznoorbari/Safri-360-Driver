@@ -66,13 +66,19 @@ const DisplayCarsScreen = ({ navigation }) => {
 
     return (
         <View style={styles.container}>
-            <FlatList
-                data={cars}
-                keyExtractor={(item) => item?.id}
-                renderItem={renderCarsDetail}
-                ListHeaderComponent={addCarButton}
-                showsVerticalScrollIndicator={false}
-            />
+            {cars.length === 0 ? (
+                <View style={styles.notAvailableContainer}>
+                    <Text style={styles.notAvailableText}>No Cars Added</Text>
+                </View>
+            ) : (
+                <FlatList
+                    data={cars}
+                    keyExtractor={(item) => item?.id}
+                    renderItem={renderCarsDetail}
+                    ListHeaderComponent={addCarButton}
+                    showsVerticalScrollIndicator={false}
+                />
+            )}
         </View>
     );
 };
@@ -82,6 +88,19 @@ const styles = StyleSheet.create({
         flex: 1,
         width: "100%",
         backgroundColor: "#fff",
+    },
+    notAvailableContainer: {
+        justifyContent: "center",
+        alignItems: "center",
+    },
+    notAvailableText: {
+        fontSize: 18,
+        fontFamily: "SatoshiBold",
+        fontWeight: "500",
+        color: "#333",
+        textAlign: "center",
+        marginVertical: 10,
+        marginHorizontal: 20,
     },
     buttonContainer: {
         borderRadius: 10,
