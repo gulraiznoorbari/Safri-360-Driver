@@ -12,7 +12,6 @@ const InputField = forwardRef(
             KeyboardType,
             textContentType,
             onChangeCallback,
-            onSubmitEditingCallback,
             inputContainerStyles,
             inputTextStyles,
         },
@@ -31,7 +30,6 @@ const InputField = forwardRef(
                     onFocus={() => setFocus(true)}
                     onBlur={() => setFocus(false)}
                     onChangeText={onChangeCallback}
-                    onSubmitEditing={onSubmitEditingCallback}
                     textContentType={textContentType}
                     keyboardType={KeyboardType ? KeyboardType : "default"}
                     inputStyle={[styles.inputText, inputTextStyles ? inputTextStyles : null]}
