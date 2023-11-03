@@ -9,7 +9,10 @@ const ManageScreen = ({ navigation }) => {
                     <Image source={CarIcon} style={styles.icon} />
                     <Text style={styles.cardText}>Cars</Text>
                 </TouchableOpacity>
-                <TouchableOpacity style={styles.cardContainer} onPress={() => {}}>
+                <TouchableOpacity
+                    style={styles.cardContainer}
+                    onPress={() => navigation.navigate("DisplayDriversScreen")}
+                >
                     <Image source={DriverIcon} style={styles.icon} />
                     <Text style={styles.cardText}>Drivers</Text>
                 </TouchableOpacity>

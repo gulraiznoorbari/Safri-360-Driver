@@ -20,19 +20,19 @@ const WelcomeScreen = ({ navigation }) => {
                     disabled={false}
                     buttonStyle={{
                         backgroundColor: "#A7E92F",
-                        padding: 20,
+                        padding: 17,
                         borderRadius: 10,
                     }}
                 />
                 <PrimaryButton
                     text="Driver"
                     action={() => {
-                        navigation.navigate("Login");
+                        navigation.navigate("DriverLogin");
                     }}
                     disabled={false}
                     buttonStyle={{
                         backgroundColor: "#A7E92F",
-                        padding: 20,
+                        padding: 17,
                         borderRadius: 10,
                     }}
                 />
