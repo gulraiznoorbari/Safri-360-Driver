@@ -155,7 +155,6 @@ const PhoneRegisterScreen = ({ navigation }) => {
                             KeyboardType={"numeric"}
                             textContentType={"telephoneNumber"}
                             onChangeCallback={(input) => handleChangeText(input)}
-                            onSubmitEditingCallback={() => handleSubmit()}
                             inputContainerStyles={styles.phoneNumberInputContainer}
                             inputTextStyles={styles.phoneNumberInputText}
                         />
