@@ -6,6 +6,7 @@ import FontAwesome from "react-native-vector-icons/FontAwesome";
 
 const CarDetailCard = ({ data }) => {
     const navigation = useNavigation();
+
     const getStatusColor = (status) => {
         switch (status.toLowerCase()) {
             case "booked":
@@ -16,8 +17,8 @@ const CarDetailCard = ({ data }) => {
                 return "black";
         }
     };
-
     const textColor = getStatusColor(data?.status);
+
     return (
         <TouchableOpacity onPress={() => navigation.navigate("CarsDetailScreen", { data: data })}>
             <View style={styles.container}>

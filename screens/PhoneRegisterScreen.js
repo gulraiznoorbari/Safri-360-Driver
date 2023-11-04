@@ -149,7 +149,7 @@ const PhoneRegisterScreen = ({ navigation }) => {
                         <InputField
                             ref={inputRef}
                             label={""}
-                            placeholder={"202 555 0123"}
+                            placeholder={"xxx xxx xxxx"}
                             value={value}
                             maxLength={12}
                             KeyboardType={"numeric"}

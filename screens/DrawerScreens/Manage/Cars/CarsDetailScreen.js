@@ -1,10 +1,9 @@
 import { useLayoutEffect } from "react";
-import { Alert, ToastAndroid, StyleSheet, Text, View } from "react-native";
+import { Alert, ToastAndroid, StyleSheet, Text, View, TouchableOpacity } from "react-native";
 import { Button } from "react-native-elements";
 import Ionicons from "react-native-vector-icons/Ionicons";
 import FontAwesome from "react-native-vector-icons/FontAwesome";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
-import { TouchableOpacity } from "react-native-gesture-handler";
 import { ref, remove } from "firebase/database";
 import { useSelector } from "react-redux";
 
@@ -62,6 +61,7 @@ const CarsDetailScreen = ({ route, navigation }) => {
                             Alert.alert("Delete Car", "Are you sure you want to delete this car?", [
                                 {
                                     text: "Cancel",
+                                    onPress: () => null,
                                     style: "cancel",
                                 },
                                 { text: "Delete", onPress: () => deleteCar(data?.registrationNumber) },
