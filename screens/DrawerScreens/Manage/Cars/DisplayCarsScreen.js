@@ -1,5 +1,5 @@
 import { useState, useEffect, useLayoutEffect } from "react";
-import { StyleSheet, View, FlatList } from "react-native";
+import { StyleSheet, View, FlatList, Text } from "react-native";
 import { Button } from "react-native-elements";
 import Ionicons from "react-native-vector-icons/Ionicons";
 import { ref, onValue } from "firebase/database";
@@ -10,9 +10,9 @@ import { selectUser } from "../../../../store/slices/userSlice";
 import CarDetailCard from "./CarDetailCard";
 
 const DisplayCarsScreen = ({ navigation }) => {
-    const user = useSelector(selectUser);
-
     const [cars, setCars] = useState([]);
+
+    const user = useSelector(selectUser);
 
     useLayoutEffect(() => {
         navigation.setOptions({
@@ -68,6 +68,18 @@ const DisplayCarsScreen = ({ navigation }) => {
         <View style={styles.container}>
             {cars.length === 0 ? (
                 <View style={styles.notAvailableContainer}>
+                    <View style={{ marginVertical: 12, marginHorizontal: 20 }}>
+                        <Button
+                            icon={<Ionicons name="add" size={22} color={"#000"} />}
+                            iconPosition="left"
+                            iconContainerStyle={{ marginRight: 10 }}
+                            title="Add Car"
+                            containerStyle={styles.buttonContainer}
+                            buttonStyle={styles.button}
+                            titleStyle={styles.buttonText}
+                            onPress={() => navigation.navigate("AddCarScreen")}
+                        />
+                    </View>
                     <Text style={styles.notAvailableText}>No Cars Added</Text>
                 </View>
             ) : (
@@ -91,7 +103,6 @@ const styles = StyleSheet.create({
     },
     notAvailableContainer: {
         justifyContent: "center",
-        alignItems: "center",
     },
     notAvailableText: {
         fontSize: 18,
@@ -99,7 +110,7 @@ const styles = StyleSheet.create({
         fontWeight: "500",
         color: "#333",
         textAlign: "center",
-        marginVertical: 10,
+        marginVertical: 20,
         marginHorizontal: 20,
     },
     buttonContainer: {
