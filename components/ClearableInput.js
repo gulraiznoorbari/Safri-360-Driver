@@ -9,9 +9,11 @@ const ClearableInput = ({
     value,
     setValue,
     hideInput,
+    maxLength,
     KeyboardType,
     autoComplete,
     textContentType,
+    onChangeCallback,
     editable,
 }) => {
     const [focused, setFocus] = useState(false);
@@ -25,11 +27,16 @@ const ClearableInput = ({
             label={label}
             placeholder={placeholder}
             value={value}
-            onChangeText={(newText) => {
-                setValue(newText);
-            }}
+            onChangeText={
+                onChangeCallback
+                    ? onChangeCallback
+                    : (newText) => {
+                          setValue(newText);
+                      }
+            }
             onFocus={() => setFocus(true)}
             onBlur={() => setFocus(false)}
+            maxLength={maxLength ? maxLength : null}
             secureTextEntry={hideInput}
             autoComplete={autoComplete}
             textContentType={textContentType}
