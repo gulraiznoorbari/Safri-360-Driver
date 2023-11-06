@@ -28,6 +28,11 @@ import DisplayCarsScreen from "./screens/DrawerScreens/Manage/Cars/DisplayCarsSc
 import CarsDetailScreen from "./screens/DrawerScreens/Manage/Cars/CarsDetailScreen";
 import AddCar from "./screens/DrawerScreens/Manage/Cars/AddCar";
 import EditCarScreen from "./screens/DrawerScreens/Manage/Cars/EditCar";
+import DriverLoginScreen from "./screens/DriverLoginScreen";
+import DriverInfoInputScreen from "./screens/DriverInfoInputScreen";
+import DisplayDriversScreen from "./screens/DrawerScreens/Manage/Drivers/DisplayDriversScreen";
+import DriverDetailScreen from "./screens/DrawerScreens/Manage/Drivers/DriverDetailScreen";
+import AddDriver from "./screens/DrawerScreens/Manage/Drivers/AddDriver";
 
 const Stack = createStackNavigator();
 navigator.geolocation = require("react-native-geolocation-service");
@@ -69,6 +74,7 @@ const App = () => {
                                 <SafeAreaProvider>
                                     <StatusBar barStyle="default" animated={true} />
                                     <Stack.Navigator
+                                        // initialRouteName="DriverInfo"
                                         initialRouteName={auth.currentUser === null ? "WelcomeScreen" : "Home"}
                                         screenOptions={{ headerShown: false, animationEnabled: false }}
                                     >
@@ -76,6 +82,8 @@ const App = () => {
                                         <Stack.Screen name="WelcomeScreen" component={WelcomeScreen} />
                                         <Stack.Screen name="Login" component={LoginScreen} />
                                         <Stack.Screen name="SignUp" component={SignUpScreen} />
+                                        <Stack.Screen name="DriverLogin" component={DriverLoginScreen} />
+                                        <Stack.Screen name="DriverInfoInput" component={DriverInfoInputScreen} />
                                         <Stack.Screen name="PasswordReset" component={PasswordResetScreen} />
                                         <Stack.Screen name="PhoneRegisterScreen" component={PhoneRegisterScreen} />
                                         <Stack.Screen name="OTPVerificationScreen" component={OTPVerificationScreen} />
@@ -90,9 +98,12 @@ const App = () => {
                                             component={ChangePhoneNumberScreen}
                                         />
                                         <Stack.Screen name="DisplayCarsScreen" component={DisplayCarsScreen} />
+                                        <Stack.Screen name="DisplayDriversScreen" component={DisplayDriversScreen} />
                                         <Stack.Screen name="AddCarScreen" component={AddCar} />
+                                        <Stack.Screen name="AddDriverScreen" component={AddDriver} />
                                         <Stack.Screen name="EditCarScreen" component={EditCarScreen} />
                                         <Stack.Screen name="CarsDetailScreen" component={CarsDetailScreen} />
+                                        <Stack.Screen name="DriverDetailScreen" component={DriverDetailScreen} />
                                     </Stack.Navigator>
                                 </SafeAreaProvider>
                             </NavigationContainer>
