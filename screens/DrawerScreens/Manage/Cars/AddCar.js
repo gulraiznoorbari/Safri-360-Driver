@@ -68,6 +68,20 @@ const AddCar = ({ navigation }) => {
         AddCarToDB();
     };
 
+    const handleChangeText = (input) => {
+        const REGISTRATION_NUMBER_REGEX = /^[A-Z]{2,3}-[0-9]{1,4}$/;
+        const formattedInput = input
+            .toUpperCase()
+            .replace(/[^A-Z0-9-]/g, "")
+            .replace(/-+/g, "-")
+            .replace(/^([A-Z]{2,3})(\d{1,4})$/, "$1-$2");
+
+        if (!formattedInput.match(REGISTRATION_NUMBER_REGEX)) {
+            console.log("Invalid Registration Number");
+        }
+        setCarRegistrationNumber(formattedInput);
+    };
+
     return (
         <KeyboardAvoidingWrapper>
             <SafeAreaView style={styles.content}>
@@ -92,6 +106,7 @@ const AddCar = ({ navigation }) => {
                 <ClearableInput
                     label={"Car Year"}
                     placeholder={"Enter Car Year"}
+                    maxLength={4}
                     value={carYear}
                     setValue={setCarYear}
                     hideInput={false}
@@ -102,6 +117,7 @@ const AddCar = ({ navigation }) => {
                 <ClearableInput
                     label={"Car Color"}
                     placeholder={"Enter Car Color"}
+                    maxLength={15}
                     value={carColor}
                     setValue={setCarColor}
                     hideInput={false}
@@ -111,8 +127,10 @@ const AddCar = ({ navigation }) => {
                 <ClearableInput
                     label={"Car Registraion Number"}
                     placeholder={"Enter Car Registraion Number"}
+                    maxLength={8}
                     value={carRegistrationNumber}
                     setValue={setCarRegistrationNumber}
+                    onChangeCallback={(input) => handleChangeText(input)}
                     hideInput={false}
                     autoComplete={"name"}
                     textContentType={"givenName"}
