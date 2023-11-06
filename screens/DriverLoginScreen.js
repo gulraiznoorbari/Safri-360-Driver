@@ -42,7 +42,8 @@ const DriverLoginScreen = () => {
         if (error) {
             return setErrorMessage(error);
         }
-        navigation.navigate("HomeScreen");
+        // do something
+        navigation.navigate("DriverInfoInput");
     };
 
     const handleChangeText = (input) => {
