@@ -4,14 +4,20 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import { Icon } from "react-native-elements";
 import { Dropdown } from "react-native-element-dropdown";
 const countryCodes = require("country-codes-list");
+import { get, ref, set } from "firebase/database";
+import { useSelector } from "react-redux";
 
 import KeyboardAvoidingWrapper from "../components/KeyboardAvoidingWrapper";
+import { dbRealtime } from "../firebase/config";
+import { selectUser } from "../store/slices/userSlice";
 import ClearableInput from "../components/ClearableInput";
 import InputField from "../components/InputField";
 import ErrorMessage from "../components/ErrorMessage";
 import PrimaryButton from "../components/Buttons/PrimaryButton";
 
-const DriverLoginScreen = () => {
+const DriverLoginScreen = ({ navigation }) => {
+    const user = useSelector(selectUser);
+
     const [phoneNumber, setPhoneNumber] = useState(null);
     const [pinCode, setPinCode] = useState("");
     const [isFocus, setIsFocus] = useState(false);
@@ -33,8 +39,13 @@ const DriverLoginScreen = () => {
     }, [codes]);
 
     const validateNumber = () => {
-        const phoneNumber = (phoneNumber || "").replace(/[^\d/]/g, "");
-        if (phoneNumber.length < 12) return "Invalid phone number";
+        const phoneNum = (phoneNumber || "").replace(/[^\d/]/g, "");
+        if (phoneNum.length < 10) return "Invalid phone number";
+    };
+
+    const handleClear = () => {
+        setPhoneNumber("");
+        setPinCode("");
     };
 
     const handleSubmit = () => {
@@ -42,8 +53,37 @@ const DriverLoginScreen = () => {
         if (error) {
             return setErrorMessage(error);
         }
-        // do something
-        navigation.navigate("DriverInfoInput");
+        const fullNumber = "+" + countryCode?.countryCallingCode + (phoneNumber || "").replace(/[^\d/]/g, "");
+        const NoDriverFound =
+            "No driver found!\nPlease contact the affiliated Rent A Car owner to register as a driver and receive your login PIN.";
+        const pinCodeRef = ref(dbRealtime, "Rent A Car/" + user.uid + "/Drivers");
+        get(pinCodeRef)
+            .then((snapshot) => {
+                const data = snapshot.val();
+                if (!data) setErrorMessage(NoDriverFound);
+                let driverFound = false;
+                let pinCodeFound = false;
+                let phoneNumberFound = false;
+                for (let key in data) {
+                    if (key === pinCode) {
+                        pinCodeFound = true;
+                        if (data[key].phoneNumber === fullNumber) {
+                            phoneNumberFound = true;
+                            driverFound = true;
+                            console.log("key: ", key);
+                            setTimeout(() => {
+                                navigation.navigate("DriverInfoInput", { driverPIN: key });
+                            }, 100);
+                            handleClear();
+                            break;
+                        }
+                    }
+                }
+                if (!driverFound) setErrorMessage(NoDriverFound);
+                if (driverFound && !pinCodeFound) setErrorMessage("Invalid PIN Code!");
+                if (driverFound && pinCodeFound && !phoneNumberFound) setErrorMessage("Invalid Phone Number!");
+            })
+            .catch((error) => setErrorMessage(error.message));
     };
 
     const handleChangeText = (input) => {
@@ -143,12 +183,12 @@ const DriverLoginScreen = () => {
 
                 <ClearableInput
                     label="PIN Code"
-                    placeholder="xxxx"
+                    placeholder="XXXX"
                     value={pinCode}
                     setValue={setPinCode}
-                    hideInput={true}
-                    KeyboardType="number-pad"
-                    textContentType="password"
+                    hideInput={false}
+                    maxLength={4}
+                    KeyboardType={"numeric"}
                 />
                 {errorMessage && <ErrorMessage errorMessage={errorMessage} />}
 

@@ -43,20 +43,6 @@ const DisplayDriversScreen = ({ navigation }) => {
         });
     }, [user.uid]);
 
-    // const generateDriversData = () => {
-    //     const drivers = [];
-    //     const dstatus = ["online", "offline", "booked"];
-    //     for (let i = 0; i < 10; i++) {
-    //         const firstName = faker.person.firstName("male");
-    //         const lastName = faker.person.lastName("male");
-    //         const phoneNumber = faker.phone.number("+92 ### ### ####");
-    //         const cnic = faker.phone.number("####-#######-#");
-    //         const status = dstatus[random(0, 2)];
-    //         drivers.push({ id: i, firstName, lastName, phoneNumber, cnic, status });
-    //     }
-    //     return drivers;
-    // };
-
     const renderDriversDetail = ({ item }) => {
         return <DriverDetailCard data={item} />;
     };

@@ -72,7 +72,7 @@ const DriverDetailScreen = ({ route, navigation }) => {
                 </View>
                 <View style={styles.driverInfoTextContainer}>
                     <FontAwesome name="id-card-o" size={27} color="#333" />
-                    <Text style={styles.driverInfoText}>CNIC: {data?.cnic}</Text>
+                    <Text style={styles.driverInfoText}>CNIC: {data?.CNIC}</Text>
                 </View>
             </View>
             <View style={styles.buttonContainer}>
