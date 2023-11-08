@@ -8,8 +8,8 @@ import { useSelector } from "react-redux";
 const countryCodes = require("country-codes-list");
 import SmsAndroid from "react-native-get-sms-android";
 
-import { dbRealtime } from "../../../../firebase/config";
 import KeyboardAvoidingWrapper from "../../../../components/KeyboardAvoidingWrapper";
+import { dbRealtime } from "../../../../firebase/config";
 import { selectUser } from "../../../../store/slices/userSlice";
 import InputField from "../../../../components/InputField";
 import ErrorMessage from "../../../../components/ErrorMessage";
@@ -125,28 +125,27 @@ const AddDriver = ({ navigation }) => {
             pinCode: pin,
         })
             .then(async () => {
-                console.log("Driver added to DB");
                 const hasSMSPermission = await requestSMSPermission();
                 if (hasSMSPermission) {
                     // Send the pin code to the driver via SMS:
                     SmsAndroid.autoSend(
                         fullNumber,
-                        `Your PIN is ${pinCode}. Please use this PIN to login to the app.`,
+                        `Your PIN is ${pin}. Please use this PIN to login to the app.`,
+                        (fail) => {
+                            console.log("Failed with this error: " + fail);
+                        },
                         (success) => {
                             ToastAndroid.show(
                                 "The driver has been sent a login PIN to the provided phone number.",
                                 ToastAndroid.SHORT,
                             );
-                            console.log("SMS status: ", success.status);
-                        },
-                        (fail) => {
-                            console.log("Failed with this error: " + fail);
+                            console.log("SMS status: ", success);
                         },
                     );
                 }
             })
             .catch((error) => {
-                console.log("Error: ", error);
+                console.log("Error adding driver to DB: ", error);
             });
     };
 
@@ -156,7 +155,6 @@ const AddDriver = ({ navigation }) => {
             return setErrorMessage(error);
         }
         AddDriverToDB();
-        ToastAndroid.show("The driver has been sent a login PIN to the provided phone number.", ToastAndroid.SHORT);
         setPhoneNumber("");
         setTimeout(() => {
             navigation.goBack();

@@ -1,7 +1,8 @@
 import { useLayoutEffect, useState } from "react";
-import { StyleSheet, View, Text, TextInput } from "react-native";
-import { Button } from "react-native-elements";
+import { StyleSheet } from "react-native";
 
+import KeyboardAvoidingWrapper from "../../../components/KeyboardAvoidingWrapper";
+import { SafeAreaView } from "react-native-safe-area-context";
 import { useFirebase } from "../../../contexts/FirebaseContext";
 import ClearableInput from "../../../components/ClearableInput";
 import ErrorMessage from "../../../components/ErrorMessage";
@@ -58,8 +59,8 @@ const ChangePasswordScreen = ({ navigation }) => {
     };
 
     return (
-        <View style={styles.main}>
-            <View style={styles.container}>
+        <KeyboardAvoidingWrapper style={styles.main}>
+            <SafeAreaView style={styles.container}>
                 <ClearableInput
                     label={"Old Password"}
                     placeholder={"Enter Old Password"}
@@ -98,8 +99,8 @@ const ChangePasswordScreen = ({ navigation }) => {
                     fontSize={16}
                     disabled={!oldPassword && !newPassword && !confirmNewPassword}
                 />
-            </View>
-        </View>
+            </SafeAreaView>
+        </KeyboardAvoidingWrapper>
     );
 };
 

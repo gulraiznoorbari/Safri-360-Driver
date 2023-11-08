@@ -49,7 +49,7 @@ const ClearableInput = ({
             rightIcon={
                 value.length > 0 && focused ? (
                     <TouchableOpacity onPress={handleClear}>
-                        <Ionicons name="close-circle" size={22} color="gray" />
+                        <Ionicons name="close-circle" size={23} color="gray" />
                     </TouchableOpacity>
                 ) : null
             }
@@ -82,7 +82,7 @@ const styles = StyleSheet.create({
         shadowRadius: 10,
     },
     inputText: {
-        fontSize: 15,
+        fontSize: 16,
         fontWeight: "400",
         fontFamily: "SatoshiMedium",
     },

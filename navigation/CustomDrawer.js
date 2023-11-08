@@ -50,7 +50,7 @@ const CustomDrawer = (props) => {
 
     const handleSignOut = () => {
         logout();
-        navigation.navigate("Login");
+        navigation.navigate("WelcomeScreen");
     };
 
     return (

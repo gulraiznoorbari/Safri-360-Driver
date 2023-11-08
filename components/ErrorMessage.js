@@ -13,6 +13,7 @@ const styles = StyleSheet.create({
         color: "red",
         fontSize: 14,
         fontWeight: "500",
+        fontFamily: "SatoshiBold",
     },
 });
 
