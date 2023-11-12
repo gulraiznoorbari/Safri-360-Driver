@@ -24,12 +24,12 @@ const DriverDetailCard = ({ data }) => {
     return (
         <TouchableOpacity onPress={() => navigation.navigate("DriverDetailScreen", { data: data })}>
             <View style={styles.container}>
-                {data.firstName === null && data.lastName === null && data.CNIC === null ? (
+                {data.firstName == null && data.lastName == null && data.CNIC == null ? null : (
                     <View style={styles.infoContainer}>
                         <Ionicons name="person-outline" size={27} color="#333" style={styles.icon} />
                         <Text style={styles.driverInfoText}>{data?.firstName + " " + data?.lastName}</Text>
                     </View>
-                ) : null}
+                )}
                 <View style={styles.infoContainer}>
                     <FontAwesome name="drivers-license-o" size={20} color="#333" style={styles.icon} />
                     <Text style={styles.driverInfoText}>{data?.phoneNumber}</Text>

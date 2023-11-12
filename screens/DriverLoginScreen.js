@@ -59,7 +59,7 @@ const DriverLoginScreen = ({ navigation }) => {
         const NoDriverFound =
             "No driver found!\nPlease contact the affiliated Rent A Car owner to register as a driver and receive your login PIN.";
         console.log("user.uid: ", user.uid);
-        const pinCodeRef = ref(dbRealtime, "Rent A Car/" + user.uid + "/Drivers");
+        const pinCodeRef = ref(dbRealtime, "/Drivers");
         get(pinCodeRef)
             .then((snapshot) => {
                 const data = snapshot.val();

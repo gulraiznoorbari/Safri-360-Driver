@@ -76,11 +76,9 @@ const App = () => {
                             <StatusBar barStyle="default" animated={true} />
                             <Stack.Navigator
                                 initialRouteName={
-                                    auth.currentUser === null && userType === null
-                                        ? "WelcomeScreen"
-                                        : userType === "RentACar"
+                                    auth.currentUser !== null && userType === "RentACar"
                                         ? "Home"
-                                        : userType === "Driver"
+                                        : auth.currentUser !== null && userType === "Driver"
                                         ? "DriverLogin"
                                         : "WelcomeScreen"
                                 }

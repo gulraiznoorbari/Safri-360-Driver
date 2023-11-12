@@ -60,7 +60,7 @@ const DriverInfoInputScreen = ({ navigation }) => {
         if (error) {
             return setErrorMessage(error);
         }
-        const driverRef = ref(dbRealtime, "Rent A Car/" + user.uid + "/Drivers/" + driverPIN);
+        const driverRef = ref(dbRealtime, "Drivers/" + driverPIN);
         update(driverRef, {
             CNIC: cnic,
             firstName: firstName,

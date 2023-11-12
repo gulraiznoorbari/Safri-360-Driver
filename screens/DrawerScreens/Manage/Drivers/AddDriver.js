@@ -115,11 +115,12 @@ const AddDriver = ({ navigation }) => {
 
     const AddDriverToDB = () => {
         const pin = generateRandomPIN();
-        const driverRef = ref(dbRealtime, "Rent A Car/" + user.uid + "/Drivers/" + pin);
+        const driverRef = ref(dbRealtime, "Drivers/" + pin);
         const fullNumber = "+" + countryCode?.countryCallingCode + (phoneNumber || "").replace(/[^\d/]/g, "");
         set(driverRef, {
             phoneNumber: fullNumber,
             pinCode: pin,
+            RentACarUID: user.uid,
             status: "offline",
         })
             .then(async () => {
