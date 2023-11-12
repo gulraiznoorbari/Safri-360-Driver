@@ -1,10 +1,12 @@
 import { useEffect, useState } from "react";
-import { View, StyleSheet, Text } from "react-native";
+import { View, StyleSheet, Text, BackHandler } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Link } from "@react-navigation/native";
+import { useDispatch } from "react-redux";
 
 import KeyboardAvoidingWrapper from "../components/KeyboardAvoidingWrapper";
 import { useFirebase } from "../contexts/FirebaseContext";
+import { setUserType } from "../store/slices/userSlice";
 import ClearableInput from "../components/ClearableInput";
 import ErrorMessage from "../components/ErrorMessage";
 import PrimaryButton from "../components/Buttons/PrimaryButton";
@@ -17,6 +19,7 @@ const LoginScreen = ({ navigation }) => {
     const [passwordErrMessage, setPasswordErrMessage] = useState("");
 
     const { signIn } = useFirebase();
+    const dispatch = useDispatch();
 
     useEffect(() => {
         const unsubscribe = navigation.addListener("focus", () => {
@@ -24,6 +27,13 @@ const LoginScreen = ({ navigation }) => {
         });
         return unsubscribe;
     }, [navigation]);
+
+    useEffect(() => {
+        BackHandler.addEventListener("hardwareBackPress", restrictGoingBack);
+        return () => {
+            BackHandler.removeEventListener("hardwareBackPress", restrictGoingBack);
+        };
+    }, []);
 
     const resetInputFields = () => {
         setEmail("");
@@ -62,6 +72,11 @@ const LoginScreen = ({ navigation }) => {
             };
             signIn(email, password, onSuccess, onError);
         }
+    };
+
+    const restrictGoingBack = () => {
+        dispatch(setUserType(null));
+        return true;
     };
 
     return (

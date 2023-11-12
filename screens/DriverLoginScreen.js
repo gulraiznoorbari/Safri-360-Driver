@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from "react";
-import { StyleSheet, Text, View } from "react-native";
+import { StyleSheet, Text, View, BackHandler } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Icon } from "react-native-elements";
 import { Dropdown } from "react-native-element-dropdown";
@@ -9,7 +9,7 @@ import { useSelector, useDispatch } from "react-redux";
 
 import KeyboardAvoidingWrapper from "../components/KeyboardAvoidingWrapper";
 import { dbRealtime } from "../firebase/config";
-import { selectUser } from "../store/slices/userSlice";
+import { selectUser, setUserType } from "../store/slices/userSlice";
 import { setDriver } from "../store/slices/driverSlice";
 import ClearableInput from "../components/ClearableInput";
 import InputField from "../components/InputField";
@@ -32,6 +32,10 @@ const DriverLoginScreen = ({ navigation }) => {
 
     useEffect(() => {
         setCodes(countryCodes.all().sort((a, b) => a.countryNameEn.localeCompare(b.countryNameEn)));
+        BackHandler.addEventListener("hardwareBackPress", restrictGoingBack);
+        return () => {
+            BackHandler.removeEventListener("hardwareBackPress", restrictGoingBack);
+        };
     }, []);
 
     useEffect(() => {
@@ -48,6 +52,11 @@ const DriverLoginScreen = ({ navigation }) => {
     const handleClear = () => {
         setPhoneNumber("");
         setPinCode("");
+    };
+
+    const restrictGoingBack = () => {
+        dispatch(setUserType(null));
+        return true;
     };
 
     const handleSubmit = () => {

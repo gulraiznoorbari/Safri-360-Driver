@@ -26,19 +26,10 @@ const PhoneRegisterScreen = ({ navigation }) => {
 
     useEffect(() => {
         setCodes(countryCodes.all().sort((a, b) => a.countryNameEn.localeCompare(b.countryNameEn)));
-        const backAction = () => {
-            Alert.alert("Hold on!", "Are you sure you want to go back?", [
-                {
-                    text: "Cancel",
-                    onPress: () => null,
-                    style: "cancel",
-                },
-                { text: "YES", onPress: () => BackHandler.exitApp() },
-            ]);
-            return true;
+        BackHandler.addEventListener("hardwareBackPress", restrictGoingBack);
+        return () => {
+            BackHandler.removeEventListener("hardwareBackPress", restrictGoingBack);
         };
-        const backHandler = BackHandler.addEventListener("hardwareBackPress", backAction);
-        return () => backHandler.remove();
     }, []);
 
     useEffect(() => {
@@ -104,6 +95,18 @@ const PhoneRegisterScreen = ({ navigation }) => {
                 <Text style={styles.dropDownCallingCode}>+{item?.countryCallingCode}</Text>
             </View>
         ) : null;
+
+    const restrictGoingBack = () => {
+        Alert.alert("Hold on!", "Are you sure you want to go back?", [
+            {
+                text: "Cancel",
+                onPress: () => null,
+                style: "cancel",
+            },
+            { text: "YES", onPress: () => BackHandler.exitApp() },
+        ]);
+        return true;
+    };
 
     return (
         <KeyboardAvoidingWrapper>

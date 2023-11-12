@@ -4,7 +4,7 @@ import { useDispatch } from "react-redux";
 import { setUserType } from "../store/slices/userSlice";
 import PrimaryButton from "../components/Buttons/PrimaryButton";
 
-const WelcomeScreen = ({ navigation }) => {
+const WelcomeScreen = () => {
     const dispatch = useDispatch();
 
     return (
@@ -20,7 +20,6 @@ const WelcomeScreen = ({ navigation }) => {
                     text="Rent A Car Owner"
                     action={() => {
                         dispatch(setUserType("RentACarOwner"));
-                        navigation.navigate("Login");
                     }}
                     disabled={false}
                     buttonStyle={{
@@ -33,7 +32,6 @@ const WelcomeScreen = ({ navigation }) => {
                     text="Driver"
                     action={() => {
                         dispatch(setUserType("Driver"));
-                        navigation.navigate("DriverLogin");
                     }}
                     disabled={false}
                     buttonStyle={{
