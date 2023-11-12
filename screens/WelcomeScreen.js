@@ -1,8 +1,12 @@
 import { StyleSheet, Text, View } from "react-native";
+import { useDispatch } from "react-redux";
 
+import { setUserType } from "../store/slices/userSlice";
 import PrimaryButton from "../components/Buttons/PrimaryButton";
 
 const WelcomeScreen = ({ navigation }) => {
+    const dispatch = useDispatch();
+
     return (
         <View style={styles.container}>
             <View style={styles.mainHeadingContainer}>
@@ -15,6 +19,7 @@ const WelcomeScreen = ({ navigation }) => {
                 <PrimaryButton
                     text="Rent A Car Owner"
                     action={() => {
+                        dispatch(setUserType("RentACarOwner"));
                         navigation.navigate("Login");
                     }}
                     disabled={false}
@@ -27,6 +32,7 @@ const WelcomeScreen = ({ navigation }) => {
                 <PrimaryButton
                     text="Driver"
                     action={() => {
+                        dispatch(setUserType("Driver"));
                         navigation.navigate("DriverLogin");
                     }}
                     disabled={false}

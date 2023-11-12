@@ -15,7 +15,7 @@ import {
 import { useDispatch } from "react-redux";
 
 import { auth } from "../firebase/config";
-import { setUser } from "../store/slices/userSlice";
+import { setUser, setUserType } from "../store/slices/userSlice";
 
 const FirebaseContext = createContext();
 
@@ -146,6 +146,7 @@ export function FirebaseProvider({ children }) {
         signOut(auth)
             .then(() => {
                 dispatch(setUser({ isLoggedIn: false }));
+                dispatch(setUserType(null));
                 console.log("User logged out successfully!");
             })
             .catch((error) => {

@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { StyleSheet, Text, View } from "react-native";
+import { BackHandler, StyleSheet, Text, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { ref, update } from "firebase/database";
 import { useDispatch, useSelector } from "react-redux";
@@ -7,22 +7,28 @@ import { useDispatch, useSelector } from "react-redux";
 import KeyboardAvoidingWrapper from "../components/KeyboardAvoidingWrapper";
 import { dbRealtime } from "../firebase/config";
 import { selectUser } from "../store/slices/userSlice";
+import { setDriver, selectDriver } from "../store/slices/driverSlice";
 import ClearableInput from "../components/ClearableInput";
 import PrimaryButton from "../components/Buttons/PrimaryButton";
 import ErrorMessage from "../components/ErrorMessage";
 
-const DriverInfoInputScreen = ({ navigation, route }) => {
-    const { driverPIN } = route.params;
+const DriverInfoInputScreen = ({ navigation }) => {
     const user = useSelector(selectUser);
+    const driver = useSelector(selectDriver);
     const dispatch = useDispatch();
 
     const [firstName, setFirstName] = useState("");
     const [lastName, setLastName] = useState("");
     const [cnic, setCNIC] = useState("");
     const [errorMessage, setErrorMessage] = useState("");
+    const driverPIN = driver.pinCode;
 
     useEffect(() => {
         setErrorMessage("");
+        BackHandler.addEventListener("hardwareBackPress", restrictGoingBack);
+        return () => {
+            BackHandler.removeEventListener("hardwareBackPress", restrictGoingBack);
+        };
     }, []);
 
     const handleChangeText = (input) => {
@@ -61,6 +67,7 @@ const DriverInfoInputScreen = ({ navigation, route }) => {
             lastName: lastName,
         })
             .then(() => {
+                dispatch(setDriver({ CNIC: cnic, firstName: firstName, lastName: lastName }));
                 console.log("Driver Info Saved");
                 navigation.navigate("DriverHomeScreen");
                 handleClear();
@@ -68,6 +75,18 @@ const DriverInfoInputScreen = ({ navigation, route }) => {
             .catch((error) => {
                 setErrorMessage("ERROR: ", error.message);
             });
+    };
+
+    const restrictGoingBack = () => {
+        Alert.alert("Hold on!", "Are you sure you want to exit the app?", [
+            {
+                text: "Cancel",
+                onPress: () => null,
+                style: "cancel",
+            },
+            { text: "YES", onPress: () => BackHandler.exitApp() },
+        ]);
+        return true;
     };
 
     return (

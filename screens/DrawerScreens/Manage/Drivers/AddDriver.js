@@ -19,7 +19,6 @@ const AddDriver = ({ navigation }) => {
     const user = useSelector(selectUser);
 
     const [phoneNumber, setPhoneNumber] = useState(null);
-    const [pinCode, setPinCode] = useState("");
     const [isFocus, setIsFocus] = useState(false);
     const [codes, setCodes] = useState([]);
     const [countryCode, setCountryCode] = useState(null);
@@ -111,8 +110,6 @@ const AddDriver = ({ navigation }) => {
         for (let i = 0; i < length; i++) {
             pin += Math.floor(Math.random() * 10);
         }
-        console.log("PIN: ", pin);
-        setPinCode(pin);
         return pin;
     };
 
@@ -123,6 +120,7 @@ const AddDriver = ({ navigation }) => {
         set(driverRef, {
             phoneNumber: fullNumber,
             pinCode: pin,
+            status: "offline",
         })
             .then(async () => {
                 const hasSMSPermission = await requestSMSPermission();

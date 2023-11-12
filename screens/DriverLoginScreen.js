@@ -4,18 +4,20 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import { Icon } from "react-native-elements";
 import { Dropdown } from "react-native-element-dropdown";
 const countryCodes = require("country-codes-list");
-import { get, ref, set } from "firebase/database";
-import { useSelector } from "react-redux";
+import { get, ref } from "firebase/database";
+import { useSelector, useDispatch } from "react-redux";
 
 import KeyboardAvoidingWrapper from "../components/KeyboardAvoidingWrapper";
 import { dbRealtime } from "../firebase/config";
 import { selectUser } from "../store/slices/userSlice";
+import { setDriver } from "../store/slices/driverSlice";
 import ClearableInput from "../components/ClearableInput";
 import InputField from "../components/InputField";
 import ErrorMessage from "../components/ErrorMessage";
 import PrimaryButton from "../components/Buttons/PrimaryButton";
 
 const DriverLoginScreen = ({ navigation }) => {
+    const dispatch = useDispatch();
     const user = useSelector(selectUser);
 
     const [phoneNumber, setPhoneNumber] = useState(null);
@@ -56,6 +58,7 @@ const DriverLoginScreen = ({ navigation }) => {
         const fullNumber = "+" + countryCode?.countryCallingCode + (phoneNumber || "").replace(/[^\d/]/g, "");
         const NoDriverFound =
             "No driver found!\nPlease contact the affiliated Rent A Car owner to register as a driver and receive your login PIN.";
+        console.log("user.uid: ", user.uid);
         const pinCodeRef = ref(dbRealtime, "Rent A Car/" + user.uid + "/Drivers");
         get(pinCodeRef)
             .then((snapshot) => {
@@ -68,11 +71,12 @@ const DriverLoginScreen = ({ navigation }) => {
                     if (key === pinCode) {
                         pinCodeFound = true;
                         if (data[key].phoneNumber === fullNumber) {
+                            dispatch(setDriver({ phoneNumber: fullNumber, pinCode: pinCode }));
                             phoneNumberFound = true;
                             driverFound = true;
                             console.log("key: ", key);
                             setTimeout(() => {
-                                navigation.navigate("DriverInfoInput", { driverPIN: key });
+                                navigation.navigate("DriverHomeScreen");
                             }, 100);
                             handleClear();
                             break;

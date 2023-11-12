@@ -62,18 +62,22 @@ const DriverDetailScreen = ({ route, navigation }) => {
                         <Ionicons name="trash-outline" size={25} color="red" />
                     </TouchableOpacity>
                 </View>
-                <View style={styles.driverInfoTextContainer}>
-                    <Ionicons name="person-circle-outline" size={30} color="#000" />
-                    <Text style={styles.driverInfoText}>Name: {data?.firstName + " " + data?.lastName}</Text>
-                </View>
+                {data.firstName == null && data.lastName == null ? null : (
+                    <View style={styles.driverInfoTextContainer}>
+                        <Ionicons name="person-circle-outline" size={30} color="#000" />
+                        <Text style={styles.driverInfoText}>Name: {data?.firstName + " " + data?.lastName}</Text>
+                    </View>
+                )}
                 <View style={styles.driverInfoTextContainer}>
                     <Ionicons name="call-outline" size={30} color="#333" />
                     <Text style={styles.driverInfoText}>Phone: {data?.phoneNumber}</Text>
                 </View>
-                <View style={styles.driverInfoTextContainer}>
-                    <FontAwesome name="id-card-o" size={27} color="#333" />
-                    <Text style={styles.driverInfoText}>CNIC: {data?.CNIC}</Text>
-                </View>
+                {data.CNIC == null ? null : (
+                    <View style={styles.driverInfoTextContainer}>
+                        <FontAwesome name="id-card-o" size={27} color="#333" />
+                        <Text style={styles.driverInfoText}>CNIC: {data?.CNIC}</Text>
+                    </View>
+                )}
             </View>
             <View style={styles.buttonContainer}>
                 <Button

@@ -44,7 +44,6 @@ const AddCar = ({ navigation, route }) => {
             year: carYear,
             registrationNumber: carRegistrationNumber,
             color: carColor,
-            status: "Idle",
         })
             .then(() => {
                 console.log("Car updated in DB");
