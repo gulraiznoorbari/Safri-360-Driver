@@ -116,14 +116,15 @@ const AddDriver = ({ navigation }) => {
     const AddDriverToDB = () => {
         const pin = generateRandomPIN();
         const driverRef = ref(dbRealtime, "Drivers/" + pin);
+        const rentACarRef = ref(dbRealtime, "RentACars/" + user.uid + "/Drivers");
         const fullNumber = "+" + countryCode?.countryCallingCode + (phoneNumber || "").replace(/[^\d/]/g, "");
         set(driverRef, {
             phoneNumber: fullNumber,
-            pinCode: pin,
             RentACarUID: user.uid,
             status: "offline",
         })
             .then(async () => {
+                set(rentACarRef, { pinCode: pin });
                 const hasSMSPermission = await requestSMSPermission();
                 if (hasSMSPermission) {
                     // Send the pin code to the driver via SMS:
