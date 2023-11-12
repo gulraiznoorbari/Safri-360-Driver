@@ -19,7 +19,7 @@ const driverSlice = createSlice({
             state.driver = { ...state.driver, ...action.payload };
         },
         resetDriver: (state) => {
-            state.driver = initialState;
+            state.driver = initialState.driver;
         },
     },
 });
