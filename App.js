@@ -41,9 +41,9 @@ navigator.geolocation = require("react-native-geolocation-service");
 
 const App = () => {
     const [loading, setLoading] = useState(true);
-    const navigationRef = createRef();
-
     const userType = useSelector(selectUserType);
+
+    const navigationRef = createRef();
     useReduxDevToolsExtension(navigationRef);
 
     useEffect(() => {
@@ -72,45 +72,69 @@ const App = () => {
             <FirebaseProvider>
                 <FontLoader>
                     <SafeAreaProvider>
-                        <NavigationContainer ref={() => navigationRef}>
-                            <StatusBar barStyle="default" animated={true} />
-                            <Stack.Navigator
-                                initialRouteName={
-                                    auth.currentUser !== null && userType === "RentACar"
-                                        ? "Home"
-                                        : auth.currentUser !== null && userType === "Driver"
-                                        ? "DriverLogin"
-                                        : "WelcomeScreen"
-                                }
-                                screenOptions={{ headerShown: false, animationEnabled: false }}
-                            >
-                                <Stack.Screen name="HomeScreen" component={DrawerNavigation} />
-                                <Stack.Screen name="WelcomeScreen" component={WelcomeScreen} />
-                                <Stack.Screen name="Login" component={LoginScreen} />
-                                <Stack.Screen name="SignUp" component={SignUpScreen} />
-                                <Stack.Screen name="DriverLogin" component={DriverLoginScreen} />
-                                <Stack.Screen name="DriverInfoInput" component={DriverInfoInputScreen} />
-                                <Stack.Screen name="PasswordReset" component={PasswordResetScreen} />
-                                <Stack.Screen name="PhoneRegisterScreen" component={PhoneRegisterScreen} />
-                                <Stack.Screen name="OTPVerificationScreen" component={OTPVerificationScreen} />
-                                <Stack.Screen name="TripHistoryDetailScreen" component={TripHistoryDetailScreen} />
-                                <Stack.Screen name="ChangePasswordScreen" component={ChangePasswordScreen} />
-                                <Stack.Screen name="EditProfileScreen" component={EditProfileScreen} />
-                                <Stack.Screen name="ChangePhoneNumberScreen" component={ChangePhoneNumberScreen} />
-                                <Stack.Screen name="DisplayCarsScreen" component={DisplayCarsScreen} />
-                                <Stack.Screen name="DisplayDriversScreen" component={DisplayDriversScreen} />
-                                <Stack.Screen name="AddCarScreen" component={AddCar} />
-                                <Stack.Screen name="AddDriverScreen" component={AddDriver} />
-                                <Stack.Screen name="EditCarScreen" component={EditCarScreen} />
-                                <Stack.Screen name="CarsDetailScreen" component={CarsDetailScreen} />
-                                <Stack.Screen name="DriverDetailScreen" component={DriverDetailScreen} />
-                                <Stack.Screen name="DriverHomeScreen" component={DriverHomeScreen} />
-                            </Stack.Navigator>
-                        </NavigationContainer>
+                        <StatusBar barStyle="default" animated={true} />
+                        {userType === "RentACarOwner" ? (
+                            <RentACarOwnerScreens />
+                        ) : userType === "Driver" ? (
+                            <DriverScreens />
+                        ) : (
+                            <NavigationContainer ref={() => navigationRef}>
+                                <Stack.Navigator
+                                    initialRouteName="WelcomeScreen"
+                                    screenOptions={{ headerShown: false, animationEnabled: false }}
+                                >
+                                    <Stack.Screen name="WelcomeScreen" component={WelcomeScreen} />
+                                </Stack.Navigator>
+                            </NavigationContainer>
+                        )}
                     </SafeAreaProvider>
                 </FontLoader>
             </FirebaseProvider>
         </GestureHandlerRootView>
+    );
+};
+
+const RentACarOwnerScreens = () => {
+    return (
+        <NavigationContainer>
+            <Stack.Navigator
+                initialRouteName={auth.currentUser !== null ? "Home" : "Login"}
+                screenOptions={{ headerShown: false, animationEnabled: false }}
+            >
+                <Stack.Screen name="HomeScreen" component={DrawerNavigation} />
+                <Stack.Screen name="Login" component={LoginScreen} />
+                <Stack.Screen name="SignUp" component={SignUpScreen} />
+                <Stack.Screen name="PasswordReset" component={PasswordResetScreen} />
+                <Stack.Screen name="PhoneRegisterScreen" component={PhoneRegisterScreen} />
+                <Stack.Screen name="OTPVerificationScreen" component={OTPVerificationScreen} />
+                <Stack.Screen name="TripHistoryDetailScreen" component={TripHistoryDetailScreen} />
+                <Stack.Screen name="ChangePasswordScreen" component={ChangePasswordScreen} />
+                <Stack.Screen name="EditProfileScreen" component={EditProfileScreen} />
+                <Stack.Screen name="ChangePhoneNumberScreen" component={ChangePhoneNumberScreen} />
+                <Stack.Screen name="DisplayCarsScreen" component={DisplayCarsScreen} />
+                <Stack.Screen name="DisplayDriversScreen" component={DisplayDriversScreen} />
+                <Stack.Screen name="AddCarScreen" component={AddCar} />
+                <Stack.Screen name="AddDriverScreen" component={AddDriver} />
+                <Stack.Screen name="EditCarScreen" component={EditCarScreen} />
+                <Stack.Screen name="CarsDetailScreen" component={CarsDetailScreen} />
+                <Stack.Screen name="DriverDetailScreen" component={DriverDetailScreen} />
+            </Stack.Navigator>
+        </NavigationContainer>
+    );
+};
+
+const DriverScreens = () => {
+    return (
+        <NavigationContainer>
+            <Stack.Navigator
+                initialRouteName={"DriverLogin"}
+                screenOptions={{ headerShown: false, animationEnabled: false }}
+            >
+                <Stack.Screen name="DriverLogin" component={DriverLoginScreen} />
+                <Stack.Screen name="DriverInfoInput" component={DriverInfoInputScreen} />
+                <Stack.Screen name="DriverHomeScreen" component={DriverHomeScreen} />
+            </Stack.Navigator>
+        </NavigationContainer>
     );
 };
 
