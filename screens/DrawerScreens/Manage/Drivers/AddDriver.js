@@ -116,7 +116,7 @@ const AddDriver = ({ navigation }) => {
     const AddDriverToDB = () => {
         const pin = generateRandomPIN();
         const driverRef = ref(dbRealtime, "Drivers/" + pin);
-        const rentACarRef = ref(dbRealtime, "RentACars/" + user.uid + "/Drivers");
+        const rentACarRef = ref(dbRealtime, "Rent A Car/" + user.uid + "/Drivers");
         const fullNumber = "+" + countryCode?.countryCallingCode + (phoneNumber || "").replace(/[^\d/]/g, "");
         set(driverRef, {
             phoneNumber: fullNumber,
