@@ -111,7 +111,7 @@ const LoginScreen = ({ navigation }) => {
                 <Link to="/PasswordReset" style={styles.linkTextContainer}>
                     <Text style={styles.linkText}>Forgot Password?</Text>
                 </Link>
-                <PrimaryButton text={"Sign in"} action={() => handleLogin()} disabled={!email && !password} />
+                <PrimaryButton text={"Sign in"} action={() => handleLogin()} disabled={!(email && password)} />
                 <TransparentButton text="Create new account" navigation={navigation} navigateTo={"SignUp"} />
             </SafeAreaView>
         </KeyboardAvoidingWrapper>

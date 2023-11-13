@@ -221,7 +221,7 @@ const SignUpScreen = ({ navigation }) => {
                 <PrimaryButton
                     text={"Continue"}
                     action={() => handleSignup()}
-                    disabled={!firstName && !email && !password && !confirmPassword}
+                    disabled={!(firstName && email && password && confirmPassword)}
                 />
                 <TransparentButton text="Already have an account" navigation={navigation} navigateTo={"Login"} />
             </SafeAreaView>

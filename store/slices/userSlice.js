@@ -13,7 +13,6 @@ const initialState = {
         phoneNumberVerified: false,
         isLoggedIn: false,
         lastLoginAt: null,
-        isOnline: false,
     },
 };
 

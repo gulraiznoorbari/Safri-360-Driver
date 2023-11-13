@@ -47,8 +47,8 @@ const ClearableInput = ({
             containerStyle={styles.containerStyle}
             labelStyle={styles.label}
             rightIcon={
-                value.length > 0 && focused ? (
-                    <TouchableOpacity onPress={handleClear}>
+                value.length > 0 ? (
+                    <TouchableOpacity onPress={() => handleClear()}>
                         <Ionicons name="close-circle" size={23} color="gray" />
                     </TouchableOpacity>
                 ) : null

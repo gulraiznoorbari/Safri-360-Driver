@@ -8,6 +8,7 @@ const initialState = {
         phoneNumber: null,
         pinCode: null,
         status: null,
+        isOnline: false,
     },
 };
 

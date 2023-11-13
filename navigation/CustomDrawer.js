@@ -2,11 +2,14 @@ import { DEFAULT_PROFILE_IMAGE } from "@env";
 import Ionicons from "react-native-vector-icons/Ionicons";
 import { View, Text, StyleSheet, Image, TouchableOpacity, Share } from "react-native";
 import { DrawerContentScrollView, DrawerItemList } from "@react-navigation/drawer";
+import { useSelector } from "react-redux";
 
 import { useFirebase } from "../contexts/FirebaseContext";
+import { selectUser } from "../store/slices/userSlice";
 
 const CustomDrawer = (props) => {
     const { logout } = useFirebase();
+    const user = useSelector(selectUser);
 
     const onShare = async () => {
         try {
@@ -81,10 +84,10 @@ const styles = StyleSheet.create({
     },
     userName: {
         color: "#fff",
-        fontSize: 18,
-        fontFamily: "SatoshiBlack",
-        fontWeight: "600",
-        marginBottom: 5,
+        fontSize: 20,
+        fontFamily: "SatoshiBold",
+        fontWeight: "500",
+        margin: 5,
     },
     drawerListItems: {
         flex: 1,

@@ -134,7 +134,7 @@ const DriverInfoInputScreen = ({ navigation }) => {
                 <PrimaryButton
                     text={"Next"}
                     action={() => handleSubmit()}
-                    disabled={!firstName && !lastName && !cnic}
+                    disabled={!(firstName && lastName && cnic)}
                 />
             </SafeAreaView>
         </KeyboardAvoidingWrapper>

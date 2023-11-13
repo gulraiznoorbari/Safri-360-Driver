@@ -97,7 +97,7 @@ const ChangePasswordScreen = ({ navigation }) => {
                     text={"Update"}
                     action={() => handleResetPassword()}
                     fontSize={16}
-                    disabled={!oldPassword && !newPassword && !confirmNewPassword}
+                    disabled={!(oldPassword && newPassword && confirmNewPassword)}
                 />
             </SafeAreaView>
         </KeyboardAvoidingWrapper>

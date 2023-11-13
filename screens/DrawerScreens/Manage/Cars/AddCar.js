@@ -139,7 +139,7 @@ const AddCar = ({ navigation }) => {
                 <PrimaryButton
                     text="Add Car"
                     action={() => handleSubmit()}
-                    disabled={!carManufacturer && !carModel && !carYear && !carRegistrationNumber && !carColor}
+                    disabled={!(carManufacturer && carModel && carYear && carRegistrationNumber && carColor)}
                 />
             </SafeAreaView>
         </KeyboardAvoidingWrapper>

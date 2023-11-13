@@ -205,7 +205,7 @@ const DriverLoginScreen = ({ navigation }) => {
                 />
                 {errorMessage && <ErrorMessage errorMessage={errorMessage} />}
 
-                <PrimaryButton text="Login" action={() => handleSubmit()} disabled={!phoneNumber && !pinCode} />
+                <PrimaryButton text="Login" action={() => handleSubmit()} disabled={!(phoneNumber && pinCode)} />
             </SafeAreaView>
         </KeyboardAvoidingWrapper>
     );
