@@ -18,6 +18,7 @@ const AddCar = ({ navigation }) => {
     const [carYear, setCarYear] = useState("");
     const [carRegistrationNumber, setCarRegistrationNumber] = useState("");
     const [carColor, setCarColor] = useState("");
+    const [carAverage, setCarAverage] = useState("");
 
     useLayoutEffect(() => {
         navigation.setOptions({
@@ -43,6 +44,7 @@ const AddCar = ({ navigation }) => {
             year: carYear,
             registrationNumber: carRegistrationNumber,
             color: carColor,
+            average: carAverage,
             status: "Idle",
         })
             .then(() => {
@@ -62,6 +64,7 @@ const AddCar = ({ navigation }) => {
         setCarYear("");
         setCarRegistrationNumber("");
         setCarColor("");
+        setCarAverage("");
     };
 
     const handleSubmit = () => {
@@ -87,7 +90,7 @@ const AddCar = ({ navigation }) => {
             <SafeAreaView style={styles.content}>
                 <ClearableInput
                     label={"Car Manufacturer"}
-                    placeholder={"Enter Car Manufacturer"}
+                    placeholder={"Honda, Toyota, etc."}
                     value={carManufacturer}
                     setValue={setCarManufacturer}
                     hideInput={false}
@@ -96,7 +99,7 @@ const AddCar = ({ navigation }) => {
                 />
                 <ClearableInput
                     label={"Car Model"}
-                    placeholder={"Enter Car Model"}
+                    placeholder={"Civic, Corolla, etc."}
                     value={carModel}
                     setValue={setCarModel}
                     hideInput={false}
@@ -105,7 +108,7 @@ const AddCar = ({ navigation }) => {
                 />
                 <ClearableInput
                     label={"Car Year"}
-                    placeholder={"Enter Car Year"}
+                    placeholder={"XXXX"}
                     maxLength={4}
                     value={carYear}
                     setValue={setCarYear}
@@ -116,7 +119,7 @@ const AddCar = ({ navigation }) => {
                 />
                 <ClearableInput
                     label={"Car Color"}
-                    placeholder={"Enter Car Color"}
+                    placeholder={"White, Black, etc."}
                     maxLength={15}
                     value={carColor}
                     setValue={setCarColor}
@@ -126,7 +129,7 @@ const AddCar = ({ navigation }) => {
                 />
                 <ClearableInput
                     label={"Car Registraion Number"}
-                    placeholder={"Enter Car Registraion Number"}
+                    placeholder={"ABC-1234"}
                     maxLength={8}
                     value={carRegistrationNumber}
                     setValue={setCarRegistrationNumber}
@@ -135,11 +138,24 @@ const AddCar = ({ navigation }) => {
                     autoComplete={"name"}
                     textContentType={"givenName"}
                 />
+                <ClearableInput
+                    label={"Car Average (km/l)"}
+                    placeholder={"5, 10, etc."}
+                    maxLength={2}
+                    value={carAverage}
+                    setValue={setCarAverage}
+                    hideInput={false}
+                    autoComplete={"name"}
+                    KeyboardType={"numeric"}
+                    textContentType={"givenName"}
+                />
 
                 <PrimaryButton
                     text="Add Car"
                     action={() => handleSubmit()}
-                    disabled={!(carManufacturer && carModel && carYear && carRegistrationNumber && carColor)}
+                    disabled={
+                        !(carManufacturer && carModel && carYear && carRegistrationNumber && carColor && carAverage)
+                    }
                 />
             </SafeAreaView>
         </KeyboardAvoidingWrapper>
