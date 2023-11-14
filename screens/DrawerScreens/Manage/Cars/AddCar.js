@@ -90,7 +90,7 @@ const AddCar = ({ navigation }) => {
             <SafeAreaView style={styles.content}>
                 <ClearableInput
                     label={"Car Manufacturer"}
-                    placeholder={"Honda, Toyota, etc."}
+                    placeholder={"Honda, Toyota,..."}
                     value={carManufacturer}
                     setValue={setCarManufacturer}
                     hideInput={false}
@@ -99,7 +99,7 @@ const AddCar = ({ navigation }) => {
                 />
                 <ClearableInput
                     label={"Car Model"}
-                    placeholder={"Civic, Corolla, etc."}
+                    placeholder={"Civic, Corolla,..."}
                     value={carModel}
                     setValue={setCarModel}
                     hideInput={false}
@@ -115,11 +115,10 @@ const AddCar = ({ navigation }) => {
                     hideInput={false}
                     autoComplete={"name"}
                     KeyboardType={"numeric"}
-                    textContentType={"givenName"}
                 />
                 <ClearableInput
                     label={"Car Color"}
-                    placeholder={"White, Black, etc."}
+                    placeholder={"White, Black,..."}
                     maxLength={15}
                     value={carColor}
                     setValue={setCarColor}
@@ -136,18 +135,16 @@ const AddCar = ({ navigation }) => {
                     onChangeCallback={(input) => handleChangeText(input)}
                     hideInput={false}
                     autoComplete={"name"}
-                    textContentType={"givenName"}
                 />
                 <ClearableInput
                     label={"Car Average (km/l)"}
-                    placeholder={"5, 10, etc."}
+                    placeholder={"5, 10,..."}
                     maxLength={2}
                     value={carAverage}
                     setValue={setCarAverage}
                     hideInput={false}
                     autoComplete={"name"}
                     KeyboardType={"numeric"}
-                    textContentType={"givenName"}
                 />
 
                 <PrimaryButton
