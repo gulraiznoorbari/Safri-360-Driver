@@ -84,6 +84,10 @@ const CarsDetailScreen = ({ route, navigation }) => {
                     <Text style={styles.infoText}>Year: {data?.year}</Text>
                 </View>
                 <View style={styles.infoContainer}>
+                    <Ionicons name="speedometer-outline" size={26} color="#333" />
+                    <Text style={styles.infoText}>Average (km/l): {data?.average}</Text>
+                </View>
+                <View style={styles.infoContainer}>
                     <FontAwesome name="drivers-license-o" size={22} color="#333" />
                     <Text style={styles.infoText}>Registration Number: {data?.registrationNumber}</Text>
                 </View>

@@ -127,16 +127,6 @@ const AddCar = ({ navigation }) => {
                     textContentType={"givenName"}
                 />
                 <ClearableInput
-                    label={"Car Registraion Number"}
-                    placeholder={"ABC-1234"}
-                    maxLength={8}
-                    value={carRegistrationNumber}
-                    setValue={setCarRegistrationNumber}
-                    onChangeCallback={(input) => handleChangeText(input)}
-                    hideInput={false}
-                    autoComplete={"name"}
-                />
-                <ClearableInput
                     label={"Car Average (km/l)"}
                     placeholder={"5, 10,..."}
                     maxLength={2}
@@ -145,6 +135,16 @@ const AddCar = ({ navigation }) => {
                     hideInput={false}
                     autoComplete={"name"}
                     KeyboardType={"numeric"}
+                />
+                <ClearableInput
+                    label={"Car Registraion Number"}
+                    placeholder={"ABC-1234"}
+                    maxLength={8}
+                    value={carRegistrationNumber}
+                    setValue={setCarRegistrationNumber}
+                    onChangeCallback={(input) => handleChangeText(input)}
+                    hideInput={false}
+                    autoComplete={"name"}
                 />
 
                 <PrimaryButton

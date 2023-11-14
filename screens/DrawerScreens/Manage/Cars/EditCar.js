@@ -19,6 +19,7 @@ const AddCar = ({ navigation, route }) => {
     const [carYear, setCarYear] = useState(data?.year);
     const [carRegistrationNumber, setCarRegistrationNumber] = useState(data?.registrationNumber);
     const [carColor, setCarColor] = useState(data?.color);
+    const [carAverage, setCarAverage] = useState(data?.average);
 
     useLayoutEffect(() => {
         navigation.setOptions({
@@ -44,6 +45,7 @@ const AddCar = ({ navigation, route }) => {
             year: carYear,
             registrationNumber: carRegistrationNumber,
             color: carColor,
+            average: carAverage,
         })
             .then(() => {
                 console.log("Car updated in DB");
@@ -84,7 +86,6 @@ const AddCar = ({ navigation, route }) => {
                     hideInput={false}
                     autoComplete={"name"}
                     KeyboardType={"numeric"}
-                    textContentType={"givenName"}
                 />
                 <ClearableInput
                     label={"Car Color"}
@@ -94,6 +95,15 @@ const AddCar = ({ navigation, route }) => {
                     hideInput={false}
                     autoComplete={"name"}
                     textContentType={"givenName"}
+                />
+                <ClearableInput
+                    label={"Car Average"}
+                    placeholder={"Enter Car Average"}
+                    value={carAverage}
+                    setValue={setCarAverage}
+                    hideInput={false}
+                    autoComplete={"name"}
+                    KeyboardType={"numeric"}
                 />
                 <ClearableInput
                     label={"Car Registraion Number"}
@@ -108,7 +118,9 @@ const AddCar = ({ navigation, route }) => {
                 <PrimaryButton
                     text="Update Car"
                     action={() => updateCar(data?.registrationNumber)}
-                    disabled={!carManufacturer || !carModel || !carYear || !carRegistrationNumber || !carColor}
+                    disabled={
+                        !carManufacturer || !carModel || !carYear || !carRegistrationNumber || !carColor || !carAverage
+                    }
                 />
             </SafeAreaView>
         </KeyboardAvoidingWrapper>
