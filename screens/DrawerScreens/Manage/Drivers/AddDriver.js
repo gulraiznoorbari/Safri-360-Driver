@@ -3,7 +3,7 @@ import { View, Text, StyleSheet, ToastAndroid, PermissionsAndroid } from "react-
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Dropdown } from "react-native-element-dropdown";
 import { Icon } from "react-native-elements";
-import { ref, set } from "firebase/database";
+import { ref, set, push } from "firebase/database";
 import { useSelector } from "react-redux";
 const countryCodes = require("country-codes-list");
 import SmsAndroid from "react-native-get-sms-android";
@@ -121,10 +121,12 @@ const AddDriver = ({ navigation }) => {
         set(driverRef, {
             phoneNumber: fullNumber,
             RentACarUID: user.uid,
+            pinCode: pin,
             status: "offline",
         })
             .then(async () => {
-                set(rentACarRef, { pinCode: pin });
+                const pinRefKey = push(rentACarRef);
+                set(pinRefKey, { pinCode: pin });
                 const hasSMSPermission = await requestSMSPermission();
                 if (hasSMSPermission) {
                     // Send the pin code to the driver via SMS:

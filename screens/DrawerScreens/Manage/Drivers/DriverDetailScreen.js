@@ -3,7 +3,7 @@ import { Alert, ToastAndroid, StyleSheet, Text, View, TouchableOpacity } from "r
 import { Button } from "react-native-elements";
 import Ionicons from "react-native-vector-icons/Ionicons";
 import FontAwesome from "react-native-vector-icons/FontAwesome";
-import { ref, remove } from "firebase/database";
+import { ref, remove, get } from "firebase/database";
 import { useSelector } from "react-redux";
 
 import { dbRealtime } from "../../../../firebase/config";
@@ -31,12 +31,32 @@ const DriverDetailScreen = ({ route, navigation }) => {
     }, [navigation]);
 
     const deleteDriver = (pinCode) => {
-        const driverRef = ref(dbRealtime, "Rent A Car/" + user.uid + "/Drivers/" + pinCode);
-        remove(driverRef)
+        const mainDriverRef = ref(dbRealtime, "Drivers/" + pinCode);
+        const driverRef = ref(dbRealtime, "Rent A Car/" + user.uid + "/Drivers/");
+        console.log("driverRef: ", driverRef);
+        remove(mainDriverRef)
             .then(() => {
-                console.log("Driver deleted from DB");
-                ToastAndroid.show("Driver Deleted Successfully", ToastAndroid.SHORT);
-                navigation.goBack();
+                get(driverRef).then((snapshot) => {
+                    if (snapshot.exists()) {
+                        console.log("snapshot: ", snapshot.val());
+                        snapshot.forEach((childSnapshot) => {
+                            if (childSnapshot.val().pinCode === pinCode) {
+                                console.log("childSnapshot: ", childSnapshot.val());
+                                remove(ref(dbRealtime, "Rent A Car/" + user.uid + "/Drivers/" + childSnapshot.key))
+                                    .then(() => {
+                                        console.log("Driver deleted from DB");
+                                        ToastAndroid.show("Driver Deleted Successfully", ToastAndroid.SHORT);
+                                        navigation.goBack();
+                                    })
+                                    .catch((error) => {
+                                        console.log("Error deleting driver from DB: ", error);
+                                    });
+                            }
+                        });
+                    } else {
+                        console.log("No data available");
+                    }
+                });
             })
             .catch((error) => {
                 console.log("Error deleting driver from DB: ", error);
