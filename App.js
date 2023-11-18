@@ -29,12 +29,12 @@ import DisplayCarsScreen from "./screens/DrawerScreens/Manage/Cars/DisplayCarsSc
 import CarsDetailScreen from "./screens/DrawerScreens/Manage/Cars/CarsDetailScreen";
 import AddCar from "./screens/DrawerScreens/Manage/Cars/AddCar";
 import EditCarScreen from "./screens/DrawerScreens/Manage/Cars/EditCar";
-import DriverLoginScreen from "./screens/DriverLoginScreen";
-import DriverInfoInputScreen from "./screens/DriverInfoInputScreen";
+import DriverLoginScreen from "./screens/Driver/DriverLoginScreen";
+import DriverInfoInputScreen from "./screens/Driver/DriverInfoInputScreen";
 import DisplayDriversScreen from "./screens/DrawerScreens/Manage/Drivers/DisplayDriversScreen";
 import DriverDetailScreen from "./screens/DrawerScreens/Manage/Drivers/DriverDetailScreen";
 import AddDriver from "./screens/DrawerScreens/Manage/Drivers/AddDriver";
-import DriverHomeScreen from "./screens/DriverHomeScreen";
+import DriverHomeScreen from "./screens/Driver/DriverHomeScreen";
 
 const Stack = createStackNavigator();
 navigator.geolocation = require("react-native-geolocation-service");
