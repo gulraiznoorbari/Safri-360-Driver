@@ -10,47 +10,57 @@ import { humanPhoneNumber } from "../../utils/humanPhoneNumber";
 
 const { width } = Dimensions.get("window");
 
-const RideRequestCard = () => {
+const RideRequestCards = () => {
     const [rides, setRides] = useState([]);
     const [users, setUsers] = useState([]);
 
     useEffect(() => {
+        // if the rent a car owner has the requested car then show him the request:
         const ridesRef = ref(dbRealtime, "Rides");
+        const rentACarRef = ref(dbRealtime, "Rent A Car");
         onValue(ridesRef, (snapshot) => {
             if (snapshot.exists()) {
                 const data = snapshot.val();
-                console.log("Data: ", data);
                 // Convert object to array for easier mapping
                 const ridesArray = Object.values(data);
                 console.log("Rides: ", ridesArray);
-                setRides(ridesArray);
+                onValue(rentACarRef, (snapshot) => {
+                    if (snapshot.exists()) {
+                        const rentACarData = snapshot.val();
+                        for (const rentACarKey in rentACarData) {
+                            const rentACar = rentACarData[rentACarKey].Cars;
+                            console.log("Rent A Car: ", rentACar);
+                            for (const carsKey in rentACar) {
+                                const car = rentACar[carsKey];
+                                ridesArray.forEach((ride) => {
+                                    if (ride.selectedCar.registrationNumber === car.registrationNumber) {
+                                        console.log("Ride: ", ride);
+                                        fetchUserData(ride.customerID);
+                                        setRides((prevRides) => [...prevRides, ride]);
+                                    }
+                                });
+                            }
+                        }
+                    }
+                });
             } else {
                 setRides([]);
             }
         });
     }, []);
 
-    useEffect(() => {
-        // Fetch user data when rides update
-        const fetchUserData = async (customerID) => {
-            // Assuming your user data is stored in the "Users" node
-            const userRef = ref(dbRealtime, `Users/${customerID}`);
-            onValue(userRef, (snapshot) => {
-                if (snapshot.exists()) {
-                    const userData = snapshot.val();
-                    console.log("User Data: ", userData);
-                    setUsers(userData);
-                } else {
-                    setUsers([]);
-                }
-            });
-        };
-
-        rides.forEach((ride) => {
-            // Fetch user data for each ride
-            fetchUserData(ride.customerID);
+    const fetchUserData = (customerID) => {
+        const userRef = ref(dbRealtime, "Users/" + customerID);
+        onValue(userRef, (snapshot) => {
+            if (snapshot.exists()) {
+                const userData = snapshot.val();
+                console.log("User Data: ", userData);
+                setUsers(userData);
+            } else {
+                setUsers([]);
+            }
         });
-    }, [rides]);
+    };
 
     const callUser = () => {
         const phoneNumber = users.phoneNumber;
@@ -85,14 +95,12 @@ const RideRequestCard = () => {
                 <Text style={styles.carInfo}>
                     {`Car Details: ${item.selectedCar.manufacturer} ${item.selectedCar.model} - ${item.selectedCar.year} - ${item.selectedCar.color}`}
                 </Text>
-                <View style={styles.buttonContainer}>
-                    <TouchableOpacity style={styles.assignDriverButton} onPress={() => checkAvailableDrivers()}>
-                        <Text style={styles.assignDriverButtonText}>Assign A Driver</Text>
-                    </TouchableOpacity>
-                    <TouchableOpacity style={styles.cancelRideButton} onPress={() => cancelRide()}>
-                        <Text style={styles.cancelRideButtonText}>Ignore</Text>
-                    </TouchableOpacity>
-                </View>
+                <TouchableOpacity style={styles.assignDriverButton} onPress={() => checkAvailableDrivers()}>
+                    <Text style={styles.assignDriverButtonText}>Assign A Driver</Text>
+                </TouchableOpacity>
+                <TouchableOpacity style={styles.cancelRideButton} onPress={() => cancelRide()}>
+                    <Text style={styles.cancelRideButtonText}>Ignore</Text>
+                </TouchableOpacity>
             </Card>
         );
     };
@@ -102,7 +110,7 @@ const RideRequestCard = () => {
             <FlatList
                 data={rides}
                 renderItem={renderRideCard}
-                keyExtractor={(item) => item.rideID}
+                keyExtractor={(item, index) => index.toString()}
                 showsVerticalScrollIndicator={false}
                 horizontal
                 snapToInterval={width}
@@ -172,7 +180,7 @@ const styles = StyleSheet.create({
         paddingVertical: 10,
         paddingHorizontal: 15,
         borderRadius: 10,
-        marginTop: 10,
+        marginTop: 12,
     },
     assignDriverButtonText: {
         fontSize: 16,
@@ -184,7 +192,7 @@ const styles = StyleSheet.create({
         paddingVertical: 10,
         paddingHorizontal: 15,
         borderRadius: 10,
-        marginTop: 10,
+        marginTop: 12,
     },
     cancelRideButtonText: {
         fontSize: 16,
@@ -193,4 +201,4 @@ const styles = StyleSheet.create({
     },
 });
 
-export default RideRequestCard;
+export default RideRequestCards;
