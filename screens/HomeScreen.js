@@ -1,13 +1,13 @@
 import { useState, useEffect, useRef } from "react";
 import { StyleSheet, Text, View, Alert, BackHandler, Dimensions, PermissionsAndroid } from "react-native";
 import { useSelector, useDispatch } from "react-redux";
-import MapView, { Marker, PROVIDER_GOOGLE } from "react-native-maps";
 import Geolocation from "react-native-geolocation-service";
 
 import DrawerMenuButton from "../components/Buttons/DrawerMenuButton";
 import HomeMap from "../components/HomeMap";
 import { moveCameraToCenter } from "../utils/moveCameraToCenter";
 import { setOrigin } from "../store/slices/navigationSlice";
+import RideRequestCards from "../components/Cards/RideRequestCards";
 
 const { width, height } = Dimensions.get("window");
 const ASPECT_RATIO = width / height;
@@ -98,6 +98,9 @@ const HomeScreen = ({ navigation }) => {
             <View style={styles.mapContainer}>
                 <HomeMap initialPosition={initialPosition} />
             </View>
+            <View style={styles.overlayContainer}>
+                <RideRequestCards />
+            </View>
         </View>
     );
 };
@@ -109,6 +112,11 @@ const styles = StyleSheet.create({
     },
     mapContainer: {
         flex: 1,
+    },
+    overlayContainer: {
+        position: "absolute",
+        bottom: 0,
+        width: "100%",
     },
 });
 
