@@ -21,13 +21,13 @@ import Geolocation from "react-native-geolocation-service";
 import MapViewDirections from "react-native-maps-directions";
 import haversine from "haversine";
 
-import { dbRealtime, geoFire } from "../firebase/config";
-import { useFirebase } from "../contexts/FirebaseContext";
-import { selectDriver, setDriver, resetDriver } from "../store/slices/driverSlice";
-import { setOrigin, selectOrigin, setDestination, selectDestination } from "../store/slices/navigationSlice";
-import { setCurrentUserLocation, selectCurrentUserLocation } from "../store/slices/locationSlice";
-import DrawerMenuButton from "../components/Buttons/DrawerMenuButton";
-import { moveCameraToCenter } from "../utils/moveCameraToCenter";
+import { dbRealtime, geoFire } from "../../firebase/config";
+import { useFirebase } from "../../contexts/FirebaseContext";
+import { selectDriver, setDriver, resetDriver } from "../../store/slices/driverSlice";
+import { setOrigin, selectOrigin, setDestination, selectDestination } from "../../store/slices/navigationSlice";
+import { setCurrentUserLocation, selectCurrentUserLocation } from "../../store/slices/locationSlice";
+import DrawerMenuButton from "../../components/Buttons/DrawerMenuButton";
+import { moveCameraToCenter } from "../../utils/moveCameraToCenter";
 
 const { width, height } = Dimensions.get("window");
 const ASPECT_RATIO = width / height;
@@ -91,7 +91,7 @@ const DriverHomeScreen = ({ navigation }) => {
 
     const toggleSwitch = () => {
         const IsOnline = !driver.isOnline;
-        dispatch(setDriver({ isOnline: IsOnline }));
+        dispatch(setDriver({ isOnline: IsOnline, status: IsOnline ? "Online" : "Offline" }));
     };
 
     useEffect(() => {

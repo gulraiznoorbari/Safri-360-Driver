@@ -4,13 +4,13 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import { ref, update } from "firebase/database";
 import { useDispatch, useSelector } from "react-redux";
 
-import KeyboardAvoidingWrapper from "../components/KeyboardAvoidingWrapper";
-import { dbRealtime } from "../firebase/config";
-import { selectUser } from "../store/slices/userSlice";
-import { setDriver, selectDriver } from "../store/slices/driverSlice";
-import ClearableInput from "../components/ClearableInput";
-import PrimaryButton from "../components/Buttons/PrimaryButton";
-import ErrorMessage from "../components/ErrorMessage";
+import KeyboardAvoidingWrapper from "../../components/KeyboardAvoidingWrapper";
+import { dbRealtime } from "../../firebase/config";
+import { selectUser } from "../../store/slices/userSlice";
+import { setDriver, selectDriver } from "../../store/slices/driverSlice";
+import ClearableInput from "../../components/ClearableInput";
+import PrimaryButton from "../../components/Buttons/PrimaryButton";
+import ErrorMessage from "../../components/ErrorMessage";
 
 const DriverInfoInputScreen = ({ navigation }) => {
     const user = useSelector(selectUser);

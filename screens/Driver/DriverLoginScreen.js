@@ -7,14 +7,14 @@ const countryCodes = require("country-codes-list");
 import { get, ref } from "firebase/database";
 import { useSelector, useDispatch } from "react-redux";
 
-import KeyboardAvoidingWrapper from "../components/KeyboardAvoidingWrapper";
-import { dbRealtime } from "../firebase/config";
-import { selectUser, setUserType } from "../store/slices/userSlice";
-import { setDriver } from "../store/slices/driverSlice";
-import ClearableInput from "../components/ClearableInput";
-import InputField from "../components/InputField";
-import ErrorMessage from "../components/ErrorMessage";
-import PrimaryButton from "../components/Buttons/PrimaryButton";
+import KeyboardAvoidingWrapper from "../../components/KeyboardAvoidingWrapper";
+import { dbRealtime } from "../../firebase/config";
+import { selectUser, setUserType } from "../../store/slices/userSlice";
+import { setDriver } from "../../store/slices/driverSlice";
+import ClearableInput from "../../components/ClearableInput";
+import InputField from "../../components/InputField";
+import ErrorMessage from "../../components/ErrorMessage";
+import PrimaryButton from "../../components/Buttons/PrimaryButton";
 
 const DriverLoginScreen = ({ navigation }) => {
     const dispatch = useDispatch();
