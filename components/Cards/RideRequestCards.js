@@ -1,18 +1,20 @@
 import { DEFAULT_PROFILE_IMAGE } from "@env";
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { StyleSheet, Text, View, Image, Dimensions, FlatList, TouchableOpacity, Linking } from "react-native";
 import Ionicons from "react-native-vector-icons/Ionicons";
 import { Card } from "react-native-elements";
 import { ref, onValue } from "firebase/database";
 
-import { dbRealtime } from "../../firebase/config";
 import { humanPhoneNumber } from "../../utils/humanPhoneNumber";
+import { dbRealtime } from "../../firebase/config";
+import AvailableDriversList from "../AvailableDriversList";
 
 const { width } = Dimensions.get("window");
 
 const RideRequestCards = () => {
     const [rides, setRides] = useState([]);
     const [users, setUsers] = useState([]);
+    const [isModalVisible, setModalVisible] = useState(false);
 
     useEffect(() => {
         // if the rent a car owner has the requested car then show him the request:
@@ -21,22 +23,24 @@ const RideRequestCards = () => {
         onValue(ridesRef, (snapshot) => {
             if (snapshot.exists()) {
                 const data = snapshot.val();
-                // Convert object to array for easier mapping
+                // Convert object to array for easier mapping:
                 const ridesArray = Object.values(data);
-                console.log("Rides: ", ridesArray);
                 onValue(rentACarRef, (snapshot) => {
                     if (snapshot.exists()) {
                         const rentACarData = snapshot.val();
                         for (const rentACarKey in rentACarData) {
                             const rentACar = rentACarData[rentACarKey].Cars;
-                            console.log("Rent A Car: ", rentACar);
                             for (const carsKey in rentACar) {
                                 const car = rentACar[carsKey];
                                 ridesArray.forEach((ride) => {
                                     if (ride.selectedCar.registrationNumber === car.registrationNumber) {
-                                        console.log("Ride: ", ride);
                                         fetchUserData(ride.customerID);
-                                        setRides((prevRides) => [...prevRides, ride]);
+                                        setRides(
+                                            ridesArray.filter(
+                                                (ride) =>
+                                                    ride.selectedCar.registrationNumber === car.registrationNumber,
+                                            ),
+                                        );
                                     }
                                 });
                             }
@@ -54,7 +58,6 @@ const RideRequestCards = () => {
         onValue(userRef, (snapshot) => {
             if (snapshot.exists()) {
                 const userData = snapshot.val();
-                console.log("User Data: ", userData);
                 setUsers(userData);
             } else {
                 setUsers([]);
@@ -67,14 +70,17 @@ const RideRequestCards = () => {
         Linking.openURL(`tel:${humanPhoneNumber(phoneNumber)}`);
     };
 
-    const checkAvailableDrivers = () => {
-        // Check if there are available drivers
+    const displayAvailableDrivers = () => {
+        // Check if there are available (online) drivers
         // If there are, assign a driver to the ride
         // If there aren't, show a message to the user
+        setModalVisible(true);
     };
 
-    const cancelRide = () => {
-        // Cancel the ride
+    const cancelRide = (rideID) => {
+        // Remove the specific ride from the rides array:
+        let filteredRides = rides.filter((ride) => ride.rideID !== rideID);
+        setRides(filteredRides);
     };
 
     const renderRideCard = ({ item }) => {
@@ -95,10 +101,10 @@ const RideRequestCards = () => {
                 <Text style={styles.carInfo}>
                     {`Car Details: ${item.selectedCar.manufacturer} ${item.selectedCar.model} - ${item.selectedCar.year} - ${item.selectedCar.color}`}
                 </Text>
-                <TouchableOpacity style={styles.assignDriverButton} onPress={() => checkAvailableDrivers()}>
+                <TouchableOpacity style={styles.assignDriverButton} onPress={() => displayAvailableDrivers()}>
                     <Text style={styles.assignDriverButtonText}>Assign A Driver</Text>
                 </TouchableOpacity>
-                <TouchableOpacity style={styles.cancelRideButton} onPress={() => cancelRide()}>
+                <TouchableOpacity style={styles.cancelRideButton} onPress={() => cancelRide(item.rideID)}>
                     <Text style={styles.cancelRideButtonText}>Ignore</Text>
                 </TouchableOpacity>
             </Card>
@@ -107,16 +113,25 @@ const RideRequestCards = () => {
 
     return (
         <View>
-            <FlatList
-                data={rides}
-                renderItem={renderRideCard}
-                keyExtractor={(item, index) => index.toString()}
-                showsVerticalScrollIndicator={false}
-                horizontal
-                snapToInterval={width}
-                snapToAlignment="center"
-                decelerationRate="fast"
-            />
+            {rides.length > 0 ? (
+                <>
+                    <FlatList
+                        data={rides}
+                        renderItem={renderRideCard}
+                        keyExtractor={(item, index) => index.toString()}
+                        showsVerticalScrollIndicator={false}
+                        horizontal
+                        snapToInterval={width}
+                        snapToAlignment="center"
+                        decelerationRate="fast"
+                    />
+                    <AvailableDriversList isModalVisible={isModalVisible} setModalVisible={setModalVisible} />
+                </>
+            ) : (
+                <Card containerStyle={styles.cardContainer}>
+                    <Text style={styles.noRideText}>No ride requests available</Text>
+                </Card>
+            )}
         </View>
     );
 };
