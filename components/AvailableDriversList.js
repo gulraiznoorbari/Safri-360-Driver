@@ -55,13 +55,13 @@ const AvailableDriversList = ({ isModalVisible, setModalVisible, selectedRide })
 
     const changeCarStatus = (selectedCarRegistrationNumber) => {
         const carsRef = ref(dbRealtime, "Rent A Car/" + user.uid + "/Cars");
-        get(carsRef)
+        onValue(carsRef)
             .then((snapshot) => {
                 if (snapshot.exists()) {
                     const carsData = snapshot.val();
                     for (const carRegistrationNumber in carsData) {
                         if (carRegistrationNumber === selectedCarRegistrationNumber) {
-                            const carRef = ref(dbRealtime, "Rent A Car/" + user.uid + "/Cars/" + carRegistrationNumber);
+                            const carRef = ref(`${carsRef}/` + carRegistrationNumber);
                             update(carRef, {
                                 status: "booked",
                             }).then(() => {
@@ -77,13 +77,14 @@ const AvailableDriversList = ({ isModalVisible, setModalVisible, selectedRide })
     };
 
     const changeDriverStatus = (pinCode) => {
-        get(driversRef)
+        const driversRef = ref(dbRealtime, "Drivers");
+        onValue(driversRef)
             .then((snapshot) => {
                 if (snapshot.exists()) {
                     const driversData = snapshot.val();
                     for (const driverPIN in driversData) {
                         if (driverPIN === pinCode) {
-                            const driverRef = ref(dbRealtime, "Drivers/" + driverPIN);
+                            const driverRef = ref(`${driversRef}/` + driverPIN);
                             update(driverRef, {
                                 status: "booked",
                             }).then(() => {
