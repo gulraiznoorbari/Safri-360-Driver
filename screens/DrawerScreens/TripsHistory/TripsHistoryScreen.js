@@ -1,69 +1,28 @@
+import { useEffect, useState } from "react";
 import { StyleSheet, View, FlatList } from "react-native";
+import { ref, onValue } from "firebase/database";
+
+import { dbRealtime } from "../../../firebase/config";
 import TripHistoryCard from "./TripHistoryCard";
 
 const TripsHistoryScreen = () => {
-    const trips = [
-        {
-            id: "1",
-            origin: "Lahore",
-            destination: "Islamabad",
-            duration: "18 mins",
-            distance: "12 km",
-            car: "Toyota Corolla",
-            fare: "150",
-            status: "Completed",
-        },
-        {
-            id: "2",
-            origin: "Lahore",
-            destination: "Islamabad",
-            duration: "18 mins",
-            distance: "12 km",
-            car: "Toyota Corolla",
-            fare: "150",
-            status: "Cancelled",
-        },
-        {
-            id: "3",
-            origin: "Lahore",
-            destination: "Islamabad",
-            duration: "18 mins",
-            distance: "12 km",
-            car: "Toyota Corolla",
-            fare: "150",
-            status: "Ongoing",
-        },
-        {
-            id: "4",
-            origin: "Lahore",
-            destination: "Islamabad",
-            duration: "18 mins",
-            distance: "12 km",
-            car: "Toyota Corolla",
-            fare: "150",
-            status: "Completed",
-        },
-        {
-            id: "5",
-            origin: "Lahore",
-            destination: "Islamabad",
-            duration: "18 mins",
-            distance: "12 km",
-            car: "Toyota Corolla",
-            fare: "150",
-            status: "Completed",
-        },
-        {
-            id: "6",
-            origin: "Lahore",
-            destination: "Islamabad",
-            duration: "18 mins",
-            distance: "12 km",
-            car: "Toyota Corolla",
-            fare: "150",
-            status: "Completed",
-        },
-    ];
+    const [trips, setTrips] = useState([]);
+
+    useEffect(() => {
+        fetchTripsData();
+    }, []);
+
+    const fetchTripsData = () => {
+        const ridesRef = ref(dbRealtime, "Rides");
+        onValue(ridesRef, (snapshot) => {
+            if (snapshot.exists()) {
+                const ridesData = snapshot.val();
+                // Convert object to array for easier mapping
+                const ridesArray = Object.values(ridesData);
+                setTrips(ridesArray);
+            }
+        });
+    };
 
     const renderTripDetails = ({ item }) => {
         return <TripHistoryCard data={item} />;
@@ -73,7 +32,7 @@ const TripsHistoryScreen = () => {
         <View style={styles.container}>
             <FlatList
                 data={trips}
-                keyExtractor={(item) => item?.id}
+                keyExtractor={(item, index) => index.toString()}
                 renderItem={renderTripDetails}
                 showsVerticalScrollIndicator={false}
             />
