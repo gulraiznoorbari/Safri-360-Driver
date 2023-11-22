@@ -55,6 +55,7 @@ const AvailableDriversList = ({ isModalVisible, setModalVisible, selectedRide })
 
     const changeCarStatus = (selectedCarRegistrationNumber) => {
         const carsRef = ref(dbRealtime, "Rent A Car/" + user.uid + "/Cars");
+        onValue(carsRef);
         onValue(carsRef)
             .then((snapshot) => {
                 if (snapshot.exists()) {
