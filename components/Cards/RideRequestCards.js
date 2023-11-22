@@ -13,8 +13,9 @@ const { width } = Dimensions.get("window");
 
 const RideRequestCards = () => {
     const [rides, setRides] = useState([]);
-    const [users, setUsers] = useState([]);
     const [isModalVisible, setModalVisible] = useState(false);
+    const [selectedRide, setSelectedRide] = useState({});
+    const [usersInfo, setUsersInfo] = useState({});
 
     useEffect(() => {
         // if the rent a car owner has the requested car then show him the request:
@@ -23,28 +24,43 @@ const RideRequestCards = () => {
         onValue(ridesRef, (snapshot) => {
             if (snapshot.exists()) {
                 const data = snapshot.val();
-                // Convert object to array for easier mapping:
                 const ridesArray = Object.values(data);
                 onValue(rentACarRef, (snapshot) => {
                     if (snapshot.exists()) {
                         const rentACarData = snapshot.val();
-                        for (const rentACarKey in rentACarData) {
-                            const rentACar = rentACarData[rentACarKey].Cars;
-                            for (const carsKey in rentACar) {
-                                const car = rentACar[carsKey];
-                                ridesArray.forEach((ride) => {
-                                    if (ride.selectedCar.registrationNumber === car.registrationNumber) {
-                                        fetchUserData(ride.customerID);
-                                        setRides(
-                                            ridesArray.filter(
-                                                (ride) =>
-                                                    ride.selectedCar.registrationNumber === car.registrationNumber,
-                                            ),
-                                        );
+                        const matchingRides = [];
+                        const usersData = {}; // Separate state to store user info
+                        // Create an array of customer IDs for all matching rides
+                        const customerIDs = ridesArray.map((ride) => ride.customerID);
+                        // Fetch user information for all customer IDs in a single call
+                        const usersRef = ref(dbRealtime, "Users");
+                        onValue(usersRef, (usersSnapshot) => {
+                            if (usersSnapshot.exists()) {
+                                const users = usersSnapshot.val();
+                                // Filter user information for the matching customer IDs
+                                customerIDs.forEach((customerID) => {
+                                    if (users[customerID]) {
+                                        usersData[customerID] = users[customerID];
                                     }
                                 });
+                                // Set the state with the updated user information
+                                setUsersInfo(usersData);
+                                // Process matching rides
+                                for (const rentACarKey in rentACarData) {
+                                    const rentACar = rentACarData[rentACarKey].Cars;
+                                    for (const carsKey in rentACar) {
+                                        const car = rentACar[carsKey];
+                                        ridesArray.forEach((ride) => {
+                                            if (ride.selectedCar.registrationNumber === car.registrationNumber) {
+                                                matchingRides.push(ride);
+                                            }
+                                        });
+                                    }
+                                }
+                                // Set the state with the matching rides
+                                setRides(matchingRides);
                             }
-                        }
+                        });
                     }
                 });
             } else {
@@ -53,27 +69,15 @@ const RideRequestCards = () => {
         });
     }, []);
 
-    const fetchUserData = (customerID) => {
-        const userRef = ref(dbRealtime, "Users/" + customerID);
-        onValue(userRef, (snapshot) => {
-            if (snapshot.exists()) {
-                const userData = snapshot.val();
-                setUsers(userData);
-            } else {
-                setUsers([]);
-            }
-        });
+    const callUser = (phoneNumber) => {
+        Linking.openURL(`tel:${phoneNumber}`);
     };
 
-    const callUser = () => {
-        const phoneNumber = users.phoneNumber;
-        Linking.openURL(`tel:${humanPhoneNumber(phoneNumber)}`);
-    };
-
-    const displayAvailableDrivers = () => {
+    const displayAvailableDrivers = (selectedRide) => {
         // Check if there are available (online) drivers
         // If there are, assign a driver to the ride
         // If there aren't, show a message to the user
+        setSelectedRide(selectedRide);
         setModalVisible(true);
     };
 
@@ -84,15 +88,20 @@ const RideRequestCards = () => {
     };
 
     const renderRideCard = ({ item }) => {
+        const users = usersInfo[item.customerID] || {};
+
         return (
             <Card key={item.rideID} containerStyle={styles.cardContainer}>
                 <View style={styles.userContainer}>
                     <Image source={{ uri: users.photoURL || DEFAULT_PROFILE_IMAGE }} style={styles.profileImage} />
                     <View style={styles.userInfoContainer}>
                         <Text style={styles.userName}>{users.userName}</Text>
-                        <Text style={styles.phoneNumber}>{users.phoneNumber}</Text>
+                        <Text style={styles.phoneNumber}>{humanPhoneNumber(users.phoneNumber)}</Text>
                     </View>
-                    <TouchableOpacity style={styles.iconContainer} onPress={() => callUser()}>
+                    <TouchableOpacity
+                        style={styles.iconContainer}
+                        onPress={() => callUser(humanPhoneNumber(users.phoneNumber))}
+                    >
                         <Ionicons name="call-outline" size={24} color="#000" style={styles.icon} />
                     </TouchableOpacity>
                 </View>
@@ -101,7 +110,7 @@ const RideRequestCards = () => {
                 <Text style={styles.carInfo}>
                     {`Car Details: ${item.selectedCar.manufacturer} ${item.selectedCar.model} - ${item.selectedCar.year} - ${item.selectedCar.color}`}
                 </Text>
-                <TouchableOpacity style={styles.assignDriverButton} onPress={() => displayAvailableDrivers()}>
+                <TouchableOpacity style={styles.assignDriverButton} onPress={() => displayAvailableDrivers(item)}>
                     <Text style={styles.assignDriverButtonText}>Assign A Driver</Text>
                 </TouchableOpacity>
                 <TouchableOpacity style={styles.cancelRideButton} onPress={() => cancelRide(item.rideID)}>
@@ -118,14 +127,20 @@ const RideRequestCards = () => {
                     <FlatList
                         data={rides}
                         renderItem={renderRideCard}
-                        keyExtractor={(item, index) => index.toString()}
+                        keyExtractor={(item, index) => index}
                         showsVerticalScrollIndicator={false}
                         horizontal
                         snapToInterval={width}
                         snapToAlignment="center"
                         decelerationRate="fast"
                     />
-                    <AvailableDriversList isModalVisible={isModalVisible} setModalVisible={setModalVisible} />
+                    {isModalVisible && (
+                        <AvailableDriversList
+                            isModalVisible={isModalVisible}
+                            setModalVisible={setModalVisible}
+                            selectedRide={selectedRide}
+                        />
+                    )}
                 </>
             ) : (
                 <Card containerStyle={styles.cardContainer}>
