@@ -1,15 +1,16 @@
 import { useEffect, useState } from "react";
-import { StyleSheet, Text, View, FlatList, TouchableOpacity, PermissionsAndroid } from "react-native";
+import { StyleSheet, Text, View, FlatList, TouchableOpacity, ToastAndroid, PermissionsAndroid } from "react-native";
 import { useSelector } from "react-redux";
-import Modal from "react-native-modal";
+import { ref, onValue, get, update } from "firebase/database";
 import { Divider } from "react-native-elements";
-import { ref, onValue } from "firebase/database";
+import Modal from "react-native-modal";
+import SmsAndroid from "react-native-get-sms-android";
 
 import { humanPhoneNumber } from "../utils/humanPhoneNumber";
 import { dbRealtime } from "../firebase/config";
 import { selectUser } from "../store/slices/userSlice";
 
-const AvailableDriversList = ({ isModalVisible, setModalVisible }) => {
+const AvailableDriversList = ({ isModalVisible, setModalVisible, selectedRide }) => {
     const [drivers, setDrivers] = useState([]);
 
     const user = useSelector(selectUser);
@@ -52,20 +53,89 @@ const AvailableDriversList = ({ isModalVisible, setModalVisible }) => {
         });
     };
 
-    const notifyDriver = async (phoneNumber, driverPIN) => {
+    const changeCarStatus = (selectedCarRegistrationNumber) => {
+        const carsRef = ref(dbRealtime, "Rent A Car/" + user.uid + "/Cars");
+        get(carsRef)
+            .then((snapshot) => {
+                if (snapshot.exists()) {
+                    const carsData = snapshot.val();
+                    for (const carRegistrationNumber in carsData) {
+                        if (carRegistrationNumber === selectedCarRegistrationNumber) {
+                            const carRef = ref(dbRealtime, "Rent A Car/" + user.uid + "/Cars/" + carRegistrationNumber);
+                            update(carRef, {
+                                status: "booked",
+                            }).then(() => {
+                                console.log("Car status updated to booked.");
+                            });
+                        }
+                    }
+                }
+            })
+            .catch((error) => {
+                console.error(error);
+            });
+    };
+
+    const changeDriverStatus = (pinCode) => {
+        get(driversRef)
+            .then((snapshot) => {
+                if (snapshot.exists()) {
+                    const driversData = snapshot.val();
+                    for (const driverPIN in driversData) {
+                        if (driverPIN === pinCode) {
+                            const driverRef = ref(dbRealtime, "Drivers/" + driverPIN);
+                            update(driverRef, {
+                                status: "booked",
+                            }).then(() => {
+                                console.log("Driver status updated to booked.");
+                                ToastAndroid.show("Driver has been assigned and notified via SMS.", ToastAndroid.SHORT);
+                            });
+                        }
+                    }
+                }
+            })
+            .catch((error) => {
+                console.error(error);
+            });
+    };
+
+    // assign the ride to the driver:
+    const assignDriver = (driverInfo) => {
+        const ridesRef = ref(dbRealtime, "Rides/" + selectedRide.rideID);
+        update(ridesRef, {
+            rentACarUID: user.uid,
+        }).then(() => {
+            get(ridesRef).then((snapshot) => {
+                if (snapshot.exists()) {
+                    const ridesData = snapshot.val();
+                    console.log("Rides data: ", ridesData);
+                    if (ridesData.rideID === selectedRide.rideID) {
+                        update(ridesRef, {
+                            driverInfo: driverInfo,
+                        }).then(() => {
+                            changeDriverStatus(driverInfo.pinCode);
+                            changeCarStatus(ridesData.selectedCar.registrationNumber);
+                            console.log("Driver has been assigned to the ride.");
+                        });
+                    }
+                }
+            });
+        });
+    };
+
+    const notifyDriver = async (driverInfo) => {
         const hasSMSPermission = await requestSMSPermission();
         if (hasSMSPermission) {
             // Send the notification to the driver via SMS:
             SmsAndroid.autoSend(
-                phoneNumber,
-                `You have been assigned a ride. Please login to the Safri360 app with the PIN: ${driverPIN}`,
+                driverInfo.phoneNumber,
+                `You have been assigned a ride. Please login to the Safri360 Driver app with the PIN: ${driverInfo.pinCode}`,
                 (fail) => {
                     console.log("Failed with this error: " + fail);
                 },
                 (success) => {
-                    ToastAndroid.show("Driver has been assigned and notified via SMS.", ToastAndroid.SHORT);
+                    assignDriver(driverInfo);
                     console.log("SMS status: ", success);
-                    // change the driver's status to "assigned" / "booked" in the database...
                 },
             );
         }
@@ -79,10 +149,7 @@ const AvailableDriversList = ({ isModalVisible, setModalVisible }) => {
                     {item.firstName} {item.lastName}
                 </Text>
                 <Text style={styles.driverPhoneNumber}>{humanPhoneNumber(item.phoneNumber)}</Text>
-                <TouchableOpacity
-                    style={styles.assignDriverButton}
-                    onPress={() => notifyDriver(item.phoneNumber, item.pinCode)}
-                >
+                <TouchableOpacity style={styles.assignDriverButton} onPress={() => notifyDriver(item)}>
                     <Text style={styles.assignDriverButtonText}>Assign</Text>
                 </TouchableOpacity>
                 <Divider style={styles.divider} />
