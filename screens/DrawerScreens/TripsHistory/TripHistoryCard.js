@@ -24,14 +24,16 @@ const TripHistoryCard = ({ data }) => {
     return (
         <TouchableOpacity onPress={() => navigation.navigate("TripHistoryDetailScreen", { data: data })}>
             <View style={styles.tripContainer}>
-                <Text style={styles.tripDate}>{moment(Date.now()).format("ll")}</Text>
+                <Text style={styles.tripDate}>
+                    {moment(data?.createdAt, "dddd, MMMM D, YYYY h:mm A").format("DD MMMM YYYY HH:mm A")}
+                </Text>
                 <View style={styles.infoContainer}>
                     <Ionicons name="location-outline" size={22} color="blue" />
-                    <Text style={styles.tripInfoText}>{data?.origin}</Text>
+                    <Text style={styles.tripInfoText}>{data?.origin.locationName}</Text>
                 </View>
                 <View style={styles.infoContainer}>
                     <Ionicons name="location-outline" size={22} color="green" />
-                    <Text style={styles.tripInfoText}>{data?.destination}</Text>
+                    <Text style={styles.tripInfoText}>{data?.destination.locationName}</Text>
                 </View>
                 <View style={styles.infoContainer}>
                     <Ionicons name="cash-outline" size={22} color="#333" />
@@ -57,7 +59,7 @@ const styles = StyleSheet.create({
     infoContainer: {
         flexDirection: "row",
         alignItems: "center",
-        paddingVertical: 2,
+        paddingVertical: 3,
     },
     tripDate: {
         fontSize: 14,
@@ -68,12 +70,11 @@ const styles = StyleSheet.create({
         paddingVertical: 5,
     },
     tripInfoText: {
+        color: "#000",
         marginLeft: 10,
+        textAlign: "left",
         fontSize: 16,
         fontFamily: "SatoshiMedium",
-        fontWeight: "500",
-        color: "#333",
-        textAlign: "left",
     },
     tripStatus: {
         width: "100%",
@@ -83,7 +84,7 @@ const styles = StyleSheet.create({
         marginBottom: 10,
     },
     tripStatusText: {
-        fontSize: 15,
+        fontSize: 16,
         fontFamily: "SatoshiBold",
         fontWeight: "600",
         textAlign: "right",
