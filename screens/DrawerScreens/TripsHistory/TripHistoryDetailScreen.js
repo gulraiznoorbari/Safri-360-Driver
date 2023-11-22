@@ -1,8 +1,12 @@
 import { useLayoutEffect } from "react";
-import { StyleSheet, Text, View } from "react-native";
-import { Button } from "react-native-elements";
+import { StyleSheet, Text, View, Image, ScrollView } from "react-native";
+import { Button, Divider } from "react-native-elements";
 import Ionicons from "react-native-vector-icons/Ionicons";
+import AntDesign from "react-native-vector-icons/AntDesign";
 import moment from "moment";
+
+import { LicensePlateIcon } from "../../../assets";
+import { humanPhoneNumber } from "../../../utils/humanPhoneNumber";
 
 const TripHistoryDetailScreen = ({ route, navigation }) => {
     const { data } = route.params;
@@ -24,37 +28,89 @@ const TripHistoryDetailScreen = ({ route, navigation }) => {
     }, [navigation]);
 
     return (
-        <View style={styles.container}>
+        <ScrollView contentContainerStyle={styles.container} showsVerticalScrollIndicator={false}>
             <View style={styles.content}>
+                {/* ride details: */}
                 <View style={styles.infoContainer}>
                     <Ionicons name="calendar-outline" size={26} color="#333" />
-                    <Text style={styles.infoText}>{moment(Date.now()).format("LL")}</Text>
+                    <Text style={styles.infoText}>
+                        {moment(data?.createdAt, "dddd, MMMM D, YYYY h:mm A").format("DD MMMM YYYY HH:mm A")}
+                    </Text>
                 </View>
                 <View style={styles.infoContainer}>
                     <Ionicons name="location" size={26} color="#0078d7" />
-                    <Text style={styles.infoText}>Origin: {data?.origin}</Text>
+                    <Text style={styles.infoText}>Origin: {data?.origin.locationName}</Text>
                 </View>
                 <View style={styles.infoContainer}>
                     <Ionicons name="location" size={26} color="green" />
-                    <Text style={styles.infoText}>Destination: {data?.destination}</Text>
-                </View>
-                <View style={styles.infoContainer}>
-                    <Ionicons name="car-outline" size={26} color="#333" />
-                    <Text style={styles.infoText}>{data?.car}</Text>
-                </View>
-                <View style={styles.infoContainer}>
-                    <Ionicons name="speedometer-outline" size={26} color="#333" />
-                    <Text style={styles.infoText}>Distance: {data?.distance}</Text>
-                </View>
-                <View style={styles.infoContainer}>
-                    <Ionicons name="stopwatch-outline" size={26} color="#333" />
-                    <Text style={styles.infoText}>Duration: {data?.duration}</Text>
+                    <Text style={styles.infoText}>Destination: {data?.destination.locationName}</Text>
                 </View>
                 <View style={styles.infoContainer}>
                     <Ionicons name="cash-outline" size={26} color="#333" />
                     <Text style={styles.infoText}>PKR {data?.fare}</Text>
                 </View>
+                <View style={styles.infoContainer}>
+                    <Ionicons name="speedometer-outline" size={26} color="#333" />
+                    <Text style={styles.infoText}>Distance: {data?.distance} km</Text>
+                </View>
+                <View style={styles.infoContainer}>
+                    <Ionicons name="stopwatch-outline" size={26} color="#333" />
+                    <Text style={styles.infoText}>Duration: {Math.round(data?.duration)} mins</Text>
+                </View>
+                <Divider style={styles.divider} />
+
+                {/* car details: */}
+                <View style={styles.infoContainer}>
+                    <Text style={styles.headerText}>Car</Text>
+                </View>
+                <View style={styles.infoContainer}>
+                    <Ionicons name="car-outline" size={27} color="#333" />
+                    <Text style={styles.infoText}>
+                        {data?.selectedCar.manufacturer} {data?.selectedCar.model}
+                    </Text>
+                </View>
+                <View style={styles.infoContainer}>
+                    <Image source={LicensePlateIcon} style={{ width: 27, height: 27 }} />
+                    <Text style={styles.infoText}>{data?.selectedCar.registrationNumber}</Text>
+                </View>
+                <View style={styles.infoContainer}>
+                    <Ionicons name="calendar-outline" size={26} color="#333" />
+                    <Text style={styles.infoText}>Year: {data?.selectedCar.year}</Text>
+                </View>
+                <View style={styles.infoContainer}>
+                    <Ionicons name="color-palette-outline" size={26} color="#333" />
+                    <Text style={styles.infoText}>Color: {data?.selectedCar.color}</Text>
+                </View>
+                <View style={styles.infoContainer}>
+                    <Ionicons name="speedometer-outline" size={26} color="#333" />
+                    <Text style={styles.infoText}>Average: {data?.selectedCar.average} km/L</Text>
+                </View>
+                <Divider style={styles.divider} />
+
+                {/* driver details: */}
+                <View style={styles.infoContainer}>
+                    <Text style={styles.headerText}>Driver</Text>
+                </View>
+                <View style={styles.infoContainer}>
+                    <AntDesign name="idcard" size={26} color="#333" />
+                    <Text style={styles.infoText}>{data?.driverInfo.CNIC}</Text>
+                </View>
+                <View style={styles.infoContainer}>
+                    <Ionicons name="person-outline" size={26} color="#333" />
+                    <Text style={styles.infoText}>
+                        {data?.driverInfo.firstName} {data?.driverInfo.lastName}
+                    </Text>
+                </View>
+                <View style={styles.infoContainer}>
+                    <Ionicons name="call-outline" size={26} color="#333" />
+                    <Text style={styles.infoText}>{humanPhoneNumber(data?.driverInfo.phoneNumber)}</Text>
+                </View>
+                <View style={styles.infoContainer}>
+                    <Ionicons name="key-outline" size={26} color="#333" />
+                    <Text style={styles.infoText}>PIN: {data?.driverInfo.pinCode}</Text>
+                </View>
             </View>
+
             <View style={styles.buttonContainer}>
                 <Button
                     icon={<Ionicons name="chatbubbles-outline" size={22} color={"#000"} />}
@@ -64,7 +120,7 @@ const TripHistoryDetailScreen = ({ route, navigation }) => {
                     onPress={() => {}}
                 />
             </View>
-        </View>
+        </ScrollView>
     );
 };
 
@@ -73,6 +129,17 @@ const styles = StyleSheet.create({
         flexGrow: 1,
         justifyContent: "space-between",
         marginBottom: 10,
+    },
+    divider: {
+        backgroundColor: "#ccc",
+        width: "100%",
+        marginVertical: 5,
+    },
+    headerText: {
+        fontSize: 19,
+        fontWeight: "500",
+        textAlign: "left",
+        fontFamily: "SatoshiBlack",
     },
     content: {
         flexDirection: "column",
@@ -93,7 +160,7 @@ const styles = StyleSheet.create({
     infoContainer: {
         flexDirection: "row",
         alignItems: "center",
-        paddingVertical: 5,
+        paddingVertical: 6,
     },
     infoText: {
         fontSize: 16,
