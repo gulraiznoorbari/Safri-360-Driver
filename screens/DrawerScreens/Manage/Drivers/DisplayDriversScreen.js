@@ -31,7 +31,7 @@ const DisplayDriversScreen = ({ navigation }) => {
     }, [navigation]);
 
     useEffect(() => {
-        const driversRef = ref(dbRealtime, "/Drivers/");
+        const driversRef = ref(dbRealtime, "Drivers");
         onValue(driversRef, (snapshot) => {
             const data = snapshot.val();
             if (!data) return setDrivers([]);
