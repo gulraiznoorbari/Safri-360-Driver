@@ -55,50 +55,45 @@ const AvailableDriversList = ({ isModalVisible, setModalVisible, selectedRide })
 
     const changeCarStatus = (selectedCarRegistrationNumber) => {
         const carsRef = ref(dbRealtime, "Rent A Car/" + user.uid + "/Cars");
-        onValue(carsRef);
-        onValue(carsRef)
-            .then((snapshot) => {
-                if (snapshot.exists()) {
-                    const carsData = snapshot.val();
-                    for (const carRegistrationNumber in carsData) {
-                        if (carRegistrationNumber === selectedCarRegistrationNumber) {
-                            const carRef = ref(`${carsRef}/` + carRegistrationNumber);
-                            update(carRef, {
-                                status: "booked",
-                            }).then(() => {
-                                console.log("Car status updated to booked.");
-                            });
-                        }
+        onValue(carsRef, (snapshot) => {
+            if (snapshot.exists()) {
+                const carsData = snapshot.val();
+                for (const carRegistrationNumber in carsData) {
+                    if (carRegistrationNumber === selectedCarRegistrationNumber) {
+                        const carRef = ref(`${carsRef}/` + carRegistrationNumber);
+                        update(carRef, {
+                            status: "booked",
+                        }).then(() => {
+                            console.log("Car status updated to booked.");
+                        });
                     }
                 }
-            })
-            .catch((error) => {
-                console.error(error);
-            });
+            }
+        }).catch((error) => {
+            console.error(error);
+        });
     };
 
     const changeDriverStatus = (pinCode) => {
         const driversRef = ref(dbRealtime, "Drivers");
-        onValue(driversRef)
-            .then((snapshot) => {
-                if (snapshot.exists()) {
-                    const driversData = snapshot.val();
-                    for (const driverPIN in driversData) {
-                        if (driverPIN === pinCode) {
-                            const driverRef = ref(`${driversRef}/` + driverPIN);
-                            update(driverRef, {
-                                status: "booked",
-                            }).then(() => {
-                                console.log("Driver status updated to booked.");
-                                ToastAndroid.show("Driver has been assigned and notified via SMS.", ToastAndroid.SHORT);
-                            });
-                        }
+        onValue(driversRef, (snapshot) => {
+            if (snapshot.exists()) {
+                const driversData = snapshot.val();
+                for (const driverPIN in driversData) {
+                    if (driverPIN === pinCode) {
+                        const driverRef = ref(`${driversRef}/` + driverPIN);
+                        update(driverRef, {
+                            status: "booked",
+                        }).then(() => {
+                            console.log("Driver status updated to booked.");
+                            ToastAndroid.show("Driver has been assigned and notified via SMS.", ToastAndroid.SHORT);
+                        });
                     }
                 }
-            })
-            .catch((error) => {
-                console.error(error);
-            });
+            }
+        }).catch((error) => {
+            console.error(error);
+        });
     };
 
     // assign the ride to the driver:
