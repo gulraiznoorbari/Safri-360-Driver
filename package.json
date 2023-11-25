@@ -35,6 +35,7 @@
         "geofire": "^6.0.0",
         "haversine": "^1.1.1",
         "lodash": "^4.17.21",
+        "lottie-react-native": "^6.4.1",
         "moment": "^2.29.4",
         "react": "18.2.0",
         "react-native": "0.72.5",
