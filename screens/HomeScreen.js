@@ -3,10 +3,11 @@ import { StyleSheet, View, Alert, BackHandler, Dimensions, PermissionsAndroid } 
 import { useDispatch } from "react-redux";
 import Geolocation from "react-native-geolocation-service";
 
-import DrawerMenuButton from "../components/Buttons/DrawerMenuButton";
-import HomeMap from "../components/HomeMap";
 import { moveCameraToCenter } from "../utils/moveCameraToCenter";
 import { setOrigin } from "../store/slices/navigationSlice";
+import DrawerMenuButton from "../components/Buttons/DrawerMenuButton";
+import LocateUserButton from "../components/Buttons/LocateUserButton";
+import HomeMap from "../components/HomeMap";
 import RideRequestCards from "../components/Cards/RideRequestCards";
 import AvailableDriversList from "../components/AvailableDriversList";
 
@@ -97,7 +98,8 @@ const HomeScreen = ({ navigation }) => {
 
     return (
         <View style={styles.mainContainer}>
-            <DrawerMenuButton openDrawer={() => openDrawerMenu()} />
+            <DrawerMenuButton action={() => openDrawerMenu()} />
+            <LocateUserButton mapRef={mapRef} userPosition={initialPosition} />
             <View style={styles.mapContainer}>
                 <HomeMap initialPosition={initialPosition} />
             </View>

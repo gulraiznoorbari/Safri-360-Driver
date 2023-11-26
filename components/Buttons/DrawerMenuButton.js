@@ -1,9 +1,9 @@
 import { StyleSheet, Pressable } from "react-native";
 import Ionicons from "react-native-vector-icons/Ionicons";
 
-const DrawerMenuButton = ({ openDrawer }) => {
+const DrawerMenuButton = ({ action }) => {
     return (
-        <Pressable style={styles.container} onPress={openDrawer}>
+        <Pressable style={styles.container} onPress={action}>
             <Ionicons name="menu" size={30} color="black" style={styles.icon} />
         </Pressable>
     );
