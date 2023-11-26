@@ -12,7 +12,7 @@ import AvailableDriversList from "../components/AvailableDriversList";
 
 const { width, height } = Dimensions.get("window");
 const ASPECT_RATIO = width / height;
-const LATITUDE_DELTA = 0.02;
+const LATITUDE_DELTA = 0.03;
 const LONGITUDE_DELTA = LATITUDE_DELTA * ASPECT_RATIO;
 
 const HomeScreen = ({ navigation }) => {
