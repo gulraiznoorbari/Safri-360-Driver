@@ -2,6 +2,8 @@ import { createSlice } from "@reduxjs/toolkit";
 
 const initialState = {
     userType: null,
+    loading: false,
+    driverAssigned: false,
     user: {
         uid: null,
         firstName: null,
@@ -26,6 +28,12 @@ const userSlice = createSlice({
         setUser: (state, action) => {
             state.user = { ...state.user, ...action.payload }; // payload is an object with incoming user data
         },
+        setLoading: (state, action) => {
+            state.loading = action.payload;
+        },
+        setDriverAssigned: (state, action) => {
+            state.driverAssigned = action.payload;
+        },
         resetUser: (state) => {
             state.user = initialState.user;
         },
@@ -33,11 +41,13 @@ const userSlice = createSlice({
 });
 
 // export User actions
-export const { setUserType, setUser, resetUser } = userSlice.actions;
+export const { setUserType, setUser, setLoading, setDriverAssigned, resetUser } = userSlice.actions;
 
 // The function selects the user object from the state.
 // The `state` parameter is the current state of the Redux store.
 export const selectUserType = (state) => state.user.userType;
+export const selectLoading = (state) => state.user.loading;
+export const selectDriverAssigned = (state) => state.user.driverAssigned;
 export const selectUser = (state) => state.user.user;
 
 /* export default userSlice.reducer is exporting the reducer function from the `userSlice` slice.
