@@ -1,19 +1,41 @@
 import { useEffect, useState } from "react";
-import { StyleSheet, Text, View, FlatList, TouchableOpacity, ToastAndroid, PermissionsAndroid } from "react-native";
-import { useSelector } from "react-redux";
+import {
+    StyleSheet,
+    Text,
+    View,
+    Image,
+    FlatList,
+    ToastAndroid,
+    ActivityIndicator,
+    TouchableOpacity,
+    PermissionsAndroid,
+} from "react-native";
+import { useSelector, useDispatch } from "react-redux";
 import { ref, onValue, get, update } from "firebase/database";
 import { Divider } from "react-native-elements";
 import Modal from "react-native-modal";
+import LottieView from "lottie-react-native";
+import { MapIcon } from "../assets";
+import Ionicons from "react-native-vector-icons/Ionicons";
 import SmsAndroid from "react-native-get-sms-android";
 
 import { humanPhoneNumber } from "../utils/humanPhoneNumber";
 import { dbRealtime } from "../firebase/config";
-import { selectUser } from "../store/slices/userSlice";
+import {
+    selectUser,
+    setLoading,
+    selectLoading,
+    setDriverAssigned,
+    selectDriverAssigned,
+} from "../store/slices/userSlice";
 
 const AvailableDriversList = ({ isModalVisible, setModalVisible, selectedRide }) => {
     const [drivers, setDrivers] = useState([]);
 
     const user = useSelector(selectUser);
+    const loading = useSelector(selectLoading);
+    const driverAssigned = useSelector(selectDriverAssigned);
+    const dispatch = useDispatch();
 
     const requestSMSPermission = async () => {
         try {
@@ -32,21 +54,24 @@ const AvailableDriversList = ({ isModalVisible, setModalVisible, selectedRide })
     };
 
     useEffect(() => {
+        dispatch(setDriverAssigned(false));
         fetchDriversData();
-    }, [isModalVisible === true]);
+    }, []);
 
     const fetchDriversData = () => {
         const driversRef = ref(dbRealtime, "Drivers");
         onValue(driversRef, (snapshot) => {
             if (snapshot.exists()) {
                 const driversData = snapshot.val();
+                matchingDrivers = [];
                 // Convert object to array for easier mapping
                 const driversArray = Object.values(driversData);
                 driversArray.forEach((driver) => {
-                    if (driver.RentACarUID === user.uid && driver.status === "online") {
-                        setDrivers(driversArray);
+                    if (driver.RentACarUID === user.uid && driver.status != "booked") {
+                        matchingDrivers.push(driver);
                     }
                 });
+                setDrivers(matchingDrivers);
             } else {
                 setDrivers([]);
             }
@@ -54,46 +79,45 @@ const AvailableDriversList = ({ isModalVisible, setModalVisible, selectedRide })
     };
 
     const changeCarStatus = (selectedCarRegistrationNumber) => {
-        const carsRef = ref(dbRealtime, "Rent A Car/" + user.uid + "/Cars");
-        onValue(carsRef, (snapshot) => {
-            if (snapshot.exists()) {
-                const carsData = snapshot.val();
-                for (const carRegistrationNumber in carsData) {
-                    if (carRegistrationNumber === selectedCarRegistrationNumber) {
-                        const carRef = ref(`${carsRef}/` + carRegistrationNumber);
-                        update(carRef, {
-                            status: "booked",
-                        }).then(() => {
-                            console.log("Car status updated to booked.");
-                        });
-                    }
-                }
-            }
-        }).catch((error) => {
-            console.error(error);
-        });
+        const carRef = ref(dbRealtime, "Rent A Car/" + user.uid + "/Cars/" + selectedCarRegistrationNumber);
+        update(carRef, {
+            status: "booked",
+        })
+            .then(() => {
+                console.log("Car status updated to booked.");
+                ToastAndroid.show("Driver has been assigned and notified via SMS.", ToastAndroid.LONG);
+                dispatch(setLoading(false));
+                dispatch(setDriverAssigned(true));
+            })
+            .catch((error) => {
+                console.error(error);
+            });
     };
 
     const changeDriverStatus = (pinCode) => {
-        const driversRef = ref(dbRealtime, "Drivers");
-        onValue(driversRef, (snapshot) => {
-            if (snapshot.exists()) {
-                const driversData = snapshot.val();
-                for (const driverPIN in driversData) {
-                    if (driverPIN === pinCode) {
-                        const driverRef = ref(`${driversRef}/` + driverPIN);
-                        update(driverRef, {
-                            status: "booked",
-                        }).then(() => {
-                            console.log("Driver status updated to booked.");
-                            ToastAndroid.show("Driver has been assigned and notified via SMS.", ToastAndroid.SHORT);
-                        });
-                    }
-                }
-            }
-        }).catch((error) => {
-            console.error(error);
-        });
+        const driverRef = ref(dbRealtime, "Drivers/" + pinCode);
+        const ridesRef = ref(dbRealtime, "Rides/" + selectedRide.rideID);
+        update(driverRef, {
+            status: "booked",
+        })
+            .then(() => {
+                console.log("Driver status updated to booked.");
+                get(ridesRef)
+                    .then((snapshot) => {
+                        if (snapshot.exists()) {
+                            const ridesData = snapshot.val();
+                            if (ridesData.rideID === selectedRide.rideID) {
+                                changeCarStatus(ridesData.selectedCar.registrationNumber);
+                            }
+                        }
+                    })
+                    .catch((error) => {
+                        console.error(error);
+                    });
+            })
+            .catch((error) => {
+                console.error(error);
+            });
     };
 
     // assign the ride to the driver:
@@ -101,23 +125,16 @@ const AvailableDriversList = ({ isModalVisible, setModalVisible, selectedRide })
         const ridesRef = ref(dbRealtime, "Rides/" + selectedRide.rideID);
         update(ridesRef, {
             rentACarUID: user.uid,
-        }).then(() => {
-            get(ridesRef).then((snapshot) => {
-                if (snapshot.exists()) {
-                    const ridesData = snapshot.val();
-                    console.log("Rides data: ", ridesData);
-                    if (ridesData.rideID === selectedRide.rideID) {
-                        update(ridesRef, {
-                            driverInfo: driverInfo,
-                        }).then(() => {
-                            changeDriverStatus(driverInfo.pinCode);
-                            changeCarStatus(ridesData.selectedCar.registrationNumber);
-                            console.log("Driver has been assigned to the ride.");
-                        });
-                    }
-                }
+            status: "assigned",
+            driverInfo: driverInfo,
+        })
+            .then(() => {
+                changeDriverStatus(driverInfo.pinCode);
+                console.log("Driver has been assigned to the ride.");
+            })
+            .catch((error) => {
+                console.error(error);
             });
-        });
     };
 
     const notifyDriver = async (driverInfo) => {
@@ -138,6 +155,16 @@ const AvailableDriversList = ({ isModalVisible, setModalVisible, selectedRide })
         }
     };
 
+    const handlePress = (driverInfo) => {
+        dispatch(setLoading(true));
+        notifyDriver(driverInfo);
+    };
+
+    const handleModalClose = () => {
+        setModalVisible(false);
+        dispatch(setDriverAssigned(false));
+    };
+
     const renderAvailableDrivers = ({ item, index }) => {
         return (
             <View style={styles.driverContainer} key={index}>
@@ -146,7 +173,7 @@ const AvailableDriversList = ({ isModalVisible, setModalVisible, selectedRide })
                     {item.firstName} {item.lastName}
                 </Text>
                 <Text style={styles.driverPhoneNumber}>{humanPhoneNumber(item.phoneNumber)}</Text>
-                <TouchableOpacity style={styles.assignDriverButton} onPress={() => notifyDriver(item)}>
+                <TouchableOpacity style={styles.assignDriverButton} onPress={() => handlePress(item)}>
                     <Text style={styles.assignDriverButtonText}>Assign</Text>
                 </TouchableOpacity>
                 <Divider style={styles.divider} />
@@ -155,22 +182,39 @@ const AvailableDriversList = ({ isModalVisible, setModalVisible, selectedRide })
     };
 
     return (
-        <Modal
-            isVisible={isModalVisible}
-            onBackdropPress={() => setModalVisible(false)}
-            useNativeDriver={true}
-            hideModalContentWhileAnimating={true}
-        >
+        <Modal isVisible={isModalVisible} useNativeDriver={true} hideModalContentWhileAnimating={true}>
             <View style={styles.modalContainer}>
-                {drivers.length > 0 ? (
+                <TouchableOpacity onPress={() => handleModalClose()}>
+                    <Ionicons name="close-outline" size={25} color="black" style={styles.closeIcon} />
+                </TouchableOpacity>
+                {drivers.length >= 0 && loading && !driverAssigned ? (
+                    <View style={styles.loadingContainer}>
+                        <ActivityIndicator size="large" color="#000" />
+                        <Text style={styles.loaderText}>Assigning driver...</Text>
+                    </View>
+                ) : !loading && driverAssigned ? (
+                    <View style={styles.loadingContainer}>
+                        {/* <View style={styles.lottieAnimation}>
+                                <LottieView
+                                    source={require("../assets/animations/check-animation.json")}
+                                    autoPlay={true}
+                                    loop={false}
+                                />
+                            </View> */}
+                        <Text style={styles.loaderText}>Driver has been assigned</Text>
+                    </View>
+                ) : drivers.length === 0 ? (
+                    <View style={styles.loadingContainer}>
+                        <Image source={MapIcon} style={styles.icon} />
+                        <Text style={styles.noRideText}>No drivers available at the moment.</Text>
+                    </View>
+                ) : (
                     <FlatList
                         data={drivers}
                         renderItem={renderAvailableDrivers}
                         keyExtractor={(item, index) => index.toString()}
                         showsVerticalScrollIndicator={false}
                     />
-                ) : (
-                    <Text style={styles.noRideText}>No drivers available</Text>
                 )}
             </View>
         </Modal>
@@ -178,6 +222,9 @@ const AvailableDriversList = ({ isModalVisible, setModalVisible, selectedRide })
 };
 
 const styles = StyleSheet.create({
+    closeIcon: {
+        alignSelf: "flex-end",
+    },
     modalContainer: {
         flex: 1,
         backgroundColor: "#fff",
@@ -185,7 +232,24 @@ const styles = StyleSheet.create({
         borderRadius: 10,
         padding: 15,
     },
+    loadingContainer: {
+        flex: 1,
+        alignItems: "center",
+        justifyContent: "center",
+    },
+    icon: {
+        width: 110,
+        height: 110,
+        alignSelf: "center",
+        marginTop: -50,
+        marginBottom: 25,
+    },
     noRideText: {
+        fontSize: 16,
+        fontFamily: "SatoshiBold",
+        textAlign: "center",
+    },
+    loaderText: {
         fontSize: 16,
         fontFamily: "SatoshiBold",
         textAlign: "center",
@@ -219,6 +283,11 @@ const styles = StyleSheet.create({
     },
     divider: {
         marginVertical: 10,
+    },
+    lottieAnimation: {
+        width: 200,
+        height: 200,
+        alignSelf: "center",
     },
 });
 
