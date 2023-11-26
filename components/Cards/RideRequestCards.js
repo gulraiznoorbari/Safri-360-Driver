@@ -1,23 +1,38 @@
 import { DEFAULT_PROFILE_IMAGE } from "@env";
 import { useEffect, useState } from "react";
-import { StyleSheet, Text, View, Image, Dimensions, FlatList, TouchableOpacity, Linking } from "react-native";
+import {
+    StyleSheet,
+    View,
+    Text,
+    Image,
+    FlatList,
+    Linking,
+    Dimensions,
+    TouchableOpacity,
+    ActivityIndicator,
+} from "react-native";
 import Ionicons from "react-native-vector-icons/Ionicons";
 import { Card } from "react-native-elements";
 import { ref, onValue } from "firebase/database";
+import { useSelector, useDispatch } from "react-redux";
 
 import { humanPhoneNumber } from "../../utils/humanPhoneNumber";
+import { selectUser, selectLoading, selectDriverAssigned, setDriverAssigned } from "../../store/slices/userSlice";
 import { dbRealtime } from "../../firebase/config";
-import AvailableDriversList from "../AvailableDriversList";
 
 const { width } = Dimensions.get("window");
 
-const RideRequestCards = () => {
+const RideRequestCards = ({ setModalVisible, setSelectedRide }) => {
     const [rides, setRides] = useState([]);
-    const [isModalVisible, setModalVisible] = useState(false);
-    const [selectedRide, setSelectedRide] = useState({});
-    const [usersInfo, setUsersInfo] = useState({});
+    const [usersInfo, setUsersInfo] = useState([]);
+
+    const dispatch = useDispatch();
+    const user = useSelector(selectUser);
+    const loading = useSelector(selectLoading);
+    const driverAssigned = useSelector(selectDriverAssigned);
 
     useEffect(() => {
+        dispatch(setDriverAssigned(false));
         // if the rent a car owner has the requested car then show him the request:
         const ridesRef = ref(dbRealtime, "Rides");
         const rentACarRef = ref(dbRealtime, "Rent A Car");
@@ -45,16 +60,21 @@ const RideRequestCards = () => {
                                 });
                                 // Set the state with the updated user information
                                 setUsersInfo(usersData);
-                                // Process matching rides
                                 for (const rentACarKey in rentACarData) {
-                                    const rentACar = rentACarData[rentACarKey].Cars;
-                                    for (const carsKey in rentACar) {
-                                        const car = rentACar[carsKey];
-                                        ridesArray.forEach((ride) => {
-                                            if (ride.selectedCar.registrationNumber === car.registrationNumber) {
-                                                matchingRides.push(ride);
-                                            }
-                                        });
+                                    if (user.uid === rentACarKey) {
+                                        const rentACar = rentACarData[rentACarKey].Cars;
+                                        for (const carsKey in rentACar) {
+                                            const car = rentACar[carsKey];
+                                            ridesArray.forEach((ride) => {
+                                                if (
+                                                    car.status === "idle" &&
+                                                    ride.status === "fetching" &&
+                                                    ride.selectedCar.registrationNumber === car.registrationNumber
+                                                ) {
+                                                    matchingRides.push(ride);
+                                                }
+                                            });
+                                        }
                                     }
                                 }
                                 // Set the state with the matching rides
@@ -67,7 +87,7 @@ const RideRequestCards = () => {
                 setRides([]);
             }
         });
-    }, []);
+    }, [driverAssigned]);
 
     const callUser = (phoneNumber) => {
         Linking.openURL(`tel:${phoneNumber}`);
@@ -87,11 +107,11 @@ const RideRequestCards = () => {
         setRides(filteredRides);
     };
 
-    const renderRideCard = ({ item }) => {
+    const renderRideCard = ({ item, index }) => {
         const users = usersInfo[item.customerID] || {};
 
         return (
-            <Card key={item.rideID} containerStyle={styles.cardContainer}>
+            <Card key={index} containerStyle={styles.cardContainer}>
                 <View style={styles.userContainer}>
                     <Image source={{ uri: users.photoURL || DEFAULT_PROFILE_IMAGE }} style={styles.profileImage} />
                     <View style={styles.userInfoContainer}>
@@ -122,30 +142,38 @@ const RideRequestCards = () => {
 
     return (
         <View>
-            {rides.length > 0 ? (
+            {rides.length > 0 && !loading && !driverAssigned ? (
                 <>
                     <FlatList
                         data={rides}
                         renderItem={renderRideCard}
-                        keyExtractor={(item, index) => index}
+                        key={rides.length}
+                        keyExtractor={(item, index) => index.toString()}
                         showsVerticalScrollIndicator={false}
+                        showsHorizontalScrollIndicator={true}
                         horizontal
                         snapToInterval={width}
                         snapToAlignment="center"
                         decelerationRate="fast"
                     />
-                    {isModalVisible && (
-                        <AvailableDriversList
-                            isModalVisible={isModalVisible}
-                            setModalVisible={setModalVisible}
-                            selectedRide={selectedRide}
-                        />
-                    )}
                 </>
-            ) : (
+            ) : loading && !driverAssigned ? (
                 <Card containerStyle={styles.cardContainer}>
-                    <Text style={styles.noRideText}>No ride requests available</Text>
+                    <ActivityIndicator size="large" color="#000" style={styles.loader} />
+                    <Text style={styles.loaderText}>Loading...</Text>
                 </Card>
+            ) : !loading && driverAssigned ? (
+                <Card containerStyle={styles.cardContainer}>
+                    <Text style={styles.loaderText}>Driver has been assigned.</Text>
+                </Card>
+            ) : (
+                rides.length === 0 &&
+                !loading &&
+                !driverAssigned && (
+                    <Card containerStyle={styles.cardContainer}>
+                        <Text style={styles.noRideText}>No ride requests available at the moment.</Text>
+                    </Card>
+                )
             )}
         </View>
     );
@@ -153,14 +181,32 @@ const RideRequestCards = () => {
 
 const styles = StyleSheet.create({
     cardContainer: {
-        width: width - 30,
+        width: width - 20,
         borderRadius: 10,
         backgroundColor: "#fff",
         marginBottom: 10,
+        marginHorizontal: 10,
         shadowColor: "#000",
         shadowOffset: { width: 0, height: 2 },
-        shadowOpacity: 0.2,
-        padding: 15,
+        shadowOpacity: 0.25,
+        elevation: 3,
+    },
+    loader: {
+        marginVertical: 15,
+    },
+    loaderText: {
+        fontSize: 15,
+        fontFamily: "SatoshiBold",
+        fontWeight: "600",
+        textAlign: "center",
+        marginVertical: 5,
+    },
+    noRideText: {
+        fontSize: 15,
+        fontFamily: "SatoshiBold",
+        fontWeight: "600",
+        textAlign: "center",
+        marginVertical: 2,
     },
     userContainer: {
         flexDirection: "row",
