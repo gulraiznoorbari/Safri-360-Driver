@@ -10,7 +10,7 @@ const TripHistoryCard = ({ data }) => {
     const getStatusColor = (status) => {
         switch (status.toLowerCase()) {
             case "assigned":
-                return "blue";
+                return "orange";
             case "ongoing":
                 return "gold";
             case "completed":
@@ -18,7 +18,7 @@ const TripHistoryCard = ({ data }) => {
             case "cancelled":
                 return "red";
             default:
-                return "black";
+                return "gray";
         }
     };
 
