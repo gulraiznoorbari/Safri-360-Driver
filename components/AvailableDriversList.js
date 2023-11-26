@@ -182,14 +182,21 @@ const AvailableDriversList = ({ isModalVisible, setModalVisible, selectedRide })
     };
 
     return (
-        <Modal isVisible={isModalVisible} useNativeDriver={true} hideModalContentWhileAnimating={true}>
+        <Modal
+            isVisible={isModalVisible}
+            useNativeDriver={true}
+            hideModalContentWhileAnimating={true}
+            backdropOpacity={0.75}
+        >
             <View style={styles.modalContainer}>
-                <TouchableOpacity onPress={() => handleModalClose()}>
-                    <Ionicons name="close-outline" size={25} color="black" style={styles.closeIcon} />
-                </TouchableOpacity>
+                {!(loading && !driverAssigned) && (
+                    <TouchableOpacity onPress={() => handleModalClose()}>
+                        <Ionicons name="close-outline" size={25} color="black" style={styles.closeIcon} />
+                    </TouchableOpacity>
+                )}
                 {drivers.length >= 0 && loading && !driverAssigned ? (
                     <View style={styles.loadingContainer}>
-                        <ActivityIndicator size="large" color="#000" />
+                        <ActivityIndicator size="large" color="#000" style={styles.loader} />
                         <Text style={styles.loaderText}>Assigning driver...</Text>
                     </View>
                 ) : !loading && driverAssigned ? (
@@ -212,6 +219,7 @@ const AvailableDriversList = ({ isModalVisible, setModalVisible, selectedRide })
                     <FlatList
                         data={drivers}
                         renderItem={renderAvailableDrivers}
+                        key={drivers.length}
                         keyExtractor={(item, index) => index.toString()}
                         showsVerticalScrollIndicator={false}
                     />
@@ -228,7 +236,7 @@ const styles = StyleSheet.create({
     modalContainer: {
         flex: 1,
         backgroundColor: "#fff",
-        marginVertical: 100,
+        marginVertical: 20,
         borderRadius: 10,
         padding: 15,
     },
@@ -244,12 +252,15 @@ const styles = StyleSheet.create({
         marginTop: -50,
         marginBottom: 25,
     },
-    noRideText: {
-        fontSize: 16,
+    loader: {
+        marginBottom: 20,
+    },
+    loaderText: {
+        fontSize: 17,
         fontFamily: "SatoshiBold",
         textAlign: "center",
     },
-    loaderText: {
+    noRideText: {
         fontSize: 16,
         fontFamily: "SatoshiBold",
         textAlign: "center",
