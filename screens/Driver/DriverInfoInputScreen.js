@@ -6,14 +6,12 @@ import { useDispatch, useSelector } from "react-redux";
 
 import KeyboardAvoidingWrapper from "../../components/KeyboardAvoidingWrapper";
 import { dbRealtime } from "../../firebase/config";
-import { selectUser } from "../../store/slices/userSlice";
 import { setDriver, selectDriver } from "../../store/slices/driverSlice";
 import ClearableInput from "../../components/ClearableInput";
 import PrimaryButton from "../../components/Buttons/PrimaryButton";
 import ErrorMessage from "../../components/ErrorMessage";
 
 const DriverInfoInputScreen = ({ navigation }) => {
-    const user = useSelector(selectUser);
     const driver = useSelector(selectDriver);
     const dispatch = useDispatch();
 
@@ -68,7 +66,6 @@ const DriverInfoInputScreen = ({ navigation }) => {
         })
             .then(() => {
                 dispatch(setDriver({ CNIC: cnic, firstName: firstName, lastName: lastName }));
-                console.log("Driver Info Saved");
                 navigation.navigate("DriverHomeScreen");
                 handleClear();
             })
