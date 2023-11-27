@@ -5,11 +5,11 @@ import { Icon } from "react-native-elements";
 import { Dropdown } from "react-native-element-dropdown";
 const countryCodes = require("country-codes-list");
 import { get, ref } from "firebase/database";
-import { useSelector, useDispatch } from "react-redux";
+import { useDispatch } from "react-redux";
 
 import KeyboardAvoidingWrapper from "../../components/KeyboardAvoidingWrapper";
 import { dbRealtime } from "../../firebase/config";
-import { selectUser, setUserType } from "../../store/slices/userSlice";
+import { setUserType } from "../../store/slices/userSlice";
 import { setDriver } from "../../store/slices/driverSlice";
 import ClearableInput from "../../components/ClearableInput";
 import InputField from "../../components/InputField";
@@ -18,7 +18,6 @@ import PrimaryButton from "../../components/Buttons/PrimaryButton";
 
 const DriverLoginScreen = ({ navigation }) => {
     const dispatch = useDispatch();
-    const user = useSelector(selectUser);
 
     const [phoneNumber, setPhoneNumber] = useState(null);
     const [pinCode, setPinCode] = useState("");
@@ -67,8 +66,7 @@ const DriverLoginScreen = ({ navigation }) => {
         const fullNumber = "+" + countryCode?.countryCallingCode + (phoneNumber || "").replace(/[^\d/]/g, "");
         const NoDriverFound =
             "No driver found!\nPlease contact the affiliated Rent A Car owner to register as a driver and receive your login PIN.";
-        console.log("user.uid: ", user.uid);
-        const pinCodeRef = ref(dbRealtime, "/Drivers");
+        const pinCodeRef = ref(dbRealtime, "Drivers");
         get(pinCodeRef)
             .then((snapshot) => {
                 const data = snapshot.val();
@@ -80,7 +78,15 @@ const DriverLoginScreen = ({ navigation }) => {
                     if (key === pinCode) {
                         pinCodeFound = true;
                         if (data[key].phoneNumber === fullNumber) {
-                            dispatch(setDriver({ phoneNumber: fullNumber, pinCode: pinCode }));
+                            dispatch(
+                                setDriver({
+                                    firstName: data[key].firstName,
+                                    lastName: data[key].lastName,
+                                    CNIC: data[key].CNIC,
+                                    phoneNumber: fullNumber,
+                                    pinCode: pinCode,
+                                }),
+                            );
                             phoneNumberFound = true;
                             driverFound = true;
                             setTimeout(() => {
