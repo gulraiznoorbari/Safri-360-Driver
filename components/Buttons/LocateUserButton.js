@@ -1,22 +1,20 @@
 import { StyleSheet, TouchableOpacity } from "react-native";
-import Ionicons from "react-native-vector-icons/Ionicons";
+import MaterialIcons from "react-native-vector-icons/MaterialIcons";
 
 import { moveCameraToCenter } from "../../utils/moveCameraToCenter";
 
 const LocateUserButton = ({ mapRef, userPosition }) => {
     return (
-        <View>
-            <TouchableOpacity style={styles.container} onPress={() => moveCameraToCenter(mapRef, userPosition)}>
-                <Ionicons name="navigate-outline" size={30} color="black" style={styles.icon} />
-            </TouchableOpacity>
-        </View>
+        <TouchableOpacity style={styles.container} onPress={() => moveCameraToCenter(mapRef, userPosition)}>
+            <MaterialIcons name="my-location" size={25} color="#3f3f3f" style={styles.icon} />
+        </TouchableOpacity>
     );
 };
 
 const styles = StyleSheet.create({
     container: {
         position: "absolute",
-        bottom: 12,
+        top: 12,
         right: 14,
         shadowColor: "#000",
         borderRadius: 10,
@@ -31,7 +29,7 @@ const styles = StyleSheet.create({
         backgroundColor: "#fff",
     },
     icon: {
-        padding: 4,
+        padding: 5,
     },
 });
 

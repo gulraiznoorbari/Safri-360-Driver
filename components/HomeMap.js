@@ -9,6 +9,7 @@ import { dbRealtime } from "../firebase/config";
 import { selectUser } from "../store/slices/userSlice";
 import { selectOrigin } from "../store/slices/navigationSlice";
 import { humanPhoneNumber } from "../utils/humanPhoneNumber";
+import LocateUserButton from "./Buttons/LocateUserButton";
 
 const HomeMap = ({ initialPosition }) => {
     const [drivers, setDrivers] = useState([]);
@@ -51,46 +52,49 @@ const HomeMap = ({ initialPosition }) => {
     };
 
     return (
-        <MapView
-            ref={mapRef}
-            initialRegion={initialPosition}
-            style={StyleSheet.absoluteFill}
-            provider={PROVIDER_GOOGLE}
-            showsUserLocation={true}
-            showsMyLocationButton={false}
-            loadingEnabled={true}
-            loadingIndicatorColor="#A7E92F"
-            loadingBackgroundColor="#FFF"
-        >
-            {origin && <Marker coordinate={origin} pinColor={"#A7E92F"} />}
-            {drivers.map((driver, index) => (
-                <Marker
-                    key={index}
-                    coordinate={{ latitude: driver.location.latitude, longitude: driver.location.longitude }}
-                >
-                    <MaterialIcons
-                        name="location-history"
-                        size={35}
-                        color={getMarkerColor(driver.status)}
-                        style={{
-                            borderRadius: 50,
-                            backgroundColor: "#fff",
-                        }}
-                    />
-                    <Callout style={styles.calloutContainer}>
-                        <View style={styles.callout}>
-                            <Text style={styles.driverName}>
-                                {driver.firstName} {driver.lastName}
-                            </Text>
-                            <Text style={styles.driverPhoneNumber}>{humanPhoneNumber(driver.phoneNumber)}</Text>
-                            <Text style={[styles.driverStatus, { color: getMarkerColor(driver.status) }]}>
-                                {driver.status}
-                            </Text>
-                        </View>
-                    </Callout>
-                </Marker>
-            ))}
-        </MapView>
+        <>
+            <MapView
+                ref={mapRef}
+                initialRegion={initialPosition}
+                style={StyleSheet.absoluteFill}
+                provider={PROVIDER_GOOGLE}
+                showsUserLocation={true}
+                showsMyLocationButton={false}
+                loadingEnabled={true}
+                loadingIndicatorColor="#A7E92F"
+                loadingBackgroundColor="#FFF"
+            >
+                {origin && <Marker coordinate={origin} pinColor={"#A7E92F"} />}
+                {drivers.map((driver, index) => (
+                    <Marker
+                        key={index}
+                        coordinate={{ latitude: driver.location.latitude, longitude: driver.location.longitude }}
+                    >
+                        <MaterialIcons
+                            name="location-history"
+                            size={35}
+                            color={getMarkerColor(driver.status)}
+                            style={{
+                                borderRadius: 50,
+                                backgroundColor: "#fff",
+                            }}
+                        />
+                        <Callout style={styles.calloutContainer}>
+                            <View style={styles.callout}>
+                                <Text style={styles.driverName}>
+                                    {driver.firstName} {driver.lastName}
+                                </Text>
+                                <Text style={styles.driverPhoneNumber}>{humanPhoneNumber(driver.phoneNumber)}</Text>
+                                <Text style={[styles.driverStatus, { color: getMarkerColor(driver.status) }]}>
+                                    {driver.status}
+                                </Text>
+                            </View>
+                        </Callout>
+                    </Marker>
+                ))}
+            </MapView>
+            {mapRef.current && <LocateUserButton mapRef={mapRef} userPosition={initialPosition} />}
+        </>
     );
 };
 
