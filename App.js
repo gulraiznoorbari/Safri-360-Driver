@@ -11,6 +11,7 @@ import { PersistGate } from "redux-persist/integration/react";
 
 import { auth } from "./firebase/config";
 import { FirebaseProvider } from "./contexts/FirebaseContext";
+import { MapProvider } from "./contexts/MapContext";
 import { store, persistor } from "./store/index";
 import { selectUserType } from "./store/slices/userSlice";
 import FontLoader from "./components/FontLoader";
@@ -70,25 +71,27 @@ const App = () => {
     return (
         <GestureHandlerRootView style={{ flex: 1 }}>
             <FirebaseProvider>
-                <FontLoader>
-                    <SafeAreaProvider>
-                        <StatusBar barStyle="default" animated={true} />
-                        {userType === "RentACarOwner" ? (
-                            <RentACarOwnerScreens />
-                        ) : userType === "Driver" ? (
-                            <DriverScreens />
-                        ) : (
-                            <NavigationContainer ref={() => navigationRef}>
-                                <Stack.Navigator
-                                    initialRouteName="WelcomeScreen"
-                                    screenOptions={{ headerShown: false, animationEnabled: false }}
-                                >
-                                    <Stack.Screen name="WelcomeScreen" component={WelcomeScreen} />
-                                </Stack.Navigator>
-                            </NavigationContainer>
-                        )}
-                    </SafeAreaProvider>
-                </FontLoader>
+                <MapProvider>
+                    <FontLoader>
+                        <SafeAreaProvider>
+                            <StatusBar barStyle="default" animated={true} />
+                            {userType === "RentACarOwner" ? (
+                                <RentACarOwnerScreens />
+                            ) : userType === "Driver" ? (
+                                <DriverScreens />
+                            ) : (
+                                <NavigationContainer ref={() => navigationRef}>
+                                    <Stack.Navigator
+                                        initialRouteName="WelcomeScreen"
+                                        screenOptions={{ headerShown: false, animationEnabled: false }}
+                                    >
+                                        <Stack.Screen name="WelcomeScreen" component={WelcomeScreen} />
+                                    </Stack.Navigator>
+                                </NavigationContainer>
+                            )}
+                        </SafeAreaProvider>
+                    </FontLoader>
+                </MapProvider>
             </FirebaseProvider>
         </GestureHandlerRootView>
     );

@@ -1,9 +1,12 @@
 import { StyleSheet, TouchableOpacity } from "react-native";
 import MaterialIcons from "react-native-vector-icons/MaterialIcons";
 
+import { useMapContext } from "../../contexts/MapContext";
 import { moveCameraToCenter } from "../../utils/moveCameraToCenter";
 
-const LocateUserButton = ({ mapRef, userPosition }) => {
+const LocateUserButton = ({ userPosition }) => {
+    const { mapRef } = useMapContext();
+
     return (
         <TouchableOpacity style={styles.container} onPress={() => moveCameraToCenter(mapRef, userPosition)}>
             <MaterialIcons name="my-location" size={25} color="#3f3f3f" style={styles.icon} />

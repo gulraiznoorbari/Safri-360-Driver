@@ -6,6 +6,7 @@ import { useSelector } from "react-redux";
 import { ref, onValue } from "firebase/database";
 
 import { dbRealtime } from "../firebase/config";
+import { useMapContext } from "../contexts/MapContext";
 import { selectUser } from "../store/slices/userSlice";
 import { selectOrigin } from "../store/slices/navigationSlice";
 import { humanPhoneNumber } from "../utils/humanPhoneNumber";
@@ -14,7 +15,7 @@ import LocateUserButton from "./Buttons/LocateUserButton";
 const HomeMap = ({ initialPosition }) => {
     const [drivers, setDrivers] = useState([]);
 
-    const mapRef = useRef(null);
+    const { mapRef } = useMapContext();
     const user = useSelector(selectUser);
     const origin = useSelector(selectOrigin);
 
@@ -93,7 +94,7 @@ const HomeMap = ({ initialPosition }) => {
                     </Marker>
                 ))}
             </MapView>
-            {mapRef.current && <LocateUserButton mapRef={mapRef} userPosition={initialPosition} />}
+            {mapRef.current && <LocateUserButton userPosition={initialPosition} />}
         </>
     );
 };

@@ -3,6 +3,7 @@ import { StyleSheet, View, Alert, BackHandler, Dimensions, PermissionsAndroid } 
 import { useDispatch } from "react-redux";
 import Geolocation from "react-native-geolocation-service";
 
+import { useMapContext } from "../contexts/MapContext";
 import { moveCameraToCenter } from "../utils/moveCameraToCenter";
 import { setOrigin } from "../store/slices/navigationSlice";
 import DrawerMenuButton from "../components/Buttons/DrawerMenuButton";
@@ -21,7 +22,7 @@ const HomeScreen = ({ navigation }) => {
     const [selectedRide, setSelectedRide] = useState({});
 
     const dispatch = useDispatch();
-    const mapRef = useRef(null);
+    const { mapRef } = useMapContext();
 
     useEffect(() => {
         dispatch(setOrigin(null));
