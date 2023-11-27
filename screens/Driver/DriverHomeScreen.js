@@ -1,5 +1,4 @@
-import { GOOGLE_MAPS_API_KEY } from "@env";
-import { useState, useEffect, useLayoutEffect, useRef } from "react";
+import { useState, useEffect, useLayoutEffect } from "react";
 import {
     StyleSheet,
     Dimensions,
@@ -8,7 +7,6 @@ import {
     Alert,
     Switch,
     Keyboard,
-    TouchableOpacity,
     BackHandler,
     PermissionsAndroid,
     TouchableWithoutFeedback,
@@ -16,17 +14,16 @@ import {
 } from "react-native";
 import { useSelector, useDispatch } from "react-redux";
 import { ref, update } from "firebase/database";
-import MapView, { PROVIDER_GOOGLE, Marker, AnimatedRegion, Polyline } from "react-native-maps";
+import MapView, { PROVIDER_GOOGLE, Marker } from "react-native-maps";
 import Geolocation from "react-native-geolocation-service";
-import MapViewDirections from "react-native-maps-directions";
-import haversine from "haversine";
 
 import { dbRealtime, geoFire } from "../../firebase/config";
-import { useFirebase } from "../../contexts/FirebaseContext";
-import { selectDriver, setDriver, resetDriver } from "../../store/slices/driverSlice";
-import { setOrigin, selectOrigin, setDestination, selectDestination } from "../../store/slices/navigationSlice";
+import { useMapContext } from "../../contexts/MapContext";
+import { selectDriver, setDriver } from "../../store/slices/driverSlice";
+import { setOrigin, selectOrigin, setDestination } from "../../store/slices/navigationSlice";
 import { setCurrentUserLocation, selectCurrentUserLocation } from "../../store/slices/locationSlice";
 import DrawerMenuButton from "../../components/Buttons/DrawerMenuButton";
+import LocateUserButton from "../../components/Buttons/LocateUserButton";
 import { moveCameraToCenter } from "../../utils/moveCameraToCenter";
 
 const { width, height } = Dimensions.get("window");
@@ -35,29 +32,19 @@ const LATITUDE_DELTA = 0.03;
 const LONGITUDE_DELTA = LATITUDE_DELTA * ASPECT_RATIO;
 
 const DriverHomeScreen = ({ navigation }) => {
-    const [routeCoordinates, setRouteCoordinates] = useState([]);
-    const [prevLatLng, setPrevLatLng] = useState({});
-    const [distanceTravelled, setDistanceTravelled] = useState(0);
     const [tracking, setTracking] = useState(false);
-    const { logout } = useFirebase();
+    const [driverPIN, setDriverPIN] = useState("");
+    const { mapRef } = useMapContext();
 
     const currentUserLocation = useSelector(selectCurrentUserLocation);
     const origin = useSelector(selectOrigin);
-    const destination = useSelector(selectDestination);
     const driver = useSelector(selectDriver);
     const dispatch = useDispatch();
-    const mapRef = useRef(null);
-    const markerRef = useRef(null);
+    const driverPINCODE = driver.pinCode;
 
     const [region, setRegion] = useState({
         latitude: currentUserLocation ? currentUserLocation.latitude : 0,
         longitude: currentUserLocation ? currentUserLocation.longitude : 0,
-        latitudeDelta: LATITUDE_DELTA,
-        longitudeDelta: LONGITUDE_DELTA,
-    });
-    const getMapRegion = () => ({
-        latitude: region.latitude,
-        longitude: region.longitude,
         latitudeDelta: LATITUDE_DELTA,
         longitudeDelta: LONGITUDE_DELTA,
     });
@@ -69,9 +56,10 @@ const DriverHomeScreen = ({ navigation }) => {
     }, [navigation]);
 
     useEffect(() => {
-        console.log("Is driver online? ", driver.isOnline);
         dispatch(setOrigin(null));
         dispatch(setDestination(null));
+        const driverPIN = ref(dbRealtime, "Drivers/" + driverPINCODE);
+        setDriverPIN(driverPIN.key);
         if (driver.isOnline) getLocation();
 
         BackHandler.addEventListener("hardwareBackPress", restrictGoingBack);
@@ -83,9 +71,9 @@ const DriverHomeScreen = ({ navigation }) => {
     useEffect(() => {
         if (driver.isOnline) {
             dispatch(setDriver({ isOnline: driver.isOnline }));
-            driverIsOnline();
+            driverIsOnline(driverPIN);
         } else {
-            driverIsOffline();
+            driverIsOffline(driverPIN);
         }
     }, [driver.isOnline]);
 
@@ -93,42 +81,6 @@ const DriverHomeScreen = ({ navigation }) => {
         const IsOnline = !driver.isOnline;
         dispatch(setDriver({ isOnline: IsOnline, status: IsOnline ? "Online" : "Offline" }));
     };
-
-    useEffect(() => {
-        const calcDistance = (newLatLng) => {
-            return haversine(prevLatLng, newLatLng) || 0;
-        };
-
-        const watchId = Geolocation.watchPosition(
-            (position) => {
-                console.log("Watch Position Called");
-                const { latitude, longitude } = position.coords;
-                // geoFire.set(user.uid, [latitude, longitude]);
-                const updatedCoordinates = { latitude: latitude, longitude: longitude };
-                console.log("UpdatedCoordinates: ", updatedCoordinates);
-                if (markerRef.current) {
-                    markerRef.current?.animateMarkerToCoordinate(updatedCoordinates, 500);
-                }
-
-                setRegion({
-                    ...region,
-                    latitude: updatedCoordinates.latitude,
-                    longitude: updatedCoordinates.longitude,
-                });
-                setRouteCoordinates([...routeCoordinates, updatedCoordinates]);
-                setDistanceTravelled(distanceTravelled + calcDistance(updatedCoordinates));
-                setPrevLatLng(updatedCoordinates);
-            },
-            (error) => console.log("Error from Watch Position: ", error),
-            {
-                enableHighAccuracy: true,
-                timeout: 20000,
-                maximumAge: 1000,
-                distanceFilter: 3,
-            },
-        );
-        return () => Geolocation.clearWatch(watchId);
-    }, [region.latitude, region.longitude, tracking]);
 
     const locationPermission = () =>
         new Promise((resolve, reject) => {
@@ -151,10 +103,8 @@ const DriverHomeScreen = ({ navigation }) => {
             Geolocation.getCurrentPosition(
                 (position) => {
                     const { latitude, longitude } = position.coords;
-                    console.log("Latitude: ", latitude);
-                    console.log("Longitude: ", longitude);
                     dispatch(setOrigin({ latitude: latitude, longitude: longitude }));
-                    // dispatch(setCurrentUserLocation({ latitude, longitude }));
+                    dispatch(setCurrentUserLocation({ latitude, longitude }));
                     moveCameraToCenter(mapRef, position.coords);
                     setTracking(true);
                 },
@@ -166,8 +116,8 @@ const DriverHomeScreen = ({ navigation }) => {
         }
     };
 
-    const driverIsOnline = () => {
-        const userRef = ref(dbRealtime, "Drivers/" + driver.pinCode);
+    const driverIsOnline = (driverPIN) => {
+        const userRef = ref(dbRealtime, "Drivers/" + driverPIN);
         update(userRef, { status: "Online" })
             .then(() => {
                 console.log("DriverStatus set to online");
@@ -177,24 +127,15 @@ const DriverHomeScreen = ({ navigation }) => {
             });
     };
 
-    const driverIsOffline = () => {
-        const userRef = ref(dbRealtime, "Drivers/" + driver.pinCode);
+    const driverIsOffline = (driverPIN) => {
+        const userRef = ref(dbRealtime, "Drivers/" + driverPIN);
         update(userRef, { status: "Offline" })
-            .then(() => {
-                console.log("DriverStatus set to offline");
-            })
             .then(() => {
                 console.log("DriverStatus set to offline");
             })
             .catch((error) => {
                 console.log("Error setting DriverStatus to offline: ", error);
             });
-    };
-
-    const handleSignOut = () => {
-        logout();
-        dispatch(resetDriver());
-        // navigation.navigate("WelcomeScreen");
     };
 
     const restrictGoingBack = () => {
@@ -209,11 +150,17 @@ const DriverHomeScreen = ({ navigation }) => {
         return true;
     };
 
+    const openDrawerMenu = () => {
+        navigation.openDrawer();
+    };
+
     return (
         <View style={styles.container}>
             {driver.isOnline ? (
                 <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-                    {currentUserLocation ? (
+                    <>
+                        <DrawerMenuButton action={() => openDrawerMenu()} />
+
                         <View style={styles.mainContainer}>
                             <View style={styles.mapContainer}>
                                 <MapView
@@ -222,43 +169,21 @@ const DriverHomeScreen = ({ navigation }) => {
                                     style={styles.map}
                                     provider={PROVIDER_GOOGLE}
                                     showsUserLocation={true}
+                                    showsMyLocationButton={false}
                                     followsUserLocation={true}
                                     loadingEnabled={true}
-                                    mapPadding={{ top: 0, right: 5, bottom: 5, left: 5 }}
+                                    loadingIndicatorColor="#A7E92F"
+                                    loadingBackgroundColor="#fff"
                                 >
-                                    <Polyline coordinates={routeCoordinates} strokeWidth={5} />
-                                    <Marker.Animated ref={markerRef} coordinate={getMapRegion()} />
-                                    {/* {origin && <Marker coordinate={origin} />} */}
-                                    {/* {destination && <Marker coordinate={destination} />} */}
-                                    {/* {origin && destination ? (
-                                    <MapViewDirections
-                                        origin={origin}
-                                        destination={destination}
-                                        apikey={GOOGLE_MAPS_API_KEY}
-                                        mode="DRIVING"
-                                        strokeColor="#000"
-                                        strokeWidth={2}
-                                        precision="high"
-                                        optimizeWaypoints={true}
-                                    />
-                                ) : null} */}
+                                    {currentUserLocation && origin && <Marker coordinate={origin} />}
                                 </MapView>
-                                <Text style={styles.distanceInfo}>
-                                    Distance Travelled: {parseFloat(distanceTravelled).toFixed(2)} km
-                                </Text>
+                                {mapRef?.current && <LocateUserButton userPosition={region} />}
                             </View>
                         </View>
-                    ) : (
-                        <View>
-                            <ActivityIndicator size="large" color="#000" />
-                        </View>
-                    )}
+                    </>
                 </TouchableWithoutFeedback>
             ) : (
                 <>
-                    <TouchableOpacity onPress={() => handleSignOut()}>
-                        <Text>Sign Out</Text>
-                    </TouchableOpacity>
                     <View style={styles.buttonInner}>
                         <Text style={styles.isOnlineSwitchText}>Go {driver.isOnline ? "Offline" : "Online"}</Text>
                         <Switch
@@ -292,14 +217,6 @@ const styles = StyleSheet.create({
     },
     map: {
         flex: 1,
-    },
-    distanceInfo: {
-        padding: 20,
-        backgroundColor: "#fff",
-        textAlign: "center",
-        fontSize: 18,
-        fontFamily: "SatoshiBlack",
-        fontWeight: "500",
     },
     buttonInner: {
         flexDirection: "column",
