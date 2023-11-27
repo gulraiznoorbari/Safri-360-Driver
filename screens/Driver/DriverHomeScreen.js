@@ -10,7 +10,6 @@ import {
     BackHandler,
     PermissionsAndroid,
     TouchableWithoutFeedback,
-    ActivityIndicator,
 } from "react-native";
 import { useSelector, useDispatch } from "react-redux";
 import { ref, update } from "firebase/database";
@@ -33,14 +32,13 @@ const LONGITUDE_DELTA = LATITUDE_DELTA * ASPECT_RATIO;
 
 const DriverHomeScreen = ({ navigation }) => {
     const [tracking, setTracking] = useState(false);
-    const [driverPIN, setDriverPIN] = useState("");
     const { mapRef } = useMapContext();
 
     const currentUserLocation = useSelector(selectCurrentUserLocation);
     const origin = useSelector(selectOrigin);
     const driver = useSelector(selectDriver);
     const dispatch = useDispatch();
-    const driverPINCODE = driver.pinCode;
+    const driverPIN = driver?.pinCode;
 
     const [region, setRegion] = useState({
         latitude: currentUserLocation ? currentUserLocation.latitude : 0,
@@ -58,8 +56,6 @@ const DriverHomeScreen = ({ navigation }) => {
     useEffect(() => {
         dispatch(setOrigin(null));
         dispatch(setDestination(null));
-        const driverPIN = ref(dbRealtime, "Drivers/" + driverPINCODE);
-        setDriverPIN(driverPIN.key);
         if (driver.isOnline) getLocation();
 
         BackHandler.addEventListener("hardwareBackPress", restrictGoingBack);
@@ -160,7 +156,6 @@ const DriverHomeScreen = ({ navigation }) => {
                 <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
                     <>
                         <DrawerMenuButton action={() => openDrawerMenu()} />
-
                         <View style={styles.mainContainer}>
                             <View style={styles.mapContainer}>
                                 <MapView
