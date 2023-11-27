@@ -14,6 +14,7 @@ import { FirebaseProvider } from "./contexts/FirebaseContext";
 import { MapProvider } from "./contexts/MapContext";
 import { store, persistor } from "./store/index";
 import { selectUserType } from "./store/slices/userSlice";
+import { selectDriver } from "./store/slices/driverSlice";
 import FontLoader from "./components/FontLoader";
 import DrawerNavigation from "./navigation/DrawerNavigation";
 import WelcomeScreen from "./screens/WelcomeScreen";
@@ -35,7 +36,6 @@ import DriverInfoInputScreen from "./screens/Driver/DriverInfoInputScreen";
 import DisplayDriversScreen from "./screens/DrawerScreens/Manage/Drivers/DisplayDriversScreen";
 import DriverDetailScreen from "./screens/DrawerScreens/Manage/Drivers/DriverDetailScreen";
 import AddDriver from "./screens/DrawerScreens/Manage/Drivers/AddDriver";
-import DriverHomeScreen from "./screens/Driver/DriverHomeScreen";
 
 const Stack = createStackNavigator();
 navigator.geolocation = require("react-native-geolocation-service");
@@ -127,15 +127,17 @@ const RentACarOwnerScreens = () => {
 };
 
 const DriverScreens = () => {
+    const driver = useSelector(selectDriver);
+
     return (
         <NavigationContainer>
             <Stack.Navigator
-                initialRouteName={"DriverLogin"}
+                initialRouteName={driver.isLoggedIn ? "Home" : "DriverLogin"}
                 screenOptions={{ headerShown: false, animationEnabled: false }}
             >
+                <Stack.Screen name="DriverHomeScreen" component={DrawerNavigation} />
                 <Stack.Screen name="DriverLogin" component={DriverLoginScreen} />
                 <Stack.Screen name="DriverInfoInput" component={DriverInfoInputScreen} />
-                <Stack.Screen name="DriverHomeScreen" component={DriverHomeScreen} />
             </Stack.Navigator>
         </NavigationContainer>
     );

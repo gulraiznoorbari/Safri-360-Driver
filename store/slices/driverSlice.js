@@ -9,6 +9,7 @@ const initialState = {
         pinCode: null,
         status: null,
         isOnline: false,
+        isLoggedIn: false,
     },
 };
 

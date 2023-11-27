@@ -12,10 +12,10 @@ import {
     updatePassword,
     signOut,
 } from "firebase/auth";
-import { useDispatch } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
 
 import { auth } from "../firebase/config";
-import { setUser, setUserType } from "../store/slices/userSlice";
+import { setUser, setUserType, selectUserType } from "../store/slices/userSlice";
 
 const FirebaseContext = createContext();
 
@@ -24,22 +24,25 @@ export function useFirebase() {
 }
 
 export function FirebaseProvider({ children }) {
+    const userType = useSelector(selectUserType);
     const dispatch = useDispatch();
 
     const [currentUser, setCurrentUser] = useState(null);
 
     useEffect(() => {
-        let prevState;
-        const unsubscribe = onAuthStateChanged(auth, (user) => {
-            setCurrentUser(user);
-            console.log("User: ", user);
-            console.log("Authstate Changed!");
-            if (user) {
-                prevState = prevState || user;
-                console.log("User is signed in!");
-            }
-        });
-        return () => unsubscribe();
+        if (userType === "RentACarOwner") {
+            let prevState;
+            const unsubscribe = onAuthStateChanged(auth, (user) => {
+                setCurrentUser(user);
+                console.log("User: ", user);
+                console.log("Authstate Changed!");
+                if (user) {
+                    prevState = prevState || user;
+                    console.log("User is signed in!");
+                }
+            });
+            return () => unsubscribe();
+        }
     }, []);
 
     const signUp = (email, password, onSuccess, onError) => {

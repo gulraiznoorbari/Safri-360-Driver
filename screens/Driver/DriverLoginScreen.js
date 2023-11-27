@@ -83,8 +83,8 @@ const DriverLoginScreen = ({ navigation }) => {
                             dispatch(setDriver({ phoneNumber: fullNumber, pinCode: pinCode }));
                             phoneNumberFound = true;
                             driverFound = true;
-                            console.log("key: ", key);
                             setTimeout(() => {
+                                dispatch(setDriver({ isLoggedIn: true }));
                                 navigation.navigate("DriverHomeScreen");
                             }, 100);
                             handleClear();
