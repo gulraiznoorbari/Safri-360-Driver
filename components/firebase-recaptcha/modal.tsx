@@ -1,13 +1,5 @@
 import * as React from "react";
-import {
-    ActivityIndicator,
-    Button,
-    Modal,
-    SafeAreaView,
-    StyleSheet,
-    Text,
-    View,
-} from "react-native";
+import { ActivityIndicator, Button, Modal, SafeAreaView, StyleSheet, Text, View } from "react-native";
 import { CodedError } from "expo-modules-core";
 
 import { FirebaseAuthApplicationVerifier, FirebaseRecaptcha } from ".";
@@ -151,8 +143,7 @@ export class FirebaseRecaptchaVerifierModal
 
     render() {
         const { title, cancelLabel, attemptInvisibleVerification, ...otherProps } = this.props;
-        const { visible, visibleLoaded, invisibleLoaded, invisibleVerify, invisibleKey } =
-            this.state;
+        const { visible, visibleLoaded, invisibleLoaded, invisibleVerify, invisibleKey } = this.state;
         return (
             <View style={styles.container}>
                 {attemptInvisibleVerification && (
@@ -178,7 +169,7 @@ export class FirebaseRecaptchaVerifierModal
                     <SafeAreaView style={styles.modalContainer}>
                         <View style={styles.header}>
                             <Text style={styles.title}>{title}</Text>
-                            <View style={styles.cancel}>
+                            {/* <View style={styles.cancel}>
                                 <Button
                                     title={
                                         cancelLabel ||
@@ -186,7 +177,7 @@ export class FirebaseRecaptchaVerifierModal
                                     }
                                     onPress={this.cancel}
                                 />
-                            </View>
+                            </View> */}
                         </View>
                         <View style={styles.content}>
                             <FirebaseRecaptcha
@@ -223,7 +214,7 @@ const styles = StyleSheet.create({
     },
     header: {
         backgroundColor: "#FBFBFB",
-        height: 44,
+        height: 52,
         flexDirection: "row",
         justifyContent: "center",
         alignItems: "center",
@@ -236,7 +227,9 @@ const styles = StyleSheet.create({
         justifyContent: "center",
     },
     title: {
-        fontWeight: "bold",
+        fontSize: 18,
+        fontFamily: "SatoshiBlack",
+        fontWeight: "600",
     },
     content: {
         flex: 1,
