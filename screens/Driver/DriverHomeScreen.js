@@ -66,11 +66,13 @@ const DriverHomeScreen = ({ navigation }) => {
     }, []);
 
     useEffect(() => {
-        if (driver.isOnline) {
-            dispatch(setDriver({ isOnline: driver.isOnline }));
-            driverIsOnline(driverPIN);
-        } else {
-            driverIsOffline(driverPIN);
+        if (driverPIN) {
+            if (driver.isOnline) {
+                dispatch(setDriver({ isOnline: driver.isOnline }));
+                driverIsOnline(driverPIN);
+            } else {
+                driverIsOffline(driverPIN);
+            }
         }
     }, [driver.isOnline]);
 
