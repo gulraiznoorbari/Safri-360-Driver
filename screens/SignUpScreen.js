@@ -19,12 +19,14 @@ const SignUpScreen = ({ navigation }) => {
 
     const [firstName, setFirstName] = useState("");
     const [lastName, setLastName] = useState("");
+    const [companyName, setCompanyName] = useState("");
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [confirmPassword, setConfirmPassword] = useState("");
 
     const [firstNameError, setFirstNameError] = useState("");
     const [lastNameError, setLastNameError] = useState("");
+    const [companyNameError, setCompanyNameError] = useState("");
     const [emailError, setEmailError] = useState("");
     const [passwordError, setPasswordError] = useState("");
     const [confirmPasswordError, setConfirmPasswordError] = useState("");
@@ -64,6 +66,7 @@ const SignUpScreen = ({ navigation }) => {
         set(userRef, {
             firstName: firstName,
             lastName: lastName,
+            companyName: companyName,
             userName: firstName,
             email: email,
             photoURL: DEFAULT_PROFILE_IMAGE,
@@ -90,6 +93,7 @@ const SignUpScreen = ({ navigation }) => {
         // Clear previous errors
         setFirstNameError("");
         setLastNameError("");
+        setCompanyNameError("");
         setEmailError("");
         setPasswordError("");
         setConfirmPasswordError("");
@@ -103,6 +107,11 @@ const SignUpScreen = ({ navigation }) => {
 
         if (!lastName.trim()) {
             setLastNameError("Last Name is required");
+            isValid = false;
+        }
+
+        if (!companyName.trim()) {
+            setCompanyNameError("Company Name is required");
             isValid = false;
         }
 
@@ -139,6 +148,7 @@ const SignUpScreen = ({ navigation }) => {
                 setUser({
                     firstName: firstName,
                     lastName: lastName,
+                    companyName: companyName,
                     userName: firstName,
                     email: email,
                     photoURL: DEFAULT_PROFILE_IMAGE,
@@ -182,6 +192,17 @@ const SignUpScreen = ({ navigation }) => {
                     textContentType={"name"}
                 />
                 {lastNameError && <ErrorMessage errorMessage={lastNameError} />}
+
+                <ClearableInput
+                    label={"Company Name"}
+                    placeholder={"Enter Company Name"}
+                    value={companyName}
+                    setValue={setCompanyName}
+                    hideInput={false}
+                    autoComplete={"organization"}
+                    textContentType={"organizationName"}
+                />
+                {companyNameError && <ErrorMessage errorMessage={companyNameError} />}
 
                 <ClearableInput
                     label={"Email"}

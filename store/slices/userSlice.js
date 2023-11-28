@@ -8,6 +8,7 @@ const initialState = {
         uid: null,
         firstName: null,
         lastName: null,
+        companyName: null,
         userName: null,
         email: null,
         phoneNumber: null,

@@ -66,33 +66,41 @@ const HomeMap = ({ initialPosition }) => {
                 loadingBackgroundColor="#FFF"
             >
                 {origin && <Marker coordinate={origin} pinColor={"#A7E92F"} />}
-                {drivers.map((driver, index) => (
-                    <Marker
-                        key={index}
-                        coordinate={{ latitude: driver.location.latitude, longitude: driver.location.longitude }}
-                    >
-                        <MaterialIcons
-                            name="location-history"
-                            size={35}
-                            color={getMarkerColor(driver.status)}
-                            style={{
-                                borderRadius: 50,
-                                backgroundColor: "#fff",
-                            }}
-                        />
-                        <Callout style={styles.calloutContainer}>
-                            <View style={styles.callout}>
-                                <Text style={styles.driverName}>
-                                    {driver.firstName} {driver.lastName}
-                                </Text>
-                                <Text style={styles.driverPhoneNumber}>{humanPhoneNumber(driver.phoneNumber)}</Text>
-                                <Text style={[styles.driverStatus, { color: getMarkerColor(driver.status) }]}>
-                                    {driver.status}
-                                </Text>
-                            </View>
-                        </Callout>
-                    </Marker>
-                ))}
+                {drivers.map(
+                    (driver, index) =>
+                        driver.location && (
+                            <Marker
+                                key={index}
+                                coordinate={{
+                                    latitude: driver.location.latitude,
+                                    longitude: driver.location.longitude,
+                                }}
+                            >
+                                <MaterialIcons
+                                    name="location-history"
+                                    size={35}
+                                    color={getMarkerColor(driver.status)}
+                                    style={{
+                                        borderRadius: 50,
+                                        backgroundColor: "#fff",
+                                    }}
+                                />
+                                <Callout style={styles.calloutContainer}>
+                                    <View style={styles.callout}>
+                                        <Text style={styles.driverName}>
+                                            {driver.firstName} {driver.lastName}
+                                        </Text>
+                                        <Text style={styles.driverPhoneNumber}>
+                                            {humanPhoneNumber(driver.phoneNumber)}
+                                        </Text>
+                                        <Text style={[styles.driverStatus, { color: getMarkerColor(driver.status) }]}>
+                                            {driver.status}
+                                        </Text>
+                                    </View>
+                                </Callout>
+                            </Marker>
+                        ),
+                )}
             </MapView>
             {mapRef.current && <LocateUserButton userPosition={initialPosition} />}
         </>

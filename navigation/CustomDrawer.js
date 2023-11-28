@@ -63,7 +63,7 @@ const CustomDrawer = (props) => {
                             source={{ uri: user.photoURL ? user.photoURL : DEFAULT_PROFILE_IMAGE }}
                             style={styles.profileImage}
                         />
-                        <Text style={styles.userName}>{user.userName || "User Name"}</Text>
+                        <Text style={styles.userName}>{user.companyName || "Company Name"}</Text>
                     </View>
                 ) : (
                     userType === "Driver" && (

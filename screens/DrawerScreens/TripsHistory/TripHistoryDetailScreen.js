@@ -1,15 +1,18 @@
-import { useLayoutEffect } from "react";
+import { useLayoutEffect, useEffect, useState } from "react";
 import { StyleSheet, Text, View, Image, ScrollView } from "react-native";
 import { Button, Divider } from "react-native-elements";
 import Ionicons from "react-native-vector-icons/Ionicons";
 import AntDesign from "react-native-vector-icons/AntDesign";
 import moment from "moment";
+import { ref, onValue } from "firebase/database";
 
+import { dbRealtime } from "../../../firebase/config";
 import { LicensePlateIcon } from "../../../assets";
 import { humanPhoneNumber } from "../../../utils/humanPhoneNumber";
 
 const TripHistoryDetailScreen = ({ route, navigation }) => {
     const { data } = route.params;
+    const [driverInfo, setDriverInfo] = useState([]);
 
     useLayoutEffect(() => {
         navigation.setOptions({
@@ -26,6 +29,19 @@ const TripHistoryDetailScreen = ({ route, navigation }) => {
             },
         });
     }, [navigation]);
+
+    useEffect(() => {
+        const driversRef = ref(dbRealtime, "Drivers");
+        onValue(driversRef, (snapshot) => {
+            const drivers = snapshot.val();
+            const driverKeys = Object.keys(drivers);
+            driverKeys.forEach((pinCode) => {
+                if (pinCode === data?.driverInfo.pinCode) {
+                    setDriverInfo(drivers[pinCode]);
+                }
+            });
+        });
+    }, []);
 
     return (
         <ScrollView contentContainerStyle={styles.container} showsVerticalScrollIndicator={false}>
@@ -93,21 +109,21 @@ const TripHistoryDetailScreen = ({ route, navigation }) => {
                 </View>
                 <View style={styles.infoContainer}>
                     <AntDesign name="idcard" size={26} color="#333" />
-                    <Text style={styles.infoText}>{data?.driverInfo.CNIC}</Text>
+                    <Text style={styles.infoText}>{driverInfo.CNIC}</Text>
                 </View>
                 <View style={styles.infoContainer}>
                     <Ionicons name="person-outline" size={26} color="#333" />
                     <Text style={styles.infoText}>
-                        {data?.driverInfo.firstName} {data?.driverInfo.lastName}
+                        {driverInfo.firstName} {driverInfo.lastName}
                     </Text>
                 </View>
                 <View style={styles.infoContainer}>
                     <Ionicons name="call-outline" size={26} color="#333" />
-                    <Text style={styles.infoText}>{humanPhoneNumber(data?.driverInfo.phoneNumber)}</Text>
+                    <Text style={styles.infoText}>{humanPhoneNumber(driverInfo.phoneNumber)}</Text>
                 </View>
                 <View style={styles.infoContainer}>
                     <Ionicons name="key-outline" size={26} color="#333" />
-                    <Text style={styles.infoText}>PIN: {data?.driverInfo.pinCode}</Text>
+                    <Text style={styles.infoText}>PIN: {driverInfo.pinCode}</Text>
                 </View>
             </View>
 
