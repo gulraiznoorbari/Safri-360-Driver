@@ -110,7 +110,7 @@ const PhoneRegisterScreen = ({ navigation }) => {
 
     return (
         <KeyboardAvoidingWrapper>
-            <SafeAreaView>
+            <SafeAreaView style={styles.mainContainer}>
                 <View style={styles.headingContainer}>
                     <Text style={styles.headingText}>Enter your phone number</Text>
                 </View>
@@ -172,6 +172,10 @@ const PhoneRegisterScreen = ({ navigation }) => {
 };
 
 const styles = StyleSheet.create({
+    mainContainer: {
+        flex: 1,
+        backgroundColor: "#fff",
+    },
     headingContainer: {
         paddingHorizontal: 30,
         paddingTop: 30,
