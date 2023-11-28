@@ -126,7 +126,7 @@ const AvailableDriversList = ({ isModalVisible, setModalVisible, selectedRide })
         update(ridesRef, {
             rentACarUID: user.uid,
             status: "assigned",
-            driverInfo: driverInfo,
+            assignedDriverPIN: driverInfo.pinCode,
         })
             .then(() => {
                 changeDriverStatus(driverInfo.pinCode);
