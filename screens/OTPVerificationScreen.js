@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from "react";
-import { StyleSheet, View, Text, TextInput, Pressable } from "react-native";
+import { StyleSheet, View, Text, TextInput, Pressable, BackHandler, Alert } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { PhoneAuthProvider, linkWithCredential } from "firebase/auth";
 import { ref, set, child } from "firebase/database";
@@ -39,6 +39,10 @@ const OTPVerificationScreen = ({ navigation }) => {
         if (!verificationSent) {
             sendVerificationCode();
         }
+        BackHandler.addEventListener("hardwareBackPress", restrictGoingBack);
+        return () => {
+            BackHandler.removeEventListener("hardwareBackPress", restrictGoingBack);
+        };
     }, []);
 
     const addToRef = (element) => {
@@ -137,6 +141,18 @@ const OTPVerificationScreen = ({ navigation }) => {
         };
         sendPhoneVerificationCode(formattedNumber, recaptchaVerifier.current, onSuccess, onError);
         setVerificationSent(true);
+    };
+
+    const restrictGoingBack = () => {
+        Alert.alert("Hold on!", "Are you sure you want to go back?", [
+            {
+                text: "Cancel",
+                onPress: () => null,
+                style: "cancel",
+            },
+            { text: "YES", onPress: () => BackHandler.exitApp() },
+        ]);
+        return true;
     };
 
     return (
