@@ -135,10 +135,10 @@ const TourScreens = () => {
     return (
         <NavigationContainer>
             <Stack.Navigator
-                initialRouteName={auth.currentUser !== null ? "HomeScreen" : "Login"}
+                initialRouteName={auth.currentUser !== null ? "Home" : "Login"}
                 screenOptions={{ headerShown: false, animationEnabled: false }}
             >
-                <Stack.Screen name="HomeScreen" component={ToursHomeScreen} />
+                <Stack.Screen name="HomeScreen" component={DrawerNavigation} />
                 <Stack.Screen name="Login" component={LoginScreen} />
                 <Stack.Screen name="SignUpScreenNames" component={SignUpScreenNames} />
                 <Stack.Screen name="SignUpScreenCredentials" component={SignUpScreenCredentials} />

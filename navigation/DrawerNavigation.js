@@ -5,6 +5,7 @@ import { useSelector } from "react-redux";
 
 import { selectUserType } from "../store/slices/userSlice";
 import HomeScreen from "../screens/HomeScreen";
+import ToursHomeScreen from "../screens/Tours/ToursHomeScreen";
 import DriverHomeScreen from "../screens/Driver/DriverHomeScreen";
 import TripsHistoryScreen from "../screens/DrawerScreens/TripsHistory/TripsHistoryScreen";
 import SettingsScreen from "../screens/DrawerScreens/Settings/SettingsScreen";
@@ -35,6 +36,16 @@ const DrawerNavigation = () => {
                 <Drawer.Screen
                     name="Home"
                     component={HomeScreen}
+                    options={{
+                        drawerIcon: ({ color }) => (
+                            <Ionicons name="home-outline" size={22} color={color} style={styles.icon} />
+                        ),
+                    }}
+                />
+            ) : userType === "ToursCompany" ? (
+                <Drawer.Screen
+                    name="Home"
+                    component={ToursHomeScreen}
                     options={{
                         drawerIcon: ({ color }) => (
                             <Ionicons name="home-outline" size={22} color={color} style={styles.icon} />
