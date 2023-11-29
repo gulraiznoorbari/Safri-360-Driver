@@ -71,7 +71,7 @@ const PasswordResetScreen = ({ navigation }) => {
                 <TransparentButton
                     text="Don't have an account? Sign up"
                     navigation={navigation}
-                    navigateTo={"SignUp"}
+                    navigateTo={"SignUpNames"}
                 />
             </TouchableWithoutFeedback>
         </SafeAreaView>

@@ -36,7 +36,7 @@ const TripHistoryDetailScreen = ({ route, navigation }) => {
             const drivers = snapshot.val();
             const driverKeys = Object.keys(drivers);
             driverKeys.forEach((pinCode) => {
-                if (pinCode === data?.driverInfo.pinCode) {
+                if (pinCode === data?.assignedDriverPIN) {
                     setDriverInfo(drivers[pinCode]);
                 }
             });

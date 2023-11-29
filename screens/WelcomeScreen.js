@@ -17,6 +17,18 @@ const WelcomeScreen = () => {
             <View style={styles.buttonsContainer}>
                 <Text style={styles.subHeading}>Get Started as a</Text>
                 <PrimaryButton
+                    text="Tour Company"
+                    action={() => {
+                        dispatch(setUserType("ToursCompany"));
+                    }}
+                    disabled={false}
+                    buttonStyle={{
+                        backgroundColor: "#A7E92F",
+                        padding: 17,
+                        borderRadius: 10,
+                    }}
+                />
+                <PrimaryButton
                     text="Rent A Car Owner"
                     action={() => {
                         dispatch(setUserType("RentACarOwner"));

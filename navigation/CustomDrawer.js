@@ -6,7 +6,7 @@ import { DrawerContentScrollView, DrawerItemList } from "@react-navigation/drawe
 import { useSelector, useDispatch } from "react-redux";
 
 import { useFirebase } from "../contexts/FirebaseContext";
-import { selectUser, selectUserType } from "../store/slices/userSlice";
+import { selectUser, selectUserType, resetUser } from "../store/slices/userSlice";
 import { setDriver, selectDriver, resetDriver } from "../store/slices/driverSlice";
 
 const CustomDrawer = (props) => {
@@ -50,14 +50,14 @@ const CustomDrawer = (props) => {
     };
 
     const handleSignOut = () => {
-        userType === "Driver" && dispatch(resetDriver());
+        userType === "Driver" ? dispatch(resetDriver()) : dispatch(resetUser());
         logout();
     };
 
     return (
         <View style={styles.mainContainer}>
             <DrawerContentScrollView {...props} contentContainerStyle={{ backgroundColor: "#9c9c9c" }}>
-                {userType === "RentACarOwner" ? (
+                {userType === "RentACarOwner" || userType === "ToursCompany" ? (
                     <View style={{ padding: 20 }}>
                         <Image
                             source={{ uri: user.photoURL ? user.photoURL : DEFAULT_PROFILE_IMAGE }}

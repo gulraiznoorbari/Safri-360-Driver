@@ -19,7 +19,8 @@ import FontLoader from "./components/FontLoader";
 import DrawerNavigation from "./navigation/DrawerNavigation";
 import WelcomeScreen from "./screens/WelcomeScreen";
 import LoginScreen from "./screens/LoginScreen";
-import SignUpScreen from "./screens/SignUpScreen";
+import SignUpScreenNames from "./screens/SignUpScreenNames";
+import SignUpScreenCredentials from "./screens/SignUpScreenCredentials";
 import PasswordResetScreen from "./screens/PasswordResetScreen";
 import PhoneRegisterScreen from "./screens/PhoneRegisterScreen";
 import OTPVerificationScreen from "./screens/OTPVerificationScreen";
@@ -36,6 +37,7 @@ import DriverInfoInputScreen from "./screens/Driver/DriverInfoInputScreen";
 import DisplayDriversScreen from "./screens/DrawerScreens/Manage/Drivers/DisplayDriversScreen";
 import DriverDetailScreen from "./screens/DrawerScreens/Manage/Drivers/DriverDetailScreen";
 import AddDriver from "./screens/DrawerScreens/Manage/Drivers/AddDriver";
+import ToursHomeScreen from "./screens/Tours/ToursHomeScreen";
 
 const Stack = createStackNavigator();
 navigator.geolocation = require("react-native-geolocation-service");
@@ -77,6 +79,8 @@ const App = () => {
                             <StatusBar barStyle="default" animated={true} />
                             {userType === "RentACarOwner" ? (
                                 <RentACarOwnerScreens />
+                            ) : userType === "ToursCompany" ? (
+                                <TourScreens />
                             ) : userType === "Driver" ? (
                                 <DriverScreens />
                             ) : (
@@ -106,7 +110,8 @@ const RentACarOwnerScreens = () => {
             >
                 <Stack.Screen name="HomeScreen" component={DrawerNavigation} />
                 <Stack.Screen name="Login" component={LoginScreen} />
-                <Stack.Screen name="SignUp" component={SignUpScreen} />
+                <Stack.Screen name="SignUpScreenNames" component={SignUpScreenNames} />
+                <Stack.Screen name="SignUpScreenCredentials" component={SignUpScreenCredentials} />
                 <Stack.Screen name="PasswordReset" component={PasswordResetScreen} />
                 <Stack.Screen name="PhoneRegisterScreen" component={PhoneRegisterScreen} />
                 <Stack.Screen name="OTPVerificationScreen" component={OTPVerificationScreen} />
@@ -121,6 +126,25 @@ const RentACarOwnerScreens = () => {
                 <Stack.Screen name="EditCarScreen" component={EditCarScreen} />
                 <Stack.Screen name="CarsDetailScreen" component={CarsDetailScreen} />
                 <Stack.Screen name="DriverDetailScreen" component={DriverDetailScreen} />
+            </Stack.Navigator>
+        </NavigationContainer>
+    );
+};
+
+const TourScreens = () => {
+    return (
+        <NavigationContainer>
+            <Stack.Navigator
+                initialRouteName={auth.currentUser !== null ? "HomeScreen" : "Login"}
+                screenOptions={{ headerShown: false, animationEnabled: false }}
+            >
+                <Stack.Screen name="HomeScreen" component={ToursHomeScreen} />
+                <Stack.Screen name="Login" component={LoginScreen} />
+                <Stack.Screen name="SignUpScreenNames" component={SignUpScreenNames} />
+                <Stack.Screen name="SignUpScreenCredentials" component={SignUpScreenCredentials} />
+                <Stack.Screen name="PasswordReset" component={PasswordResetScreen} />
+                <Stack.Screen name="PhoneRegisterScreen" component={PhoneRegisterScreen} />
+                <Stack.Screen name="OTPVerificationScreen" component={OTPVerificationScreen} />
             </Stack.Navigator>
         </NavigationContainer>
     );

@@ -8,7 +8,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { FirebaseRecaptchaVerifierModal } from "../components/firebase-recaptcha/modal";
 import { useFirebase } from "../contexts/FirebaseContext";
 import firebaseConfig, { dbRealtime } from "../firebase/config";
-import { selectUser, setUser } from "../store/slices/userSlice";
+import { selectUser, setUser, selectUserType } from "../store/slices/userSlice";
 import { humanPhoneNumber } from "../utils/humanPhoneNumber";
 import KeyboardAvoidingWrapper from "../components/KeyboardAvoidingWrapper";
 import PrimaryButton from "../components/Buttons/PrimaryButton";
@@ -18,6 +18,7 @@ const OTPVerificationScreen = ({ navigation }) => {
     const { sendPhoneVerificationCode, currentUser, updateUserProfile } = useFirebase();
     const dispatch = useDispatch();
     const user = useSelector(selectUser);
+    const userType = useSelector(selectUserType);
     const phoneNumber = user.phoneNumber;
 
     const [code, setCode] = useState([...Array(CODE_LENGTH)]);
@@ -46,8 +47,8 @@ const OTPVerificationScreen = ({ navigation }) => {
         }
     };
 
-    const AddPhoneNumberToDB = (user) => {
-        const userRef = ref(dbRealtime, "Rent A Car/" + user.uid);
+    const AddPhoneNumberToDB = (user, DBNode) => {
+        const userRef = ref(dbRealtime, `${DBNode}/` + user.uid);
         const phoneNumberRef = child(userRef, "phoneNumber");
         set(phoneNumberRef, phoneNumber)
             .then(() => {
@@ -107,7 +108,9 @@ const OTPVerificationScreen = ({ navigation }) => {
             const credential = PhoneAuthProvider.credential(verificationId, code);
             let userData = await linkWithCredential(currentUser, credential);
             dispatch(setUser({ phoneNumberVerified: Boolean(credential) }));
-            AddPhoneNumberToDB(userData.user);
+            userType === "RentACarOwner"
+                ? AddPhoneNumberToDB(userData.user, "RentACarOwner")
+                : userType === "ToursCompany" && AddPhoneNumberToDB(userData.user, "Tours");
             updateUserProfile({
                 phoneNumber: phoneNumber,
             });
@@ -128,6 +131,7 @@ const OTPVerificationScreen = ({ navigation }) => {
             } else if (error.code == "auth/code-expired") {
                 handleMessage("Verification code has expired", "red");
             } else {
+                console.log(error);
                 handleMessage(`Error: ${error.message}`, "red");
             }
         };

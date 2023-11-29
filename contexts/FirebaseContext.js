@@ -30,7 +30,7 @@ export function FirebaseProvider({ children }) {
     const [currentUser, setCurrentUser] = useState(null);
 
     useEffect(() => {
-        if (userType === "RentACarOwner") {
+        if (userType === "RentACarOwner" || userType === "ToursCompany") {
             let prevState;
             const unsubscribe = onAuthStateChanged(auth, (user) => {
                 setCurrentUser(user);
