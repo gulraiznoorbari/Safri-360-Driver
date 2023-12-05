@@ -15,6 +15,8 @@ const ClearableInput = ({
     textContentType,
     onChangeCallback,
     editable,
+    multiline,
+    numberOfLines,
 }) => {
     const [focused, setFocus] = useState(false);
 
@@ -37,13 +39,19 @@ const ClearableInput = ({
             onFocus={() => setFocus(true)}
             onBlur={() => setFocus(false)}
             maxLength={maxLength ? maxLength : null}
+            multiline={multiline ? multiline : false}
+            numberOfLines={numberOfLines ? numberOfLines : 1}
             secureTextEntry={hideInput}
             autoComplete={autoComplete}
             textContentType={textContentType}
             keyboardType={KeyboardType ? KeyboardType : "default"}
             editable={editable ? editable : true}
-            inputStyle={styles.inputText}
-            inputContainerStyle={[styles.inputContainer, focused && styles.focusedInputContainer]}
+            inputStyle={[styles.inputText, multiline && { textAlignVertical: "top" }]}
+            inputContainerStyle={[
+                styles.inputContainer,
+                focused && styles.focusedInputContainer,
+                multiline && styles.multilineInputContainer,
+            ]}
             containerStyle={styles.containerStyle}
             labelStyle={styles.label}
             rightIcon={
@@ -80,6 +88,9 @@ const styles = StyleSheet.create({
         },
         shadowOpacity: 0.25,
         shadowRadius: 10,
+    },
+    multilineInputContainer: {
+        minHeight: 120,
     },
     inputText: {
         fontSize: 16,

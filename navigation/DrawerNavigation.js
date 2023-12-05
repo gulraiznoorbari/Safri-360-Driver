@@ -3,9 +3,10 @@ import Ionicons from "react-native-vector-icons/Ionicons";
 import { createDrawerNavigator } from "@react-navigation/drawer";
 import { useSelector } from "react-redux";
 
-import { selectUserType } from "../store/slices/userSlice";
+import { selectUserType } from "../store/slices/userTypeSlice";
 import HomeScreen from "../screens/HomeScreen";
 import ToursHomeScreen from "../screens/Tours/ToursHomeScreen";
+import ToursAnalyticsScreen from "../screens/Tours/ToursAnalyticsScreen";
 import DriverHomeScreen from "../screens/Driver/DriverHomeScreen";
 import TripsHistoryScreen from "../screens/DrawerScreens/TripsHistory/TripsHistoryScreen";
 import SettingsScreen from "../screens/DrawerScreens/Settings/SettingsScreen";
@@ -43,15 +44,50 @@ const DrawerNavigation = () => {
                     }}
                 />
             ) : userType === "ToursCompany" ? (
-                <Drawer.Screen
-                    name="Home"
-                    component={ToursHomeScreen}
-                    options={{
-                        drawerIcon: ({ color }) => (
-                            <Ionicons name="home-outline" size={22} color={color} style={styles.icon} />
-                        ),
-                    }}
-                />
+                <>
+                    <Drawer.Screen
+                        name="Home"
+                        component={ToursHomeScreen}
+                        options={{
+                            drawerIcon: ({ color }) => (
+                                <Ionicons name="home-outline" size={22} color={color} style={styles.icon} />
+                            ),
+                            headerShown: true,
+                            headerTitle: "Tours",
+                            headerTitleAlign: "center",
+                            headerTitleStyle: {
+                                fontSize: 20,
+                                fontFamily: "SatoshiBlack",
+                                fontWeight: "400",
+                            },
+                            headerStyle: {
+                                height: 60,
+                            },
+                            headerBackTitleVisible: false,
+                        }}
+                    />
+                    <Drawer.Screen
+                        name="Analytics"
+                        component={ToursAnalyticsScreen}
+                        options={{
+                            drawerIcon: ({ color }) => (
+                                <Ionicons name="analytics-outline" size={22} color={color} style={styles.icon} />
+                            ),
+                            headerShown: true,
+                            headerTitle: "Analytics",
+                            headerTitleAlign: "center",
+                            headerTitleStyle: {
+                                fontSize: 20,
+                                fontFamily: "SatoshiBlack",
+                                fontWeight: "400",
+                            },
+                            headerStyle: {
+                                height: 60,
+                            },
+                            headerBackTitleVisible: false,
+                        }}
+                    />
+                </>
             ) : (
                 userType === "Driver" && (
                     // driver home screen:
@@ -110,6 +146,10 @@ const DrawerNavigation = () => {
                             headerBackTitleVisible: false,
                         }}
                     />
+                </>
+            )}
+            {userType === "RentACarOwner" ||
+                (userType === "ToursCompany" && (
                     <Drawer.Screen
                         name="Settings"
                         component={SettingsScreen}
@@ -131,8 +171,7 @@ const DrawerNavigation = () => {
                             headerBackTitleVisible: false,
                         }}
                     />
-                </>
-            )}
+                ))}
         </Drawer.Navigator>
     );
 };
