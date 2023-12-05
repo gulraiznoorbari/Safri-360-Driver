@@ -13,7 +13,7 @@ import { auth } from "./firebase/config";
 import { FirebaseProvider } from "./contexts/FirebaseContext";
 import { MapProvider } from "./contexts/MapContext";
 import { store, persistor } from "./store/index";
-import { selectUserType } from "./store/slices/userSlice";
+import { selectUserType } from "./store/slices/userTypeSlice";
 import { selectDriver } from "./store/slices/driverSlice";
 import FontLoader from "./components/FontLoader";
 import DrawerNavigation from "./navigation/DrawerNavigation";
@@ -32,12 +32,15 @@ import DisplayCarsScreen from "./screens/DrawerScreens/Manage/Cars/DisplayCarsSc
 import CarsDetailScreen from "./screens/DrawerScreens/Manage/Cars/CarsDetailScreen";
 import AddCar from "./screens/DrawerScreens/Manage/Cars/AddCar";
 import EditCarScreen from "./screens/DrawerScreens/Manage/Cars/EditCar";
+import TourDetailScreen from "./screens/Tours/TourDetailScreen";
+import AddTourMain from "./screens/Tours/CreateTourScreens/AddTourMain";
+import AddTourFare from "./screens/Tours/CreateTourScreens/AddTourFare";
+import AddTourCompany from "./screens/Tours/CreateTourScreens/AddTourCompany";
 import DriverLoginScreen from "./screens/Driver/DriverLoginScreen";
 import DriverInfoInputScreen from "./screens/Driver/DriverInfoInputScreen";
 import DisplayDriversScreen from "./screens/DrawerScreens/Manage/Drivers/DisplayDriversScreen";
 import DriverDetailScreen from "./screens/DrawerScreens/Manage/Drivers/DriverDetailScreen";
 import AddDriver from "./screens/DrawerScreens/Manage/Drivers/AddDriver";
-import ToursHomeScreen from "./screens/Tours/ToursHomeScreen";
 
 const Stack = createStackNavigator();
 navigator.geolocation = require("react-native-geolocation-service");
@@ -145,6 +148,10 @@ const TourScreens = () => {
                 <Stack.Screen name="PasswordReset" component={PasswordResetScreen} />
                 <Stack.Screen name="PhoneRegisterScreen" component={PhoneRegisterScreen} />
                 <Stack.Screen name="OTPVerificationScreen" component={OTPVerificationScreen} />
+                <Stack.Screen name="TourDetailScreen" component={TourDetailScreen} />
+                <Stack.Screen name="AddTourMainScreen" component={AddTourMain} />
+                <Stack.Screen name="AddTourFareScreen" component={AddTourFare} />
+                <Stack.Screen name="AddTourCompanyScreen" component={AddTourCompany} />
             </Stack.Navigator>
         </NavigationContainer>
     );
