@@ -6,13 +6,13 @@ import { ref, onValue } from "firebase/database";
 import { useSelector } from "react-redux";
 
 import { dbRealtime } from "../../../../firebase/config";
-import { selectUser } from "../../../../store/slices/userSlice";
+import { selectRentACarUser } from "../../../../store/slices/rentACarSlice";
 import DriverDetailCard from "./DriverDetailCard";
 
 const DisplayDriversScreen = ({ navigation }) => {
     const [drivers, setDrivers] = useState([]);
 
-    const user = useSelector(selectUser);
+    const user = useSelector(selectRentACarUser);
 
     useLayoutEffect(() => {
         navigation.setOptions({
@@ -37,7 +37,9 @@ const DisplayDriversScreen = ({ navigation }) => {
             if (!data) return setDrivers([]);
             const driversList = [];
             for (let id in data) {
-                driversList.push({ id, ...data[id] });
+                if (data[id].RentACarUID === user.uid) {
+                    driversList.push({ id, ...data[id] });
+                }
             }
             setDrivers(driversList);
         });

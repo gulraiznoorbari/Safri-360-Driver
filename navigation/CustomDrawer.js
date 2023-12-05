@@ -4,28 +4,33 @@ import Ionicons from "react-native-vector-icons/Ionicons";
 import { View, Text, StyleSheet, Image, Switch, TouchableOpacity, Share } from "react-native";
 import { DrawerContentScrollView, DrawerItemList } from "@react-navigation/drawer";
 import { useSelector, useDispatch } from "react-redux";
+import { update, ref } from "firebase/database";
 
+import { dbRealtime } from "../firebase/config";
 import { useFirebase } from "../contexts/FirebaseContext";
-import { selectUser, selectUserType, resetUser } from "../store/slices/userSlice";
+import { selectUserType } from "../store/slices/userTypeSlice";
+import { selectRentACarUser, resetRentACarUser } from "../store/slices/rentACarSlice";
+import { selectTourUser, resetTourUser } from "../store/slices/tourSlice";
 import { setDriver, selectDriver, resetDriver } from "../store/slices/driverSlice";
 
 const CustomDrawer = (props) => {
     const { logout } = useFirebase();
-    const user = useSelector(selectUser);
+    const rentACarUser = useSelector(selectRentACarUser);
+    const tourUser = useSelector(selectTourUser);
     const driver = useSelector(selectDriver);
     const userType = useSelector(selectUserType);
     const dispatch = useDispatch();
-
-    const toggleSwitch = () => {
-        const IsOnline = !driver.isOnline;
-        dispatch(setDriver({ isOnline: IsOnline }));
-    };
 
     useEffect(() => {
         if (driver.isOnline) {
             dispatch(setDriver({ isOnline: driver.isOnline }));
         }
     }, [driver.isOnline]);
+
+    const toggleSwitch = () => {
+        const IsOnline = !driver.isOnline;
+        dispatch(setDriver({ isOnline: IsOnline }));
+    };
 
     const onShare = async () => {
         try {
@@ -50,20 +55,40 @@ const CustomDrawer = (props) => {
     };
 
     const handleSignOut = () => {
-        userType === "Driver" ? dispatch(resetDriver()) : dispatch(resetUser());
+        // userType === "Driver" &&
+        //     driver.pinCode &&
+        //     update(ref(dbRealtime, "Drivers/" + driver.pinCode), { status: "Offline" })
+        //         .then(() => {
+        //             //   dispatch(resetDriver());
+        //             console.log("DriverStatus set to offline");
+        //         })
+        //         .catch((error) => {
+        //             console.log("Error setting DriverStatus to offline: ", error);
+        //         });
+        // : userType === "RentACarOwner"
+        // ? dispatch(resetRentACarUser())
+        // : userType === "ToursCompany" && dispatch(resetTourUser());
         logout();
     };
 
     return (
         <View style={styles.mainContainer}>
             <DrawerContentScrollView {...props} contentContainerStyle={{ backgroundColor: "#9c9c9c" }}>
-                {userType === "RentACarOwner" || userType === "ToursCompany" ? (
+                {userType === "RentACarOwner" ? (
                     <View style={{ padding: 20 }}>
                         <Image
-                            source={{ uri: user.photoURL ? user.photoURL : DEFAULT_PROFILE_IMAGE }}
+                            source={{ uri: rentACarUser.photoURL ? rentACarUser.photoURL : DEFAULT_PROFILE_IMAGE }}
                             style={styles.profileImage}
                         />
-                        <Text style={styles.userName}>{user.companyName || "Company Name"}</Text>
+                        <Text style={styles.userName}>{rentACarUser.companyName || "Company Name"}</Text>
+                    </View>
+                ) : userType === "ToursCompany" ? (
+                    <View style={{ padding: 20 }}>
+                        <Image
+                            source={{ uri: tourUser.photoURL ? tourUser.photoURL : DEFAULT_PROFILE_IMAGE }}
+                            style={styles.profileImage}
+                        />
+                        <Text style={styles.userName}>{tourUser.companyName || "Company Name"}</Text>
                     </View>
                 ) : (
                     userType === "Driver" && (

@@ -9,7 +9,7 @@ import { useDispatch } from "react-redux";
 
 import KeyboardAvoidingWrapper from "../../components/KeyboardAvoidingWrapper";
 import { dbRealtime } from "../../firebase/config";
-import { setUserType } from "../../store/slices/userSlice";
+import { setUserType } from "../../store/slices/userTypeSlice";
 import { setDriver } from "../../store/slices/driverSlice";
 import ClearableInput from "../../components/ClearableInput";
 import InputField from "../../components/InputField";
@@ -80,9 +80,6 @@ const DriverLoginScreen = ({ navigation }) => {
                         if (data[key].phoneNumber === fullNumber) {
                             dispatch(
                                 setDriver({
-                                    firstName: data[key].firstName,
-                                    lastName: data[key].lastName,
-                                    CNIC: data[key].CNIC,
                                     phoneNumber: fullNumber,
                                     pinCode: pinCode,
                                 }),

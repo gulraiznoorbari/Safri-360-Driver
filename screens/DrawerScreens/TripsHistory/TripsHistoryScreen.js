@@ -1,11 +1,14 @@
 import { useEffect, useState } from "react";
-import { StyleSheet, View, FlatList } from "react-native";
+import { StyleSheet, View, Text, FlatList } from "react-native";
 import { ref, onValue } from "firebase/database";
+import { useSelector } from "react-redux";
 
+import { selectRentACarUser } from "../../../store/slices/rentACarSlice";
 import { dbRealtime } from "../../../firebase/config";
 import TripHistoryCard from "./TripHistoryCard";
 
 const TripsHistoryScreen = () => {
+    const user = useSelector(selectRentACarUser);
     const [trips, setTrips] = useState([]);
 
     useEffect(() => {
@@ -17,9 +20,15 @@ const TripsHistoryScreen = () => {
         onValue(ridesRef, (snapshot) => {
             if (snapshot.exists()) {
                 const ridesData = snapshot.val();
+                const matchingRides = [];
                 // Convert object to array for easier mapping
                 const ridesArray = Object.values(ridesData);
-                setTrips(ridesArray);
+                ridesArray.forEach((ride) => {
+                    if (ride.rentACarUID === user.uid) {
+                        matchingRides.push(ride);
+                    }
+                });
+                setTrips(matchingRides);
             }
         });
     };
@@ -30,12 +39,18 @@ const TripsHistoryScreen = () => {
 
     return (
         <View style={styles.container}>
-            <FlatList
-                data={trips}
-                keyExtractor={(item, index) => index.toString()}
-                renderItem={renderTripDetails}
-                showsVerticalScrollIndicator={false}
-            />
+            {trips.length === 0 ? (
+                <View style={styles.notAvailableContainer}>
+                    <Text style={styles.notAvailableText}>No Trips Available</Text>
+                </View>
+            ) : (
+                <FlatList
+                    data={trips}
+                    keyExtractor={(item, index) => index.toString()}
+                    renderItem={renderTripDetails}
+                    showsVerticalScrollIndicator={false}
+                />
+            )}
         </View>
     );
 };
@@ -45,6 +60,16 @@ const styles = StyleSheet.create({
         flex: 1,
         width: "100%",
         backgroundColor: "#fff",
+    },
+    notAvailableContainer: {
+        flex: 1,
+        justifyContent: "center",
+        alignItems: "center",
+    },
+    notAvailableText: {
+        fontSize: 18,
+        fontFamily: "SatoshiBold",
+        fontWeight: "bold",
     },
 });
 

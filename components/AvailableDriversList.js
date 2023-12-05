@@ -22,17 +22,17 @@ import SmsAndroid from "react-native-get-sms-android";
 import { humanPhoneNumber } from "../utils/humanPhoneNumber";
 import { dbRealtime } from "../firebase/config";
 import {
-    selectUser,
+    selectRentACarUser,
     setLoading,
     selectLoading,
     setDriverAssigned,
     selectDriverAssigned,
-} from "../store/slices/userSlice";
+} from "../store/slices/rentACarSlice";
 
 const AvailableDriversList = ({ isModalVisible, setModalVisible, selectedRide }) => {
     const [drivers, setDrivers] = useState([]);
 
-    const user = useSelector(selectUser);
+    const user = useSelector(selectRentACarUser);
     const loading = useSelector(selectLoading);
     const driverAssigned = useSelector(selectDriverAssigned);
     const dispatch = useDispatch();

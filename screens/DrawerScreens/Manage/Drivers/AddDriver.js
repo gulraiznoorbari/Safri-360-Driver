@@ -10,13 +10,13 @@ import SmsAndroid from "react-native-get-sms-android";
 
 import KeyboardAvoidingWrapper from "../../../../components/KeyboardAvoidingWrapper";
 import { dbRealtime } from "../../../../firebase/config";
-import { selectUser } from "../../../../store/slices/userSlice";
+import { selectRentACarUser } from "../../../../store/slices/rentACarSlice";
 import InputField from "../../../../components/InputField";
 import ErrorMessage from "../../../../components/ErrorMessage";
 import PrimaryButton from "../../../../components/Buttons/PrimaryButton";
 
 const AddDriver = ({ navigation }) => {
-    const user = useSelector(selectUser);
+    const user = useSelector(selectRentACarUser);
 
     const [phoneNumber, setPhoneNumber] = useState(null);
     const [isFocus, setIsFocus] = useState(false);

@@ -76,6 +76,23 @@ const DriverHomeScreen = ({ navigation }) => {
         }
     }, [driver.isOnline]);
 
+    useEffect(() => {
+        updateDriverLocation();
+    }, [currentUserLocation]);
+
+    const updateDriverLocation = () => {
+        const userRef = ref(dbRealtime, "Drivers/" + driverPIN);
+        update(userRef, {
+            location: { latitude: currentUserLocation.latitude, longitude: currentUserLocation.longitude },
+        })
+            .then(() => {
+                console.log("Driver location updated");
+            })
+            .catch((error) => {
+                console.log("Error updating driver location: ", error);
+            });
+    };
+
     const toggleSwitch = () => {
         const IsOnline = !driver.isOnline;
         dispatch(setDriver({ isOnline: IsOnline, status: IsOnline ? "Online" : "Offline" }));

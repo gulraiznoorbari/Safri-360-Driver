@@ -1,7 +1,7 @@
 import { StyleSheet, Text, View } from "react-native";
 import { useDispatch } from "react-redux";
 
-import { setUserType } from "../store/slices/userSlice";
+import { setUserType } from "../store/slices/userTypeSlice";
 import PrimaryButton from "../components/Buttons/PrimaryButton";
 
 const WelcomeScreen = () => {

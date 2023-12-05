@@ -4,9 +4,11 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import { Icon } from "react-native-elements";
 import { Dropdown } from "react-native-element-dropdown";
 const countryCodes = require("country-codes-list");
-import { useDispatch } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
 
-import { setUser } from "../store/slices/userSlice";
+import { setRentACarUser } from "../store/slices/rentACarSlice";
+import { setTourUser } from "../store/slices/tourSlice";
+import { selectUserType } from "../store/slices/userTypeSlice";
 import InputField from "../components/InputField";
 import PrimaryButton from "../components/Buttons/PrimaryButton";
 import ErrorMessage from "../components/ErrorMessage";
@@ -14,6 +16,7 @@ import KeyboardAvoidingWrapper from "../components/KeyboardAvoidingWrapper";
 
 const PhoneRegisterScreen = ({ navigation }) => {
     const dispatch = useDispatch();
+    const userType = useSelector(selectUserType);
 
     const [isFocus, setIsFocus] = useState(false);
     const [value, setValue] = useState(null);
@@ -49,7 +52,9 @@ const PhoneRegisterScreen = ({ navigation }) => {
             return setErrorMessage(error);
         }
         const fullNumber = "+" + (countryCode?.countryCallingCode || 1) + (value || "").replace(/[^\d/]/g, "");
-        dispatch(setUser({ phoneNumber: fullNumber }));
+        userType === "RentACarOwner"
+            ? dispatch(setRentACarUser({ phoneNumber: fullNumber }))
+            : userType === "ToursCompany" && dispatch(setTourUser({ phoneNumber: fullNumber }));
         setTimeout(() => {
             navigation.navigate("OTPVerificationScreen");
         }, 500);
@@ -97,7 +102,9 @@ const PhoneRegisterScreen = ({ navigation }) => {
         ) : null;
 
     const restrictGoingBack = () => {
-        dispatch(setUser({ phoneNumber: null }));
+        userType === "RentACarOwner"
+            ? dispatch(setRentACarUser({ phoneNumber: null }))
+            : userType === "ToursCompany" && dispatch(setTourUser({ phoneNumber: null }));
         return true;
     };
 

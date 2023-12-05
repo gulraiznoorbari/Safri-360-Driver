@@ -7,7 +7,7 @@ import { ref, onValue } from "firebase/database";
 
 import { dbRealtime } from "../firebase/config";
 import { useMapContext } from "../contexts/MapContext";
-import { selectUser } from "../store/slices/userSlice";
+import { selectRentACarUser } from "../store/slices/rentACarSlice";
 import { selectOrigin } from "../store/slices/navigationSlice";
 import { humanPhoneNumber } from "../utils/humanPhoneNumber";
 import LocateUserButton from "./Buttons/LocateUserButton";
@@ -16,7 +16,7 @@ const HomeMap = ({ initialPosition }) => {
     const [drivers, setDrivers] = useState([]);
 
     const { mapRef } = useMapContext();
-    const user = useSelector(selectUser);
+    const user = useSelector(selectRentACarUser);
     const origin = useSelector(selectOrigin);
 
     useEffect(() => {

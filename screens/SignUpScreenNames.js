@@ -2,9 +2,11 @@ import { DEFAULT_PROFILE_IMAGE } from "@env";
 import { useEffect, useState } from "react";
 import { StyleSheet, Text, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { useDispatch } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
 
-import { setUser, resetUser } from "../store/slices/userSlice";
+import { setRentACarUser, resetRentACarUser } from "../store/slices/rentACarSlice";
+import { setTourUser, resetTourUser } from "../store/slices/tourSlice";
+import { selectUserType } from "../store/slices/userTypeSlice";
 import { useFirebase } from "../contexts/FirebaseContext";
 import PrimaryButton from "../components/Buttons/PrimaryButton";
 import ErrorMessage from "../components/ErrorMessage";
@@ -12,6 +14,7 @@ import ClearableInput from "../components/ClearableInput";
 import KeyboardAvoidingWrapper from "../components/KeyboardAvoidingWrapper";
 
 const SignUpScreenNames = ({ navigation }) => {
+    const userType = useSelector(selectUserType);
     const dispatch = useDispatch();
 
     const [firstName, setFirstName] = useState("");
@@ -26,7 +29,9 @@ const SignUpScreenNames = ({ navigation }) => {
 
     useEffect(() => {
         const unsubscribe = navigation.addListener("focus", () => {
-            dispatch(resetUser());
+            userType === "RentACarOwner"
+                ? dispatch(resetRentACarUser())
+                : userType === "ToursCompany" && dispatch(resetTourUser());
         });
         return unsubscribe;
     }, []);
@@ -68,14 +73,24 @@ const SignUpScreenNames = ({ navigation }) => {
         }
 
         if (isValid) {
-            dispatch(
-                setUser({
-                    firstName: firstName,
-                    lastName: lastName,
-                    companyName: companyName,
-                    userName: firstName,
-                }),
-            );
+            userType === "RentACarOwner"
+                ? dispatch(
+                      setRentACarUser({
+                          firstName: firstName,
+                          lastName: lastName,
+                          companyName: companyName,
+                          userName: firstName,
+                      }),
+                  )
+                : userType === "ToursCompany" &&
+                  dispatch(
+                      setTourUser({
+                          firstName: firstName,
+                          lastName: lastName,
+                          companyName: companyName,
+                          userName: firstName,
+                      }),
+                  );
             updateUserProfile({
                 firstName: firstName,
                 lastName: lastName,

@@ -8,7 +8,9 @@ import { useDispatch, useSelector } from "react-redux";
 import { FirebaseRecaptchaVerifierModal } from "../components/firebase-recaptcha/modal";
 import { useFirebase } from "../contexts/FirebaseContext";
 import firebaseConfig, { dbRealtime } from "../firebase/config";
-import { selectUser, setUser, selectUserType } from "../store/slices/userSlice";
+import { selectRentACarUser, setRentACarUser } from "../store/slices/rentACarSlice";
+import { selectTourUser, setTourUser } from "../store/slices/tourSlice";
+import { selectUserType } from "../store/slices/userTypeSlice";
 import { humanPhoneNumber } from "../utils/humanPhoneNumber";
 import KeyboardAvoidingWrapper from "../components/KeyboardAvoidingWrapper";
 import PrimaryButton from "../components/Buttons/PrimaryButton";
@@ -17,9 +19,11 @@ const OTPVerificationScreen = ({ navigation }) => {
     const CODE_LENGTH = 6;
     const { sendPhoneVerificationCode, currentUser, updateUserProfile } = useFirebase();
     const dispatch = useDispatch();
-    const user = useSelector(selectUser);
+    const rentACarUser = useSelector(selectRentACarUser);
+    const toursUser = useSelector(selectTourUser);
     const userType = useSelector(selectUserType);
-    const phoneNumber = user.phoneNumber;
+    const phoneNumber =
+        userType === "RentACarOwner" ? rentACarUser.phoneNumber : userType === "ToursCompany" && toursUser.phoneNumber;
 
     const [code, setCode] = useState([...Array(CODE_LENGTH)]);
     const [verificationId, setVerificationId] = useState();
@@ -34,6 +38,7 @@ const OTPVerificationScreen = ({ navigation }) => {
     codeRefs.current = [];
 
     useEffect(() => {
+        console.log("currentUser: ", currentUser);
         console.log("OTPVerificationScreen loaded");
         if (!phoneNumber) return handleMessage("Something went wrong. Phone number was not found", "red");
         if (!verificationSent) {
@@ -111,10 +116,12 @@ const OTPVerificationScreen = ({ navigation }) => {
         try {
             const credential = PhoneAuthProvider.credential(verificationId, code);
             let userData = await linkWithCredential(currentUser, credential);
-            dispatch(setUser({ phoneNumberVerified: Boolean(credential) }));
             userType === "RentACarOwner"
-                ? AddPhoneNumberToDB(userData.user, "RentACarOwner")
-                : userType === "ToursCompany" && AddPhoneNumberToDB(userData.user, "Tours");
+                ? (dispatch(setRentACarUser({ phoneNumberVerified: Boolean(credential) })),
+                  AddPhoneNumberToDB(userData.user, "Rent A Car"))
+                : userType === "ToursCompany" &&
+                  (dispatch(setTourUser({ phoneNumberVerified: Boolean(credential) })),
+                  AddPhoneNumberToDB(userData.user, "Tours"));
             updateUserProfile({
                 phoneNumber: phoneNumber,
             });

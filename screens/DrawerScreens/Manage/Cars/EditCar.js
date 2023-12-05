@@ -5,14 +5,14 @@ import { ref, update } from "firebase/database";
 import { useSelector } from "react-redux";
 
 import { dbRealtime } from "../../../../firebase/config";
-import { selectUser } from "../../../../store/slices/userSlice";
+import { selectRentACarUser } from "../../../../store/slices/rentACarSlice";
 import KeyboardAvoidingWrapper from "../../../../components/KeyboardAvoidingWrapper";
 import ClearableInput from "../../../../components/ClearableInput";
 import PrimaryButton from "../../../../components/Buttons/PrimaryButton";
 
 const AddCar = ({ navigation, route }) => {
     const { data } = route.params;
-    const user = useSelector(selectUser);
+    const user = useSelector(selectRentACarUser);
 
     const [carManufacturer, setCarManufacturer] = useState(data?.manufacturer);
     const [carModel, setCarModel] = useState(data?.model);

@@ -17,7 +17,12 @@ import { ref, onValue } from "firebase/database";
 import { useSelector, useDispatch } from "react-redux";
 
 import { humanPhoneNumber } from "../../utils/humanPhoneNumber";
-import { selectUser, selectLoading, selectDriverAssigned, setDriverAssigned } from "../../store/slices/userSlice";
+import {
+    selectRentACarUser,
+    selectLoading,
+    selectDriverAssigned,
+    setDriverAssigned,
+} from "../../store/slices/rentACarSlice";
 import { dbRealtime } from "../../firebase/config";
 
 const { width } = Dimensions.get("window");
@@ -27,7 +32,7 @@ const RideRequestCards = ({ setModalVisible, setSelectedRide }) => {
     const [usersInfo, setUsersInfo] = useState([]);
 
     const dispatch = useDispatch();
-    const user = useSelector(selectUser);
+    const user = useSelector(selectRentACarUser);
     const loading = useSelector(selectLoading);
     const driverAssigned = useSelector(selectDriverAssigned);
 

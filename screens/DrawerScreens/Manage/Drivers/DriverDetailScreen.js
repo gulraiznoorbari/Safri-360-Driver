@@ -7,12 +7,12 @@ import { ref, remove, get } from "firebase/database";
 import { useSelector } from "react-redux";
 
 import { dbRealtime } from "../../../../firebase/config";
-import { selectUser } from "../../../../store/slices/userSlice";
+import { selectRentACarUser } from "../../../../store/slices/rentACarSlice";
 
 const DriverDetailScreen = ({ route, navigation }) => {
     const { data } = route.params;
 
-    const user = useSelector(selectUser);
+    const user = useSelector(selectRentACarUser);
 
     useLayoutEffect(() => {
         navigation.setOptions({
@@ -33,7 +33,6 @@ const DriverDetailScreen = ({ route, navigation }) => {
     const deleteDriver = (pinCode) => {
         const mainDriverRef = ref(dbRealtime, "Drivers/" + pinCode);
         const driverRef = ref(dbRealtime, "Rent A Car/" + user.uid + "/Drivers/");
-        console.log("driverRef: ", driverRef);
         remove(mainDriverRef)
             .then(() => {
                 get(driverRef).then((snapshot) => {

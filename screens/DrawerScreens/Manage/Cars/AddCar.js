@@ -5,13 +5,13 @@ import { useSelector } from "react-redux";
 import { ref, set } from "firebase/database";
 
 import { dbRealtime } from "../../../../firebase/config";
-import { selectUser } from "../../../../store/slices/userSlice";
+import { selectRentACarUser } from "../../../../store/slices/rentACarSlice";
 import KeyboardAvoidingWrapper from "../../../../components/KeyboardAvoidingWrapper";
 import ClearableInput from "../../../../components/ClearableInput";
 import PrimaryButton from "../../../../components/Buttons/PrimaryButton";
 
 const AddCar = ({ navigation }) => {
-    const user = useSelector(selectUser);
+    const user = useSelector(selectRentACarUser);
 
     const [carManufacturer, setCarManufacturer] = useState("");
     const [carModel, setCarModel] = useState("");
@@ -90,7 +90,7 @@ const AddCar = ({ navigation }) => {
             <SafeAreaView style={styles.content}>
                 <ClearableInput
                     label={"Car Manufacturer"}
-                    placeholder={"Honda, Toyota,..."}
+                    placeholder={"Honda, Toyota, etc."}
                     value={carManufacturer}
                     setValue={setCarManufacturer}
                     hideInput={false}
@@ -99,7 +99,7 @@ const AddCar = ({ navigation }) => {
                 />
                 <ClearableInput
                     label={"Car Model"}
-                    placeholder={"Civic, Corolla,..."}
+                    placeholder={"Civic, Corolla, etc."}
                     value={carModel}
                     setValue={setCarModel}
                     hideInput={false}
@@ -118,7 +118,7 @@ const AddCar = ({ navigation }) => {
                 />
                 <ClearableInput
                     label={"Car Color"}
-                    placeholder={"White, Black,..."}
+                    placeholder={"White, Black, etc."}
                     maxLength={15}
                     value={carColor}
                     setValue={setCarColor}

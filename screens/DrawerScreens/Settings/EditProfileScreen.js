@@ -10,19 +10,40 @@ import { useSelector, useDispatch } from "react-redux";
 
 import { useFirebase } from "../../../contexts/FirebaseContext";
 import { storage, dbRealtime } from "../../../firebase/config";
-import { selectUser, setUser } from "../../../store/slices/userSlice";
+import { selectUserType } from "../../../store/slices/userTypeSlice";
+import { setRentACarUser, selectRentACarUser } from "../../../store/slices/rentACarSlice";
+import { setTourUser, selectTourUser } from "../../../store/slices/tourSlice";
+import { selectUser, setUser } from "../../../store/slices/rentACarSlice";
 import KeyboardAvoidingWrapper from "../../../components/KeyboardAvoidingWrapper";
 import ClearableInput from "../../../components/ClearableInput";
 
 const EditProfileScreen = ({ navigation }) => {
-    const user = useSelector(selectUser);
+    const userType = useSelector(selectUserType);
+    const rentACarUser = useSelector(selectRentACarUser);
+    const tourUser = useSelector(selectTourUser);
     const dispatch = useDispatch();
     const { updateUserProfile } = useFirebase();
 
-    const [photoURL, setPhotoURL] = useState(user?.photoURL);
-    const [firstName, setFirstName] = useState(user?.firstName || "");
-    const [lastName, setLastName] = useState(user?.lastName || "");
-    const [email, setEmail] = useState(user?.email || "");
+    const [photoURL, setPhotoURL] = useState(
+        userType === "RentACarOwner"
+            ? rentACarUser?.photoURL || ""
+            : userType === "ToursCompany" && (tourUser?.photoURL || ""),
+    );
+    const [firstName, setFirstName] = useState(
+        userType === "RentACarOwner"
+            ? rentACarUser?.firstName || ""
+            : userType === "ToursCompany" && (tourUser?.firstName || ""),
+    );
+    const [lastName, setLastName] = useState(
+        userType === "RentACarOwner"
+            ? rentACarUser?.lastName || ""
+            : userType === "ToursCompany" && (tourUser?.lastName || ""),
+    );
+    const [email, setEmail] = useState(
+        userType === "RentACarOwner"
+            ? rentACarUser?.email || ""
+            : userType === "ToursCompany" && (tourUser?.email || ""),
+    );
 
     useLayoutEffect(() => {
         navigation.setOptions({
@@ -40,8 +61,8 @@ const EditProfileScreen = ({ navigation }) => {
         });
     }, [navigation]);
 
-    const UpdateUserInfo = () => {
-        const userRef = rtdRef(dbRealtime, "Rent A Car/" + user.uid);
+    const UpdateUserInfo = (DBNode, userUID) => {
+        const userRef = rtdRef(dbRealtime, `${DBNode}/` + userUID);
         update(userRef, {
             firstName: firstName,
             lastName: lastName,
@@ -80,10 +101,16 @@ const EditProfileScreen = ({ navigation }) => {
             console.error("Error details:", error.code, error.message);
             ToastAndroid.show("Error uploading image!", ToastAndroid.SHORT);
         }
-
-        dispatch(setUser({ firstName: firstName, lastName: lastName, email: email, photoURL: photoURL }));
-        UpdateUserInfo();
-        updateUserProfile({ firstName: firstName, lastName: lastName, email: email, photoURL: photoURL });
+        userType === "RentACarOwner"
+            ? (dispatch(
+                  setRentACarUser({ firstName: firstName, lastName: lastName, email: email, photoURL: photoURL }),
+              ),
+              UpdateUserInfo("RentACarOwner", rentACarUser?.uid),
+              updateUserProfile({ firstName: firstName, lastName: lastName, email: email, photoURL: photoURL }))
+            : userType === "ToursCompany" &&
+              (dispatch(setTourUser({ firstName: firstName, lastName: lastName, email: email, photoURL: photoURL })),
+              UpdateUserInfo("Tours", rentACarUser?.uid),
+              updateUserProfile({ firstName: firstName, lastName: lastName, email: email, photoURL: photoURL }));
         ToastAndroid.show("Profile updated!", ToastAndroid.SHORT);
     };
 

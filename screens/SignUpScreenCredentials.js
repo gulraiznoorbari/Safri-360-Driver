@@ -5,7 +5,9 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import { ref, set, push } from "firebase/database";
 import { useDispatch, useSelector } from "react-redux";
 
-import { setUser, selectUser, selectUserType } from "../store/slices/userSlice";
+import { setRentACarUser, selectRentACarUser } from "../store/slices/rentACarSlice";
+import { setTourUser, selectTourUser } from "../store/slices/tourSlice";
+import { selectUserType } from "../store/slices/userTypeSlice";
 import { useFirebase } from "../contexts/FirebaseContext";
 import { dbRealtime } from "../firebase/config";
 import PrimaryButton from "../components/Buttons/PrimaryButton";
@@ -16,7 +18,8 @@ import TransparentButton from "../components/Buttons/TransparentButton";
 
 const SignUpScreenCredentials = ({ navigation }) => {
     const dispatch = useDispatch();
-    const userRedux = useSelector(selectUser);
+    const rentACarUser = useSelector(selectRentACarUser);
+    const toursUser = useSelector(selectTourUser);
     const userType = useSelector(selectUserType);
 
     const [email, setEmail] = useState("");
@@ -70,10 +73,10 @@ const SignUpScreenCredentials = ({ navigation }) => {
     const AddToursToDB = (user) => {
         const userRef = ref(dbRealtime, "Tours/" + user.uid);
         set(userRef, {
-            firstName: userRedux.firstName,
-            lastName: userRedux.lastName,
-            companyName: userRedux.companyName,
-            userName: userRedux.userName,
+            firstName: toursUser.firstName,
+            lastName: toursUser.lastName,
+            companyName: toursUser.companyName,
+            userName: toursUser.userName,
             email: email,
             photoURL: DEFAULT_PROFILE_IMAGE,
             phoneNumber: "",
@@ -89,10 +92,10 @@ const SignUpScreenCredentials = ({ navigation }) => {
     const AddRentACarToDB = (user) => {
         const userRef = ref(dbRealtime, "Rent A Car/" + user.uid);
         set(userRef, {
-            firstName: userRedux.firstName,
-            lastName: userRedux.lastName,
-            companyName: userRedux.companyName,
-            userName: userRedux.userName,
+            firstName: rentACarUser.firstName,
+            lastName: rentACarUser.lastName,
+            companyName: rentACarUser.companyName,
+            userName: rentACarUser.userName,
             email: email,
             photoURL: DEFAULT_PROFILE_IMAGE,
             phoneNumber: "",
@@ -149,12 +152,10 @@ const SignUpScreenCredentials = ({ navigation }) => {
                     setErrMessage("Something went wrong, try again.");
                 }
             };
-            dispatch(
-                setUser({
-                    email: email,
-                    photoURL: DEFAULT_PROFILE_IMAGE,
-                }),
-            );
+            userType === "RentACarOwner"
+                ? dispatch(setRentACarUser({ email: email, photoURL: DEFAULT_PROFILE_IMAGE }))
+                : userType === "ToursCompany" &&
+                  dispatch(setTourUser({ email: email, photoURL: DEFAULT_PROFILE_IMAGE }));
             signUp(email, password, onSuccess, onError);
         }
     };

@@ -6,7 +6,7 @@ import { useDispatch } from "react-redux";
 
 import KeyboardAvoidingWrapper from "../components/KeyboardAvoidingWrapper";
 import { useFirebase } from "../contexts/FirebaseContext";
-import { setUserType } from "../store/slices/userSlice";
+import { setUserType } from "../store/slices/userTypeSlice";
 import ClearableInput from "../components/ClearableInput";
 import ErrorMessage from "../components/ErrorMessage";
 import PrimaryButton from "../components/Buttons/PrimaryButton";

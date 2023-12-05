@@ -4,12 +4,16 @@ import { useSelector } from "react-redux";
 import { Button } from "react-native-elements";
 import Ionicons from "react-native-vector-icons/Ionicons";
 
-import { selectUser } from "../../../store/slices/userSlice";
+import { selectUserType } from "../../../store/slices/userTypeSlice";
+import { selectRentACarUser } from "../../../store/slices/rentACarSlice";
+import { selectTourUser } from "../../../store/slices/tourSlice";
 import { humanPhoneNumber } from "../../../utils/humanPhoneNumber";
 import MenuOptionButton from "../../../components/Buttons/MenuOptionButton";
 
 const SettingsScreen = () => {
-    const user = useSelector(selectUser);
+    const userType = useSelector(selectUserType);
+    const rentACarUser = useSelector(selectRentACarUser);
+    const tourUser = useSelector(selectTourUser);
 
     const openExternalWebpage = (url) => {
         Linking.openURL(url);
@@ -18,18 +22,39 @@ const SettingsScreen = () => {
     return (
         <View style={styles.container}>
             <View style={styles.content}>
-                <MenuOptionButton
-                    profileImage={user.photoURL}
-                    userDataHeader={user.userName}
-                    userDataText={user.email}
-                    navScreen={"EditProfileScreen"}
-                />
-                <MenuOptionButton
-                    userDataHeader="Phone Number"
-                    userDataText={humanPhoneNumber(user.phoneNumber)}
-                    navScreen={"ChangePhoneNumberScreen"}
-                    isPhoneNumberButton={true}
-                />
+                {userType === "RentACarOwner" ? (
+                    <>
+                        <MenuOptionButton
+                            profileImage={rentACarUser.photoURL}
+                            userDataHeader={rentACarUser.userName}
+                            userDataText={rentACarUser.email}
+                            navScreen={"EditProfileScreen"}
+                        />
+                        <MenuOptionButton
+                            userDataHeader="Phone Number"
+                            userDataText={humanPhoneNumber(rentACarUser.phoneNumber)}
+                            navScreen={"ChangePhoneNumberScreen"}
+                            isPhoneNumberButton={true}
+                        />
+                    </>
+                ) : (
+                    userType === "ToursCompany" && (
+                        <>
+                            <MenuOptionButton
+                                profileImage={tourUser.photoURL}
+                                userDataHeader={tourUser.userName}
+                                userDataText={tourUser.email}
+                                navScreen={"EditProfileScreen"}
+                            />
+                            <MenuOptionButton
+                                userDataHeader="Phone Number"
+                                userDataText={humanPhoneNumber(tourUser.phoneNumber)}
+                                navScreen={"ChangePhoneNumberScreen"}
+                                isPhoneNumberButton={true}
+                            />
+                        </>
+                    )
+                )}
                 <MenuOptionButton userDataHeader="Change Password" navScreen={"ChangePasswordScreen"} />
                 <MenuOptionButton
                     userDataHeader="Privacy Policy"

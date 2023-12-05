@@ -6,13 +6,13 @@ import { ref, onValue } from "firebase/database";
 import { useSelector } from "react-redux";
 
 import { dbRealtime } from "../../../../firebase/config";
-import { selectUser } from "../../../../store/slices/userSlice";
+import { selectRentACarUser } from "../../../../store/slices/rentACarSlice";
 import CarDetailCard from "./CarDetailCard";
 
 const DisplayCarsScreen = ({ navigation }) => {
     const [cars, setCars] = useState([]);
 
-    const user = useSelector(selectUser);
+    const user = useSelector(selectRentACarUser);
 
     useLayoutEffect(() => {
         navigation.setOptions({
