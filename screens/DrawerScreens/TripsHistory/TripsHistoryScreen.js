@@ -69,7 +69,7 @@ const styles = StyleSheet.create({
     notAvailableText: {
         fontSize: 18,
         fontFamily: "SatoshiBold",
-        fontWeight: "bold",
+        fontWeight: "600",
     },
 });
 
