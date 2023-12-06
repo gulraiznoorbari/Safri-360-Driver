@@ -148,30 +148,29 @@ const DrawerNavigation = () => {
                     />
                 </>
             )}
-            {userType === "RentACarOwner" ||
-                (userType === "ToursCompany" && (
-                    <Drawer.Screen
-                        name="Settings"
-                        component={SettingsScreen}
-                        options={{
-                            drawerIcon: ({ color }) => (
-                                <Ionicons name="settings-outline" size={22} color={color} style={styles.icon} />
-                            ),
-                            headerShown: true,
-                            headerTitle: "Settings",
-                            headerTitleAlign: "center",
-                            headerTitleStyle: {
-                                fontSize: 21,
-                                fontFamily: "SatoshiBlack",
-                                fontWeight: "400",
-                            },
-                            headerStyle: {
-                                height: 70,
-                            },
-                            headerBackTitleVisible: false,
-                        }}
-                    />
-                ))}
+            {(userType === "RentACarOwner" || userType === "ToursCompany") && (
+                <Drawer.Screen
+                    name="Settings"
+                    component={SettingsScreen}
+                    options={{
+                        drawerIcon: ({ color }) => (
+                            <Ionicons name="settings-outline" size={22} color={color} style={styles.icon} />
+                        ),
+                        headerShown: true,
+                        headerTitle: "Settings",
+                        headerTitleAlign: "center",
+                        headerTitleStyle: {
+                            fontSize: 21,
+                            fontFamily: "SatoshiBlack",
+                            fontWeight: "400",
+                        },
+                        headerStyle: {
+                            height: 70,
+                        },
+                        headerBackTitleVisible: false,
+                    }}
+                />
+            )}
         </Drawer.Navigator>
     );
 };
