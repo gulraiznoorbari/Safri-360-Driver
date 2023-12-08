@@ -102,8 +102,8 @@ const AddTourMain = ({ navigation }) => {
     };
 
     return (
-        <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()} style={styles.content}>
-            <SafeAreaView>
+        <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
+            <SafeAreaView style={styles.content}>
                 <View style={{ marginBottom: -10 }}>
                     <ClearableInput
                         label="Tour Name:"
@@ -172,6 +172,7 @@ const styles = StyleSheet.create({
         flex: 1,
         width: "100%",
         paddingVertical: 20,
+        backgroundColor: "#f5f5f5",
     },
 });
 
