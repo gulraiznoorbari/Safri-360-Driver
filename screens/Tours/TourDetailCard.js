@@ -12,21 +12,17 @@ const TourDetailCard = ({ data }) => {
         return formattedAmount;
     };
 
-    const getSeatStatusColor = (seats, seatsLeft) => {
-        const seatsInt = parseInt(seats);
-        const seatsLeftInt = parseInt(seatsLeft);
-        if (seatsLeftInt / seatsInt <= 0.25) {
-            return "red";
-        } else if (seatsLeftInt / seatsInt <= 0.5) {
-            return "orange";
-        } else if (seatsLeftInt / seatsInt <= 0.75) {
-            return "gold";
-        } else {
-            return "green";
+    const getStatusColor = (status) => {
+        switch (status.toLowerCase()) {
+            case "open":
+                return "green";
+            case "closed":
+                return "red";
+            default:
+                return "black";
         }
     };
-
-    const textColor = getSeatStatusColor(data?.seats, data?.seatsLeft);
+    const statusTextColor = getStatusColor(data?.tourBookingStatus);
 
     return (
         <Pressable onPress={() => navigation.navigate("TourDetailScreen", { data: data })}>
@@ -54,9 +50,15 @@ const TourDetailCard = ({ data }) => {
                     <Ionicons name="time-outline" size={22} color="#333" />
                     <Text style={styles.tourDepartureText}>Departure: {data?.tourDepartureTime}</Text>
                 </View>
-                <View style={styles.tripStatus}>
-                    <Text style={[styles.tripStatusText, { color: textColor }]}>
+                <View style={styles.infoContainer}>
+                    <Ionicons name="people-outline" size={22} color="#333" />
+                    <Text style={styles.tourInfoText}>
                         Seats Left: {data?.tourSeatsLeft} / {data?.tourSeats}
+                    </Text>
+                </View>
+                <View style={styles.tripStatus}>
+                    <Text style={[styles.tripStatusText, { color: statusTextColor }]}>
+                        Booking: {data?.tourBookingStatus}
                     </Text>
                 </View>
                 <Divider style={styles.divider} />
@@ -81,7 +83,7 @@ const styles = StyleSheet.create({
         paddingVertical: 5,
     },
     tourNameText: {
-        fontSize: 16,
+        fontSize: 17,
         fontFamily: "SatoshiBold",
         fontWeight: "600",
         textAlign: "left",

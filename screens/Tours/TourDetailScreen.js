@@ -1,9 +1,9 @@
 import { useLayoutEffect, useState, useEffect } from "react";
-import { StyleSheet, Text, View, ScrollView, TouchableOpacity, ToastAndroid } from "react-native";
+import { StyleSheet, Text, View, ScrollView, Switch, TouchableOpacity, ToastAndroid } from "react-native";
 import { Button, Card } from "react-native-elements";
 import Ionicons from "react-native-vector-icons/Ionicons";
 import moment from "moment";
-import { ref, onValue, remove } from "firebase/database";
+import { ref, onValue, remove, update } from "firebase/database";
 import { useSelector } from "react-redux";
 
 import { dbRealtime } from "../../firebase/config";
@@ -60,6 +60,20 @@ const TourDetailScreen = ({ route, navigation }) => {
         setTourTotalFare(tours.tourFare * tourSeatsBooked);
     }, [tours.tourFare, tourSeatsBooked]);
 
+    const toggleBookingStatus = () => {
+        const newStatus = tours.tourBookingStatus === "Open" ? "Closed" : "Open";
+        const tourRef = ref(dbRealtime, "Tours/" + user.uid + "/Tours/" + tours.tourID);
+        update(tourRef, {
+            tourBookingStatus: newStatus,
+        })
+            .then(() => {
+                ToastAndroid.show("Booking status updated successfully!", ToastAndroid.SHORT);
+            })
+            .catch((error) => {
+                console.log(error);
+            });
+    };
+
     const deleteTour = (tourID) => {
         const tourRef = ref(dbRealtime, "Tours/" + user.uid + "/Tours/" + tourID);
         remove(tourRef)
@@ -94,6 +108,18 @@ const TourDetailScreen = ({ route, navigation }) => {
 
     return (
         <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={styles.container}>
+            <View style={styles.toggleContainer}>
+                <Text style={styles.isOnlineSwitchText}>
+                    Bookings: {tours.tourBookingStatus === "Open" ? "Open " : "Closed "}
+                </Text>
+                <Switch
+                    trackColor={{ false: "#767577", true: "#A7E92F" }}
+                    thumbColor={tours.tourBookingStatus === "Open" ? "#A7E92F" : "#767577"}
+                    value={tours.tourBookingStatus === "Open" ? true : false}
+                    onValueChange={toggleBookingStatus}
+                    style={styles.isOnlineSwitch}
+                />
+            </View>
             <View style={styles.twoContainers}>
                 <Card containerStyle={styles.seatContainerStyle}>
                     <Card.Title style={styles.title}>Seats Left</Card.Title>
@@ -190,15 +216,6 @@ const TourDetailScreen = ({ route, navigation }) => {
                     </View>
                 </Card>
             </View>
-            <View style={styles.buttonContainer}>
-                <Button
-                    icon={<Ionicons name="chatbubbles-outline" size={22} color={"#000"} />}
-                    title="Support"
-                    buttonStyle={styles.button}
-                    titleStyle={styles.buttonText}
-                    onPress={() => {}}
-                />
-            </View>
         </ScrollView>
     );
 };
@@ -208,6 +225,20 @@ const styles = StyleSheet.create({
         flexGrow: 1,
         paddingHorizontal: 15,
         backgroundColor: "#f5f5f5",
+    },
+    toggleContainer: {
+        flexDirection: "row",
+        alignItems: "center",
+        marginTop: 15,
+        marginLeft: 3,
+    },
+    isOnlineSwitchText: {
+        fontSize: 16,
+        fontFamily: "SatoshiBold",
+        fontWeight: "500",
+    },
+    isOnlineSwitch: {
+        transform: [{ scaleX: 1.1 }, { scaleY: 1.1 }],
     },
     twoContainers: {
         flexDirection: "row",
