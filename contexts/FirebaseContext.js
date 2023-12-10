@@ -72,7 +72,7 @@ export function FirebaseProvider({ children }) {
             })
             .catch((error) => {
                 console.log("Error signing up: ", error);
-                if (typeof onError === "function") return onError(error.code);
+                if (typeof onError === "function") return onError(error);
             });
     };
 
@@ -87,7 +87,7 @@ export function FirebaseProvider({ children }) {
             })
             .catch((error) => {
                 console.log("Error signing in: ", error);
-                if (typeof onError === "function") return onError(error.code);
+                if (typeof onError === "function") return onError(error);
             });
     };
 
@@ -102,7 +102,7 @@ export function FirebaseProvider({ children }) {
             })
             .catch((error) => {
                 console.log("Error sending verification code: ", error);
-                if (typeof onError === "function") return onError(error.code);
+                if (typeof onError === "function") return onError(error);
             });
     };
 
@@ -116,7 +116,7 @@ export function FirebaseProvider({ children }) {
             })
             .catch((error) => {
                 console.log("Firebase VerificationEmail Error: ", error);
-                if (error.code === "auth/email-already-in-use") {
+                if (error === "auth/email-already-in-use") {
                     console.log("That email address is already in use!");
                 }
             });
@@ -131,7 +131,7 @@ export function FirebaseProvider({ children }) {
             })
             .catch((error) => {
                 console.log("Firebase PasswordResetEmail Error: ", error);
-                if (typeof onError === "function") onError(error.code);
+                if (typeof onError === "function") onError(error);
             });
     };
 
