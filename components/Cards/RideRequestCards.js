@@ -72,7 +72,7 @@ const RideRequestCards = ({ setModalVisible, setSelectedRide }) => {
                                             const car = rentACar[carsKey];
                                             ridesArray.forEach((ride) => {
                                                 if (
-                                                    car.status === "idle" &&
+                                                    car.status === "Idle" &&
                                                     ride.status === "fetching" &&
                                                     ride.selectedCar.registrationNumber === car.registrationNumber
                                                 ) {
@@ -190,7 +190,7 @@ const styles = StyleSheet.create({
         borderRadius: 10,
         backgroundColor: "#fff",
         borderColor: "#A7E92F",
-        borderWidth: 1.5,
+        borderWidth: 1,
         marginBottom: 10,
         marginHorizontal: 10,
         shadowColor: "#000",

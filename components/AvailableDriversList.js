@@ -99,6 +99,7 @@ const AvailableDriversList = ({ isModalVisible, setModalVisible, selectedRide })
         const ridesRef = ref(dbRealtime, "Rides/" + selectedRide.rideID);
         update(driverRef, {
             status: "booked",
+            assignedRideID: selectedRide.rideID,
         })
             .then(() => {
                 console.log("Driver status updated to booked.");
@@ -201,13 +202,12 @@ const AvailableDriversList = ({ isModalVisible, setModalVisible, selectedRide })
                     </View>
                 ) : !loading && driverAssigned ? (
                     <View style={styles.loadingContainer}>
-                        {/* <View style={styles.lottieAnimation}>
-                                <LottieView
-                                    source={require("../assets/animations/check-animation.json")}
-                                    autoPlay={true}
-                                    loop={false}
-                                />
-                            </View> */}
+                        <LottieView
+                            source={require("../assets/animations/check-animation.json")}
+                            autoPlay={true}
+                            loop={false}
+                            style={styles.lottieAnimation}
+                        />
                         <Text style={styles.loaderText}>Driver has been assigned</Text>
                     </View>
                 ) : drivers.length === 0 ? (
