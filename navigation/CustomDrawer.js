@@ -28,8 +28,10 @@ const CustomDrawer = (props) => {
     }, [driver.isOnline]);
 
     const toggleSwitch = () => {
-        const IsOnline = !driver.isOnline;
-        dispatch(setDriver({ isOnline: IsOnline }));
+        if (!driver.rideAssigned) {
+            const IsOnline = !driver.isOnline;
+            dispatch(setDriver({ isOnline: IsOnline }));
+        }
     };
 
     const onShare = async () => {
