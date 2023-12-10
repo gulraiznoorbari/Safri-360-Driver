@@ -1,3 +1,4 @@
+import { GOOGLE_MAPS_API_KEY } from "@env";
 import { useState, useEffect, useLayoutEffect } from "react";
 import {
     StyleSheet,
@@ -8,16 +9,17 @@ import {
     Switch,
     Keyboard,
     BackHandler,
-    PermissionsAndroid,
     TouchableWithoutFeedback,
 } from "react-native";
 import { useSelector, useDispatch } from "react-redux";
-import { ref, update } from "firebase/database";
-import MapView, { PROVIDER_GOOGLE, Marker } from "react-native-maps";
+import { ref, get, update, onValue } from "firebase/database";
 import Geolocation from "react-native-geolocation-service";
+import MapView, { PROVIDER_GOOGLE, Marker, Callout } from "react-native-maps";
+import MapViewDirections from "react-native-maps-directions";
 
 import { dbRealtime, geoFire } from "../../firebase/config";
 import { useMapContext } from "../../contexts/MapContext";
+import { requestLocationPermission } from "../../utils/requestLocation";
 import { selectDriver, setDriver } from "../../store/slices/driverSlice";
 import { setOrigin, selectOrigin, setDestination } from "../../store/slices/navigationSlice";
 import { setCurrentUserLocation, selectCurrentUserLocation } from "../../store/slices/locationSlice";
@@ -32,7 +34,6 @@ const LATITUDE_DELTA = 0.03;
 const LONGITUDE_DELTA = LATITUDE_DELTA * ASPECT_RATIO;
 
 const DriverHomeScreen = ({ navigation }) => {
-    const [tracking, setTracking] = useState(false);
     const { mapRef } = useMapContext();
 
     const currentUserLocation = useSelector(selectCurrentUserLocation);
@@ -66,7 +67,23 @@ const DriverHomeScreen = ({ navigation }) => {
     }, []);
 
     useEffect(() => {
-        if (driverPIN) {
+        if (currentUserLocation) {
+            const driverRef = ref(dbRealtime, "Drivers/" + driverPIN);
+            onValue(driverRef, (snapshot) => {
+                const driverData = snapshot.val();
+                if (driverData.status === "booked") {
+                    const assignedRideRef = ref(dbRealtime, "Rides/" + driverData.assignedRideID);
+                    get(assignedRideRef).then((snapshot) => {
+                        const rideData = snapshot.val();
+                        dispatch(setDriver({ rideData: rideData, rideAssigned: true }));
+                    });
+                }
+            });
+        }
+    }, []);
+
+    useEffect(() => {
+        if (driverPIN && !driver.rideAssigned) {
             if (driver.isOnline) {
                 dispatch(setDriver({ isOnline: driver.isOnline }));
                 driverIsOnline(driverPIN);
@@ -80,10 +97,15 @@ const DriverHomeScreen = ({ navigation }) => {
         updateDriverLocation();
     }, [currentUserLocation]);
 
-    const updateDriverLocation = () => {
+    const updateDriverLocation = async () => {
         const userRef = ref(dbRealtime, "Drivers/" + driverPIN);
+        const locationName = await getLocationName(currentUserLocation.latitude, currentUserLocation.longitude);
         update(userRef, {
-            location: { latitude: currentUserLocation.latitude, longitude: currentUserLocation.longitude },
+            location: {
+                latitude: currentUserLocation.latitude,
+                longitude: currentUserLocation.longitude,
+                locationName: locationName,
+            },
         })
             .then(() => {
                 console.log("Driver location updated");
@@ -98,23 +120,8 @@ const DriverHomeScreen = ({ navigation }) => {
         dispatch(setDriver({ isOnline: IsOnline, status: IsOnline ? "Online" : "Offline" }));
     };
 
-    const locationPermission = () =>
-        new Promise((resolve, reject) => {
-            PermissionsAndroid.request(PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION)
-                .then((granted) => {
-                    if (granted === PermissionsAndroid.RESULTS.GRANTED) {
-                        resolve("granted");
-                    }
-                    return reject("Location Permission denied");
-                })
-                .catch((error) => {
-                    console.log("Ask Location permission error: ", error);
-                    return reject(error);
-                });
-        });
-
     const getLocation = async () => {
-        const hasLocationPermission = await locationPermission();
+        const hasLocationPermission = await requestLocationPermission();
         if (hasLocationPermission) {
             Geolocation.getCurrentPosition(
                 (position) => {
@@ -122,13 +129,30 @@ const DriverHomeScreen = ({ navigation }) => {
                     dispatch(setOrigin({ latitude: latitude, longitude: longitude }));
                     dispatch(setCurrentUserLocation({ latitude, longitude }));
                     moveCameraToCenter(mapRef, position.coords);
-                    setTracking(true);
                 },
                 (error) => {
                     console.log(error.code, error.message);
                 },
                 { enableHighAccuracy: true, timeout: 15000, maximumAge: 10000 },
             );
+        }
+    };
+
+    const getLocationName = async (latitude, longitude) => {
+        const apiKey = GOOGLE_MAPS_API_KEY;
+        const apiUrl = `https://maps.googleapis.com/maps/api/geocode/json?latlng=${latitude},${longitude}&key=${apiKey}`;
+        try {
+            const response = await fetch(apiUrl);
+            const data = await response.json();
+            if (data.results && data.results.length > 0) {
+                const address = data?.results[0].formatted_address;
+                return address;
+            } else {
+                throw new Error("Unable to get location name");
+            }
+        } catch (error) {
+            console.error("Error fetching location name:", error.message);
+            throw error;
         }
     };
 
@@ -170,6 +194,18 @@ const DriverHomeScreen = ({ navigation }) => {
         navigation.openDrawer();
     };
 
+    const centerCameraOnRoute = (result) => {
+        mapRef.current.fitToCoordinates(result.coordinates, {
+            edgePadding: {
+                right: width / 20,
+                bottom: height / 20,
+                left: width / 20,
+                top: height / 20,
+            },
+            animated: true,
+        });
+    };
+
     return (
         <View style={styles.container}>
             {driver.isOnline ? (
@@ -190,7 +226,50 @@ const DriverHomeScreen = ({ navigation }) => {
                                     loadingIndicatorColor="#A7E92F"
                                     loadingBackgroundColor="#fff"
                                 >
-                                    {currentUserLocation && origin && <Marker coordinate={origin} />}
+                                    {driver.rideAssigned && driver.rideData && (
+                                        <>
+                                            <Marker
+                                                coordinate={{
+                                                    latitude: driver.rideData.destination.latitude,
+                                                    longitude: driver.rideData.destination.longitude,
+                                                }}
+                                                pinColor="#007ACC"
+                                            >
+                                                <Callout style={styles.callout}>
+                                                    <Text>{driver.rideData.destination.locationName}</Text>
+                                                </Callout>
+                                            </Marker>
+                                            <Marker
+                                                coordinate={{
+                                                    latitude: driver.rideData.origin.latitude,
+                                                    longitude: driver.rideData.origin.longitude,
+                                                }}
+                                                pinColor="red"
+                                            >
+                                                <Callout style={styles.callout}>
+                                                    <Text>{driver.rideData.origin.locationName}</Text>
+                                                </Callout>
+                                            </Marker>
+                                            <MapViewDirections
+                                                origin={{
+                                                    latitude: driver.rideData.origin.latitude,
+                                                    longitude: driver.rideData.origin.longitude,
+                                                }}
+                                                destination={{
+                                                    latitude: driver.rideData.destination.latitude,
+                                                    longitude: driver.rideData.destination.longitude,
+                                                }}
+                                                apikey={GOOGLE_MAPS_API_KEY}
+                                                strokeWidth={2}
+                                                strokeColor="#000"
+                                                optimizeWaypoints={true}
+                                                onReady={(result) => centerCameraOnRoute(result)}
+                                            />
+                                        </>
+                                    )}
+                                    {origin && !driver.rideAssigned && (
+                                        <Marker coordinate={origin} pinColor="#A7E92F" />
+                                    )}
                                 </MapView>
                                 {mapRef?.current && <LocateUserButton userPosition={region} />}
                             </View>
@@ -247,6 +326,15 @@ const styles = StyleSheet.create({
     isOnlineSwitch: {
         marginVertical: 20,
         transform: [{ scaleX: 1.2 }, { scaleY: 1.2 }],
+    },
+    callout: {
+        flex: 1,
+        backgroundColor: "#fff",
+        padding: 10,
+    },
+    calloutText: {
+        fontSize: 16,
+        fontFamily: "SatoshiMedium",
     },
 });
 

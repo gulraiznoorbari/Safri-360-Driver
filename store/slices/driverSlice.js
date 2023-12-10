@@ -10,6 +10,8 @@ const initialState = {
         status: null,
         isOnline: false,
         isLoggedIn: false,
+        rideData: null,
+        rideAssigned: false,
     },
 };
 

@@ -1,11 +1,16 @@
-import { useState, useEffect, useRef } from "react";
-import { StyleSheet, View, Alert, BackHandler, Dimensions, PermissionsAndroid } from "react-native";
-import { useDispatch } from "react-redux";
+import { useState, useEffect } from "react";
+import { StyleSheet, View, Alert, BackHandler, Dimensions } from "react-native";
+import { useDispatch, useSelector } from "react-redux";
 import Geolocation from "react-native-geolocation-service";
+import { GeoFire } from "geofire";
+import { ref } from "firebase/database";
 
+import { dbRealtime } from "../firebase/config";
 import { useMapContext } from "../contexts/MapContext";
+import { requestLocationPermission } from "../utils/requestLocation";
 import { moveCameraToCenter } from "../utils/moveCameraToCenter";
 import { setOrigin } from "../store/slices/navigationSlice";
+import { selectRentACarUser } from "../store/slices/rentACarSlice";
 import DrawerMenuButton from "../components/Buttons/DrawerMenuButton";
 import HomeMap from "../components/HomeMap";
 import RideRequestCards from "../components/Cards/RideRequestCards";
@@ -23,6 +28,7 @@ const HomeScreen = ({ navigation }) => {
 
     const dispatch = useDispatch();
     const { mapRef } = useMapContext();
+    const rentACarUser = useSelector(selectRentACarUser);
 
     useEffect(() => {
         dispatch(setOrigin(null));
@@ -44,6 +50,7 @@ const HomeScreen = ({ navigation }) => {
     };
 
     const getLocation = async () => {
+        const geoFire = new GeoFire(ref(dbRealtime, "GeoRentACarLocations"));
         const hasLocationPermission = await requestLocationPermission();
         if (hasLocationPermission) {
             Geolocation.getCurrentPosition(
@@ -53,30 +60,21 @@ const HomeScreen = ({ navigation }) => {
                         latitudeDelta: LATITUDE_DELTA,
                         longitudeDelta: LONGITUDE_DELTA,
                     });
-                    dispatch(setOrigin(extractCoordinates(position)));
-                    moveCameraToCenter(mapRef, position.coords);
+                    geoFire
+                        .set(rentACarUser?.uid, [position.coords.latitude, position.coords.longitude])
+                        .then(() => {
+                            dispatch(setOrigin({ ...extractCoordinates(position) }));
+                            moveCameraToCenter(mapRef, position.coords);
+                        })
+                        .catch((error) => {
+                            console.log("Error: " + error);
+                        });
                 },
                 (error) => {
                     console.log(error.code, error.message);
                 },
                 { enableHighAccuracy: true, timeout: 15000, maximumAge: 10000 },
             );
-        }
-    };
-
-    const requestLocationPermission = async () => {
-        try {
-            const granted = await PermissionsAndroid.request(PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION);
-            if (granted === PermissionsAndroid.RESULTS.GRANTED) {
-                console.log("You can use Geolocation");
-                return true;
-            } else {
-                console.log("You cannot use Geolocation");
-                return false;
-            }
-        } catch (error) {
-            console.error("Error getting current location: ", error);
-            return false;
         }
     };
 
