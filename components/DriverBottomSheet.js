@@ -1,11 +1,10 @@
 import { useRef, useMemo, useEffect, useState } from "react";
-import { StyleSheet, Text, View, TouchableOpacity, Platform } from "react-native";
+import { StyleSheet, Text, View, TouchableOpacity, Platform, Linking } from "react-native";
 import { Skeleton } from "@rneui/themed";
 import { Divider } from "react-native-elements";
 import { useSelector } from "react-redux";
 import BottomSheet, { BottomSheetView, useBottomSheetSpringConfigs } from "@gorhom/bottom-sheet";
 import Ionicons from "react-native-vector-icons/Ionicons";
-import FontAwesome from "react-native-vector-icons/FontAwesome";
 import { ref, onValue } from "firebase/database";
 
 import { dbRealtime } from "../firebase/config";
@@ -38,6 +37,10 @@ const DriverBottomSheet = () => {
             });
         }
     }, [driver.rideAssigned]);
+
+    const callUser = (phoneNumber) => {
+        Linking.openURL(`tel:${phoneNumber}`);
+    };
 
     return (
         <BottomSheet
