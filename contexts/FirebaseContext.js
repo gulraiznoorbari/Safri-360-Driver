@@ -16,8 +16,8 @@ import { useSelector, useDispatch } from "react-redux";
 
 import { auth } from "../firebase/config";
 import { selectUserType, setUserType } from "../store/slices/userTypeSlice";
-import { selectRentACarUser, setRentACarUser } from "../store/slices/rentACarSlice";
-import { selectTourUser, setTourUser } from "../store/slices/tourSlice";
+import { setRentACarUser } from "../store/slices/rentACarSlice";
+import { setTourUser } from "../store/slices/tourSlice";
 
 const FirebaseContext = createContext();
 
@@ -27,8 +27,6 @@ export function useFirebase() {
 
 export function FirebaseProvider({ children }) {
     const userType = useSelector(selectUserType);
-    const rentACarUser = useSelector(selectRentACarUser);
-    const tourUser = useSelector(selectTourUser);
     const dispatch = useDispatch();
 
     const [currentUser, setCurrentUser] = useState(null);
@@ -80,9 +78,9 @@ export function FirebaseProvider({ children }) {
         signInWithEmailAndPassword(auth, email, password)
             .then((credential) => {
                 userType === "RentACarOwner"
-                    ? (dispatch(rentACarUser({ isLoggedIn: true })), console.log("User signed In Successfully!"))
+                    ? (dispatch(setRentACarUser({ isLoggedIn: true })), console.log("User signed In Successfully!"))
                     : userType === "ToursCompany" &&
-                      (dispatch(tourUser({ isLoggedIn: true })), console.log("User signed In Successfully!"));
+                      (dispatch(setTourUser({ isLoggedIn: true })), console.log("User signed In Successfully!"));
                 if (typeof onSuccess === "function") return onSuccess(credential);
             })
             .catch((error) => {

@@ -24,6 +24,7 @@ const LoginScreen = ({ navigation }) => {
     useEffect(() => {
         const unsubscribe = navigation.addListener("focus", () => {
             resetInputFields();
+            resetErrorMessages();
         });
         return unsubscribe;
     }, [navigation]);
@@ -35,14 +36,18 @@ const LoginScreen = ({ navigation }) => {
         };
     }, []);
 
-    const resetInputFields = () => {
-        setEmail("");
-        setPassword("");
+    const resetErrorMessages = () => {
         setEmailErrMessage("");
         setPasswordErrMessage("");
     };
 
+    const resetInputFields = () => {
+        setEmail("");
+        setPassword("");
+    };
+
     const handleLogin = () => {
+        resetErrorMessages();
         if (!email) {
             setEmailErrMessage("Email address is required!");
             return;
@@ -64,6 +69,9 @@ const LoginScreen = ({ navigation }) => {
                 } else if (error.code === "auth/wrong-password") {
                     setPasswordErrMessage("Wrong password");
                     setEmailErrMessage("");
+                } else if (error.code === "auth/user-not-found") {
+                    setEmailErrMessage("User not Found.");
+                    setPasswordErrMessage("");
                 } else {
                     console.log(error);
                     setEmailErrMessage("User not Found.");
