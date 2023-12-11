@@ -9,6 +9,7 @@ import { useSelector } from "react-redux";
 import { dbRealtime } from "../../firebase/config";
 import { selectTourUser } from "../../store/slices/tourSlice";
 import { humanPhoneNumber } from "../../utils/humanPhoneNumber";
+import { formatCurrencyWithCommas } from "../../utils/formatCurrencyValue";
 
 const TourDetailScreen = ({ route, navigation }) => {
     const { data } = route.params;
@@ -84,11 +85,6 @@ const TourDetailScreen = ({ route, navigation }) => {
             .catch((error) => {
                 console.log(error);
             });
-    };
-
-    const formatCurrencyWithCommas = (amount) => {
-        const formattedAmount = amount && amount.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
-        return formattedAmount;
     };
 
     const getSeatStatusColor = (seats, seatsLeft) => {

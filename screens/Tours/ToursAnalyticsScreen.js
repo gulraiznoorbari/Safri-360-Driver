@@ -9,6 +9,7 @@ import moment from "moment";
 import { dbRealtime } from "../../firebase/config";
 import { selectTourUser } from "../../store/slices/tourSlice";
 import { SafeAreaView } from "react-native-safe-area-context";
+import { formatCurrencyWithCommas } from "../../utils/formatCurrencyValue";
 
 const ToursAnalyticsScreen = ({ navigation }) => {
     const user = useSelector(selectTourUser);
@@ -21,18 +22,14 @@ const ToursAnalyticsScreen = ({ navigation }) => {
             const toursData = snapshot.val();
             let toursArray = [];
             for (let id in toursData) {
-                // if (toursData[id].tourBookingStatus === "Closed" || toursData[id].tourBookingStatus === "Booked") {
-                toursArray.push({ tourId: id, ...toursData[id] });
-                // }
+                if (toursData[id].tourBookingStatus === "Closed" || toursData[id].tourBookingStatus === "Open") {
+                    toursArray.push({ tourId: id, ...toursData[id] });
+                }
             }
             const filteredTours = filterTours(toursArray, filter);
             setTours(filteredTours);
         });
     }, [user.uid, filter]);
-
-    const formatCurrencyWithCommas = (amount) => {
-        return amount.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
-    };
 
     const renderTours = ({ item }) => (
         <View style={styles.tourInfoContainer}>
