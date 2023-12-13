@@ -11,9 +11,6 @@
             },
             "ios": {
                 "buildConfiguration": "Debug"
-            },
-            "env": {
-                "FIREBASE_APP_CHECK_DEBUG_TOKEN": "0F6B0C3A-AE63-4455-9892-44DD45E39321"
             }
         },
         "preview": {
