@@ -12,25 +12,32 @@ import { selectUserType } from "../store/slices/userTypeSlice";
 import { selectRentACarUser, resetRentACarUser } from "../store/slices/rentACarSlice";
 import { selectTourUser, resetTourUser } from "../store/slices/tourSlice";
 import { setDriver, selectDriver, resetDriver } from "../store/slices/driverSlice";
+import { selectFreightRider, setFreightRider } from "../store/slices/freightRiderSlice";
 
 const CustomDrawer = (props) => {
     const { logout } = useFirebase();
     const rentACarUser = useSelector(selectRentACarUser);
     const tourUser = useSelector(selectTourUser);
     const driver = useSelector(selectDriver);
+    const freightRider = useSelector(selectFreightRider);
     const userType = useSelector(selectUserType);
     const dispatch = useDispatch();
 
     useEffect(() => {
-        if (driver.isOnline) {
-            dispatch(setDriver({ isOnline: driver.isOnline }));
-        }
-    }, [driver.isOnline]);
+        userType === "Driver" && driver.isOnline
+            ? dispatch(setDriver({ isOnline: driver.isOnline }))
+            : userType === "FreightRider" &&
+              freightRider.isOnline &&
+              dispatch(setFreightRider({ isOnline: freightRider.isOnline }));
+    }, [driver.isOnline, freightRider.isOnline]);
 
     const toggleSwitch = () => {
-        if (!driver.rideAssigned) {
+        if (userType === "Driver" && !driver.rideAssigned) {
             const IsOnline = !driver.isOnline;
             dispatch(setDriver({ isOnline: IsOnline }));
+        } else if (userType === "FreightRider" && !freightRider.rideAssigned) {
+            const IsOnline = !freightRider.isOnline;
+            dispatch(setFreightRider({ isOnline: IsOnline }));
         }
     };
 
@@ -92,6 +99,14 @@ const CustomDrawer = (props) => {
                         />
                         <Text style={styles.userName}>{tourUser.companyName || "Company Name"}</Text>
                     </View>
+                ) : userType === "FreightRider" ? (
+                    <View style={{ padding: 20 }}>
+                        <Image
+                            source={{ uri: freightRider.photoURL ? freightRider.photoURL : DEFAULT_PROFILE_IMAGE }}
+                            style={styles.profileImage}
+                        />
+                        <Text style={styles.userName}>{freightRider.userName || "Company Name"}</Text>
+                    </View>
                 ) : (
                     userType === "Driver" && (
                         <View style={{ padding: 20 }}>
@@ -104,7 +119,7 @@ const CustomDrawer = (props) => {
                 </View>
             </DrawerContentScrollView>
             <View style={styles.bottomMenu}>
-                {userType === "Driver" && (
+                {userType === "Driver" ? (
                     <View style={styles.switchContainer}>
                         <Text style={styles.isOnlineSwitchText}>Go {driver.isOnline ? "Offline" : "Online"}</Text>
                         <Switch
@@ -116,6 +131,22 @@ const CustomDrawer = (props) => {
                             style={styles.isOnlineSwitch}
                         />
                     </View>
+                ) : (
+                    userType === "FreightRider" && (
+                        <View style={styles.switchContainer}>
+                            <Text style={styles.isOnlineSwitchText}>
+                                Go {freightRider.isOnline ? "Offline" : "Online"}
+                            </Text>
+                            <Switch
+                                trackColor={{ false: "#767577", true: "#A7E92F" }}
+                                thumbColor={freightRider.isOnline ? "#A7E92F" : "#767577"}
+                                ios_backgroundColor="#3e3e3e"
+                                onValueChange={toggleSwitch}
+                                value={freightRider.isOnline}
+                                style={styles.isOnlineSwitch}
+                            />
+                        </View>
+                    )
                 )}
                 <TouchableOpacity onPress={() => onShare()} style={styles.button}>
                     <View style={styles.buttonInner}>

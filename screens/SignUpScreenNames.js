@@ -6,12 +6,14 @@ import { useSelector, useDispatch } from "react-redux";
 
 import { setRentACarUser, resetRentACarUser } from "../store/slices/rentACarSlice";
 import { setTourUser, resetTourUser } from "../store/slices/tourSlice";
+import { setFreightRider, resetFreightRider } from "../store/slices/freightRiderSlice";
 import { selectUserType } from "../store/slices/userTypeSlice";
 import { useFirebase } from "../contexts/FirebaseContext";
+import KeyboardAvoidingWrapper from "../components/KeyboardAvoidingWrapper";
 import PrimaryButton from "../components/Buttons/PrimaryButton";
+import TransparentButton from "../components/Buttons/TransparentButton";
 import ErrorMessage from "../components/ErrorMessage";
 import ClearableInput from "../components/ClearableInput";
-import KeyboardAvoidingWrapper from "../components/KeyboardAvoidingWrapper";
 
 const SignUpScreenNames = ({ navigation }) => {
     const userType = useSelector(selectUserType);
@@ -20,9 +22,11 @@ const SignUpScreenNames = ({ navigation }) => {
     const [firstName, setFirstName] = useState("");
     const [lastName, setLastName] = useState("");
     const [companyName, setCompanyName] = useState("");
+    const [cnic, setCNIC] = useState("");
 
     const [firstNameError, setFirstNameError] = useState("");
     const [lastNameError, setLastNameError] = useState("");
+    const [cnicError, setCNICError] = useState("");
     const [companyNameError, setCompanyNameError] = useState("");
 
     const { updateUserProfile } = useFirebase();
@@ -31,7 +35,9 @@ const SignUpScreenNames = ({ navigation }) => {
         const unsubscribe = navigation.addListener("focus", () => {
             userType === "RentACarOwner"
                 ? dispatch(resetRentACarUser())
-                : userType === "ToursCompany" && dispatch(resetTourUser());
+                : userType === "ToursCompany"
+                ? dispatch(resetTourUser())
+                : userType === "FreightRider" && dispatch(resetFreightRider());
         });
         return unsubscribe;
     }, []);
@@ -46,59 +52,62 @@ const SignUpScreenNames = ({ navigation }) => {
     const resetInputFields = () => {
         setFirstName("");
         setLastName("");
-        setCompanyName("");
+        userType === "FreightRider" ? setCNIC("") : setCompanyName("");
+    };
+
+    const handleChangeText = (input) => {
+        const CNIC_REGEX = /^[0-9]{5}-[0-9]{7}-[0-9]{1}$/;
+        const formattedInput = input.replace(/[^\d/]/g, "").replace(/^(\d{5})(\d{7})(\d{1})$/, "$1-$2-$3");
+        if (!formattedInput.match(CNIC_REGEX)) {
+            console.log("Invalid CNIC");
+        }
+        if (formattedInput.length <= 15) {
+            setCNIC(formattedInput);
+        }
     };
 
     const handleSubmit = () => {
         // Clear previous errors
         setFirstNameError("");
         setLastNameError("");
-        setCompanyNameError("");
+        userType === "FreightRider" ? setCNICError("") : setCompanyNameError("");
 
-        let isValid = true;
-
-        if (!firstName.trim()) {
-            setFirstNameError("First Name is required");
-            isValid = false;
-        }
-
-        if (!lastName.trim()) {
-            setLastNameError("Last Name is required");
-            isValid = false;
-        }
-
-        if (!companyName.trim()) {
-            setCompanyNameError("Company Name is required");
-            isValid = false;
-        }
-
-        if (isValid) {
-            userType === "RentACarOwner"
-                ? dispatch(
-                      setRentACarUser({
-                          firstName: firstName,
-                          lastName: lastName,
-                          companyName: companyName,
-                          userName: firstName,
-                      }),
-                  )
-                : userType === "ToursCompany" &&
-                  dispatch(
-                      setTourUser({
-                          firstName: firstName,
-                          lastName: lastName,
-                          companyName: companyName,
-                          userName: firstName,
-                      }),
-                  );
-            updateUserProfile({
-                firstName: firstName,
-                lastName: lastName,
-                displayName: firstName,
-                photoURL: DEFAULT_PROFILE_IMAGE,
-            });
-            navigation.navigate("SignUpScreenCredentials");
-        }
+        userType === "RentACarOwner"
+            ? dispatch(
+                  setRentACarUser({
+                      firstName: firstName,
+                      lastName: lastName,
+                      companyName: companyName,
+                      userName: firstName,
+                  }),
+              )
+            : userType === "ToursCompany"
+            ? dispatch(
+                  setTourUser({
+                      firstName: firstName,
+                      lastName: lastName,
+                      companyName: companyName,
+                      userName: firstName,
+                  }),
+              )
+            : userType === "FreightRider" &&
+              dispatch(
+                  setFreightRider({
+                      firstName: firstName,
+                      lastName: lastName,
+                      userName: firstName,
+                      CNIC: cnic,
+                  }),
+              );
+        updateUserProfile({
+            firstName: firstName,
+            lastName: lastName,
+            displayName: firstName,
+            photoURL: DEFAULT_PROFILE_IMAGE,
+        });
+        userType === "FreightRider"
+            ? navigation.navigate("SignUpScreenVehicleInfo")
+            : navigation.navigate("SignUpScreenCredentials");
     };
 
     return (
@@ -130,22 +139,46 @@ const SignUpScreenNames = ({ navigation }) => {
                 />
                 {lastNameError && <ErrorMessage errorMessage={lastNameError} />}
 
-                <ClearableInput
-                    label={"Company Name"}
-                    placeholder={"Enter Company Name"}
-                    value={companyName}
-                    setValue={setCompanyName}
-                    hideInput={false}
-                    autoComplete={"organization"}
-                    textContentType={"organizationName"}
-                />
-                {companyNameError && <ErrorMessage errorMessage={companyNameError} />}
+                {userType === "FreightRider" ? (
+                    <ClearableInput
+                        label={"CNIC"}
+                        placeholder={"xxxxx-xxxxxxx-x"}
+                        value={cnic}
+                        setValue={setCNIC}
+                        onChangeCallback={(input) => handleChangeText(input)}
+                        maxLength={15}
+                        hideInput={false}
+                        autoComplete={"off"}
+                        KeyboardType={"numeric"}
+                        textContentType={"none"}
+                    />
+                ) : (
+                    <ClearableInput
+                        label={"Company Name"}
+                        placeholder={"Enter Company Name"}
+                        value={companyName}
+                        setValue={setCompanyName}
+                        hideInput={false}
+                        autoComplete={"organization"}
+                        textContentType={"organizationName"}
+                    />
+                )}
+                {userType === "FreightRider"
+                    ? cnicError && <ErrorMessage errorMessage={cnicError} />
+                    : companyNameError && <ErrorMessage errorMessage={companyNameError} />}
 
                 <PrimaryButton
                     text={"Continue"}
                     action={() => handleSubmit()}
-                    disabled={!(firstName && lastName && companyName)}
+                    disabled={
+                        userType === "FreightRider"
+                            ? !(firstName && lastName && cnic)
+                            : !(firstName && lastName && companyName)
+                    }
                 />
+                {userType === "FreightRider" && (
+                    <TransparentButton text="Already have an account" navigation={navigation} navigateTo={"Login"} />
+                )}
             </SafeAreaView>
         </KeyboardAvoidingWrapper>
     );

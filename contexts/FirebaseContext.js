@@ -18,6 +18,7 @@ import { auth } from "../firebase/config";
 import { selectUserType, setUserType } from "../store/slices/userTypeSlice";
 import { setRentACarUser } from "../store/slices/rentACarSlice";
 import { setTourUser } from "../store/slices/tourSlice";
+import { setFreightRider } from "../store/slices/freightRiderSlice";
 
 const FirebaseContext = createContext();
 
@@ -32,7 +33,7 @@ export function FirebaseProvider({ children }) {
     const [currentUser, setCurrentUser] = useState(null);
 
     useEffect(() => {
-        if (userType === "RentACarOwner" || userType === "ToursCompany") {
+        if (userType === "RentACarOwner" || userType === "ToursCompany" || userType === "FreightRider") {
             let prevState;
             const unsubscribe = onAuthStateChanged(auth, (user) => {
                 setCurrentUser(user);
@@ -45,7 +46,7 @@ export function FirebaseProvider({ children }) {
             });
             return () => unsubscribe();
         }
-    }, []);
+    }, [userType]);
 
     const signUp = (email, password, onSuccess, onError) => {
         createUserWithEmailAndPassword(auth, email, password)
@@ -58,14 +59,23 @@ export function FirebaseProvider({ children }) {
                           }),
                       ),
                       console.log("User signed up successfully!"))
-                    : userType === "ToursCompany" &&
-                      (dispatch(
+                    : userType === "ToursCompany"
+                    ? (dispatch(
                           setTourUser({
                               uid: credential.user.uid,
                               lastLoginAt: credential.user.metadata.lastSignInTime,
                           }),
                       ),
+                      console.log("User signed up successfully!"))
+                    : userType === "FreightRider" &&
+                      (dispatch(
+                          setFreightRider({
+                              uid: credential.user.uid,
+                              lastLoginAt: credential.user.metadata.lastSignInTime,
+                          }),
+                      ),
                       console.log("User signed up successfully!"));
+
                 if (typeof onSuccess === "function") return onSuccess(credential);
             })
             .catch((error) => {
@@ -79,8 +89,10 @@ export function FirebaseProvider({ children }) {
             .then((credential) => {
                 userType === "RentACarOwner"
                     ? (dispatch(setRentACarUser({ isLoggedIn: true })), console.log("User signed In Successfully!"))
-                    : userType === "ToursCompany" &&
-                      (dispatch(setTourUser({ isLoggedIn: true })), console.log("User signed In Successfully!"));
+                    : userType === "ToursCompany"
+                    ? (dispatch(setTourUser({ isLoggedIn: true })), console.log("User signed In Successfully!"))
+                    : userType === "FreightRider" &&
+                      (dispatch(setFreightRider({ isLoggedIn: true })), console.log("User signed In Successfully!"));
                 if (typeof onSuccess === "function") return onSuccess(credential);
             })
             .catch((error) => {

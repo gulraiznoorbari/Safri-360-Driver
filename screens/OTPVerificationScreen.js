@@ -10,6 +10,7 @@ import { useFirebase } from "../contexts/FirebaseContext";
 import firebaseConfig, { dbRealtime } from "../firebase/config";
 import { selectRentACarUser, setRentACarUser } from "../store/slices/rentACarSlice";
 import { selectTourUser, setTourUser } from "../store/slices/tourSlice";
+import { selectFreightRider, setFreightRider } from "../store/slices/freightRiderSlice";
 import { selectUserType } from "../store/slices/userTypeSlice";
 import { humanPhoneNumber } from "../utils/humanPhoneNumber";
 import KeyboardAvoidingWrapper from "../components/KeyboardAvoidingWrapper";
@@ -21,9 +22,14 @@ const OTPVerificationScreen = ({ navigation }) => {
     const dispatch = useDispatch();
     const rentACarUser = useSelector(selectRentACarUser);
     const toursUser = useSelector(selectTourUser);
+    const freightRider = useSelector(selectFreightRider);
     const userType = useSelector(selectUserType);
     const phoneNumber =
-        userType === "RentACarOwner" ? rentACarUser.phoneNumber : userType === "ToursCompany" && toursUser.phoneNumber;
+        userType === "RentACarOwner"
+            ? rentACarUser.phoneNumber
+            : userType === "ToursCompany"
+            ? toursUser.phoneNumber
+            : userType === "FreightRider" && freightRider.phoneNumber;
 
     const [code, setCode] = useState([...Array(CODE_LENGTH)]);
     const [verificationId, setVerificationId] = useState();
@@ -119,10 +125,14 @@ const OTPVerificationScreen = ({ navigation }) => {
             userType === "RentACarOwner"
                 ? (dispatch(setRentACarUser({ phoneNumberVerified: Boolean(credential) })),
                   AddPhoneNumberToDB(userData.user, "Rent A Car"))
-                : userType === "ToursCompany" &&
-                  (dispatch(setTourUser({ phoneNumberVerified: Boolean(credential) })),
-                  AddPhoneNumberToDB(userData.user, "Tours"));
-            updateUserProfile({
+                : userType === "ToursCompany"
+                ? (dispatch(setTourUser({ phoneNumberVerified: Boolean(credential) })),
+                  AddPhoneNumberToDB(userData.user, "Tours"))
+                : userType === "FreightRider" &&
+                  (dispatch(setFreightRider({ phoneNumberVerified: Boolean(credential) })),
+                  AddPhoneNumberToDB(userData.user, "Freight Riders"));
+
+            await updateUserProfile({
                 phoneNumber: phoneNumber,
             });
             setTimeout(() => {

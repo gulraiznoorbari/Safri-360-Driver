@@ -7,6 +7,7 @@ import Ionicons from "react-native-vector-icons/Ionicons";
 import { selectUserType } from "../../../store/slices/userTypeSlice";
 import { selectRentACarUser } from "../../../store/slices/rentACarSlice";
 import { selectTourUser } from "../../../store/slices/tourSlice";
+import { selectFreightRider } from "../../../store/slices/freightRiderSlice";
 import { humanPhoneNumber } from "../../../utils/humanPhoneNumber";
 import MenuOptionButton from "../../../components/Buttons/MenuOptionButton";
 
@@ -14,6 +15,7 @@ const SettingsScreen = () => {
     const userType = useSelector(selectUserType);
     const rentACarUser = useSelector(selectRentACarUser);
     const tourUser = useSelector(selectTourUser);
+    const freightRider = useSelector(selectFreightRider);
 
     const openExternalWebpage = (url) => {
         Linking.openURL(url);
@@ -37,18 +39,33 @@ const SettingsScreen = () => {
                             isPhoneNumberButton={true}
                         />
                     </>
+                ) : userType === "ToursCompany" ? (
+                    <>
+                        <MenuOptionButton
+                            profileImage={tourUser.photoURL}
+                            userDataHeader={tourUser.userName}
+                            userDataText={tourUser.email}
+                            navScreen={"EditProfileScreen"}
+                        />
+                        <MenuOptionButton
+                            userDataHeader="Phone Number"
+                            userDataText={humanPhoneNumber(tourUser.phoneNumber)}
+                            navScreen={"ChangePhoneNumberScreen"}
+                            isPhoneNumberButton={true}
+                        />
+                    </>
                 ) : (
-                    userType === "ToursCompany" && (
+                    userType === "FreightRider" && (
                         <>
                             <MenuOptionButton
-                                profileImage={tourUser.photoURL}
-                                userDataHeader={tourUser.userName}
-                                userDataText={tourUser.email}
+                                profileImage={freightRider.photoURL}
+                                userDataHeader={freightRider.userName}
+                                userDataText={freightRider.email}
                                 navScreen={"EditProfileScreen"}
                             />
                             <MenuOptionButton
                                 userDataHeader="Phone Number"
-                                userDataText={humanPhoneNumber(tourUser.phoneNumber)}
+                                userDataText={humanPhoneNumber(freightRider.phoneNumber)}
                                 navScreen={"ChangePhoneNumberScreen"}
                                 isPhoneNumberButton={true}
                             />

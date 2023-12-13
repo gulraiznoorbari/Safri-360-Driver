@@ -11,6 +11,7 @@ import DriverHomeScreen from "../screens/Driver/DriverHomeScreen";
 import TripsHistoryScreen from "../screens/DrawerScreens/TripsHistory/TripsHistoryScreen";
 import SettingsScreen from "../screens/DrawerScreens/Settings/SettingsScreen";
 import ManageScreen from "../screens/DrawerScreens/Manage/ManageScreen";
+import FreightHomeScreen from "../screens/Freight/FreightHomeScreen";
 import CustomDrawer from "./CustomDrawer";
 
 const Drawer = createDrawerNavigator();
@@ -88,6 +89,16 @@ const DrawerNavigation = () => {
                         }}
                     />
                 </>
+            ) : userType === "FreightRider" ? (
+                <Drawer.Screen
+                    name="Home"
+                    component={FreightHomeScreen}
+                    options={{
+                        drawerIcon: ({ color }) => (
+                            <Ionicons name="home-outline" size={22} color={color} style={styles.icon} />
+                        ),
+                    }}
+                />
             ) : (
                 userType === "Driver" && (
                     // driver home screen:
@@ -148,7 +159,7 @@ const DrawerNavigation = () => {
                     />
                 </>
             )}
-            {(userType === "RentACarOwner" || userType === "ToursCompany") && (
+            {(userType === "RentACarOwner" || userType === "ToursCompany" || userType === "FreightRider") && (
                 <Drawer.Screen
                     name="Settings"
                     component={SettingsScreen}

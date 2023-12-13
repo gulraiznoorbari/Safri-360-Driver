@@ -8,6 +8,7 @@ import { useSelector, useDispatch } from "react-redux";
 
 import { setRentACarUser } from "../store/slices/rentACarSlice";
 import { setTourUser } from "../store/slices/tourSlice";
+import { setFreightRider } from "../store/slices/freightRiderSlice";
 import { selectUserType } from "../store/slices/userTypeSlice";
 import InputField from "../components/InputField";
 import PrimaryButton from "../components/Buttons/PrimaryButton";
@@ -54,7 +55,9 @@ const PhoneRegisterScreen = ({ navigation }) => {
         const fullNumber = "+" + (countryCode?.countryCallingCode || 1) + (value || "").replace(/[^\d/]/g, "");
         userType === "RentACarOwner"
             ? dispatch(setRentACarUser({ phoneNumber: fullNumber }))
-            : userType === "ToursCompany" && dispatch(setTourUser({ phoneNumber: fullNumber }));
+            : userType === "ToursCompany"
+            ? dispatch(setTourUser({ phoneNumber: fullNumber }))
+            : userType === "FreightRider" && dispatch(setFreightRider({ phoneNumber: fullNumber }));
         setTimeout(() => {
             navigation.navigate("OTPVerificationScreen");
         }, 500);
@@ -104,13 +107,15 @@ const PhoneRegisterScreen = ({ navigation }) => {
     const restrictGoingBack = () => {
         userType === "RentACarOwner"
             ? dispatch(setRentACarUser({ phoneNumber: null }))
-            : userType === "ToursCompany" && dispatch(setTourUser({ phoneNumber: null }));
+            : userType === "ToursCompany"
+            ? dispatch(setTourUser({ phoneNumber: null }))
+            : userType === "FreightRider" && dispatch(setFreightRider({ phoneNumber: null }));
         return true;
     };
 
     return (
         <KeyboardAvoidingWrapper>
-            <SafeAreaView style={styles.mainContainer}>
+            <SafeAreaView>
                 <View style={styles.headingContainer}>
                     <Text style={styles.headingText}>Enter your phone number</Text>
                 </View>
@@ -172,10 +177,6 @@ const PhoneRegisterScreen = ({ navigation }) => {
 };
 
 const styles = StyleSheet.create({
-    mainContainer: {
-        flex: 1,
-        backgroundColor: "#fff",
-    },
     headingContainer: {
         paddingHorizontal: 30,
         paddingTop: 30,

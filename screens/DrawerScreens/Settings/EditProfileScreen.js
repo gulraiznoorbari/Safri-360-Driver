@@ -13,7 +13,7 @@ import { storage, dbRealtime } from "../../../firebase/config";
 import { selectUserType } from "../../../store/slices/userTypeSlice";
 import { setRentACarUser, selectRentACarUser } from "../../../store/slices/rentACarSlice";
 import { setTourUser, selectTourUser } from "../../../store/slices/tourSlice";
-import { selectUser, setUser } from "../../../store/slices/rentACarSlice";
+import { setFreightRider, selectFreightRider } from "../../../store/slices/freightRiderSlice";
 import KeyboardAvoidingWrapper from "../../../components/KeyboardAvoidingWrapper";
 import ClearableInput from "../../../components/ClearableInput";
 
@@ -21,28 +21,37 @@ const EditProfileScreen = ({ navigation }) => {
     const userType = useSelector(selectUserType);
     const rentACarUser = useSelector(selectRentACarUser);
     const tourUser = useSelector(selectTourUser);
+    const freightRider = useSelector(selectFreightRider);
     const dispatch = useDispatch();
     const { updateUserProfile } = useFirebase();
 
     const [photoURL, setPhotoURL] = useState(
         userType === "RentACarOwner"
             ? rentACarUser?.photoURL || ""
-            : userType === "ToursCompany" && (tourUser?.photoURL || ""),
+            : userType === "ToursCompany"
+            ? tourUser?.photoURL || ""
+            : userType === "FreightRider" && (freightRider?.photoURL || ""),
     );
     const [firstName, setFirstName] = useState(
         userType === "RentACarOwner"
             ? rentACarUser?.firstName || ""
-            : userType === "ToursCompany" && (tourUser?.firstName || ""),
+            : userType === "ToursCompany"
+            ? tourUser?.firstName || ""
+            : userType === "FreightRider" && (freightRider?.firstName || ""),
     );
     const [lastName, setLastName] = useState(
         userType === "RentACarOwner"
             ? rentACarUser?.lastName || ""
-            : userType === "ToursCompany" && (tourUser?.lastName || ""),
+            : userType === "ToursCompany"
+            ? tourUser?.lastName || ""
+            : userType === "FreightRider" && (freightRider?.lastName || ""),
     );
     const [email, setEmail] = useState(
         userType === "RentACarOwner"
             ? rentACarUser?.email || ""
-            : userType === "ToursCompany" && (tourUser?.email || ""),
+            : userType === "ToursCompany"
+            ? tourUser?.email || ""
+            : userType === "FreightRider" && (freightRider?.email || ""),
     );
 
     useLayoutEffect(() => {
@@ -107,10 +116,17 @@ const EditProfileScreen = ({ navigation }) => {
               ),
               UpdateUserInfo("RentACarOwner", rentACarUser?.uid),
               updateUserProfile({ firstName: firstName, lastName: lastName, email: email, photoURL: photoURL }))
-            : userType === "ToursCompany" &&
-              (dispatch(setTourUser({ firstName: firstName, lastName: lastName, email: email, photoURL: photoURL })),
+            : userType === "ToursCompany"
+            ? (dispatch(setTourUser({ firstName: firstName, lastName: lastName, email: email, photoURL: photoURL })),
               UpdateUserInfo("Tours", rentACarUser?.uid),
+              updateUserProfile({ firstName: firstName, lastName: lastName, email: email, photoURL: photoURL }))
+            : userType === "FreightRider" &&
+              (dispatch(
+                  setFreightRider({ firstName: firstName, lastName: lastName, email: email, photoURL: photoURL }),
+              ),
+              UpdateUserInfo("FreightRider", rentACarUser?.uid),
               updateUserProfile({ firstName: firstName, lastName: lastName, email: email, photoURL: photoURL }));
+
         ToastAndroid.show("Profile updated!", ToastAndroid.SHORT);
     };
 

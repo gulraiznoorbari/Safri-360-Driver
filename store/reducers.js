@@ -7,11 +7,12 @@ import toursReducer from "./slices/tourSlice";
 import driverReducer from "./slices/driverSlice";
 import locationReducer from "./slices/locationSlice";
 import navigationReducer from "./slices/navigationSlice";
+import freightRiderReducer from "./slices/freightRiderSlice";
 
 const persistConfig = {
     key: "rootReducer",
     storage: AsyncStorage,
-    whitelist: ["userType", "rentACar", "tours", "driver", "location", "navigation"],
+    whitelist: ["userType", "rentACar", "tours", "driver", "freightRider", "location", "navigation"],
     blacklist: [],
     timeout: 7000,
 };
@@ -23,6 +24,7 @@ const rootReducer = persistCombineReducers(persistConfig, {
     driver: driverReducer,
     location: locationReducer,
     navigation: navigationReducer,
+    freightRider: freightRiderReducer,
 });
 
 export default rootReducer;

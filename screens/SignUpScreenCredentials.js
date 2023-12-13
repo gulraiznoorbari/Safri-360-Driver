@@ -7,6 +7,7 @@ import { useDispatch, useSelector } from "react-redux";
 
 import { setRentACarUser, selectRentACarUser } from "../store/slices/rentACarSlice";
 import { setTourUser, selectTourUser } from "../store/slices/tourSlice";
+import { setFreightRider, selectFreightRider } from "../store/slices/freightRiderSlice";
 import { selectUserType } from "../store/slices/userTypeSlice";
 import { useFirebase } from "../contexts/FirebaseContext";
 import { dbRealtime } from "../firebase/config";
@@ -20,6 +21,7 @@ const SignUpScreenCredentials = ({ navigation }) => {
     const dispatch = useDispatch();
     const rentACarUser = useSelector(selectRentACarUser);
     const toursUser = useSelector(selectTourUser);
+    const freightRider = useSelector(selectFreightRider);
     const userType = useSelector(selectUserType);
 
     const [email, setEmail] = useState("");
@@ -117,6 +119,28 @@ const SignUpScreenCredentials = ({ navigation }) => {
             });
     };
 
+    const AddFreightRiderToDB = (user) => {
+        const userRef = ref(dbRealtime, "Freight Riders/" + user.uid);
+        set(userRef, {
+            firstName: freightRider.firstName,
+            lastName: freightRider.lastName,
+            userName: freightRider.userName,
+            email: email,
+            photoURL: DEFAULT_PROFILE_IMAGE,
+            phoneNumber: "",
+            CNIC: freightRider.CNIC,
+            vehicleType: freightRider.vehicleInfo.vehicleType,
+            vehicleAverage: freightRider.vehicleInfo.carAverage,
+            vehicleRegistrationNumber: freightRider.vehicleInfo.carRegistrationNumber,
+        })
+            .then(() => {
+                console.log("Freight Rider added to DB");
+            })
+            .catch((error) => {
+                console.log("Error adding user to DB: ", error);
+            });
+    };
+
     const handleSignup = () => {
         setEmailError("");
         setPasswordError("");
@@ -141,7 +165,9 @@ const SignUpScreenCredentials = ({ navigation }) => {
                 const user = credential.user;
                 userType === "RentACarOwner"
                     ? AddRentACarToDB(user)
-                    : userType === "ToursCompany" && AddToursToDB(user);
+                    : userType === "ToursCompany"
+                    ? AddToursToDB(user)
+                    : userType === "FreightRider" && AddFreightRiderToDB(user);
                 navigation.navigate("PhoneRegisterScreen");
             };
             const onError = (error) => {
@@ -154,8 +180,10 @@ const SignUpScreenCredentials = ({ navigation }) => {
             };
             userType === "RentACarOwner"
                 ? dispatch(setRentACarUser({ email: email, photoURL: DEFAULT_PROFILE_IMAGE }))
-                : userType === "ToursCompany" &&
-                  dispatch(setTourUser({ email: email, photoURL: DEFAULT_PROFILE_IMAGE }));
+                : userType === "ToursCompany"
+                ? dispatch(setTourUser({ email: email, photoURL: DEFAULT_PROFILE_IMAGE }))
+                : userType === "FreightRider" &&
+                  dispatch(setFreightRider({ email: email, photoURL: DEFAULT_PROFILE_IMAGE }));
             signUp(email, password, onSuccess, onError);
         }
     };
@@ -166,7 +194,6 @@ const SignUpScreenCredentials = ({ navigation }) => {
                 <View style={styles.headingContainer}>
                     <Text style={styles.headingText}>Sign Up</Text>
                 </View>
-
                 <ClearableInput
                     label={"Email"}
                     placeholder={"Enter Email"}
@@ -177,7 +204,6 @@ const SignUpScreenCredentials = ({ navigation }) => {
                     textContentType={"emailAddress"}
                 />
                 {emailError && <ErrorMessage errorMessage={emailError} />}
-
                 <ClearableInput
                     label={"Password"}
                     placeholder={"Enter Password"}
@@ -188,7 +214,6 @@ const SignUpScreenCredentials = ({ navigation }) => {
                     textContentType={"password"}
                 />
                 {passwordError && <ErrorMessage errorMessage={passwordError} />}
-
                 <ClearableInput
                     label={"Confirm Password"}
                     placeholder={"Re-enter Password"}
@@ -199,15 +224,15 @@ const SignUpScreenCredentials = ({ navigation }) => {
                     textContentType={"password"}
                 />
                 {confirmPasswordError && <ErrorMessage errorMessage={confirmPasswordError} />}
-
                 {errMessage && <ErrorMessage errorMessage={errMessage} />}
-
                 <PrimaryButton
                     text={"Next"}
                     action={() => handleSignup()}
                     disabled={!(email && password && confirmPassword)}
                 />
-                <TransparentButton text="Already have an account" navigation={navigation} navigateTo={"Login"} />
+                {userType !== "FreightRider" && (
+                    <TransparentButton text="Already have an account" navigation={navigation} navigateTo={"Login"} />
+                )}
             </SafeAreaView>
         </KeyboardAvoidingWrapper>
     );

@@ -20,6 +20,7 @@ import DrawerNavigation from "./navigation/DrawerNavigation";
 import WelcomeScreen from "./screens/WelcomeScreen";
 import LoginScreen from "./screens/LoginScreen";
 import SignUpScreenNames from "./screens/SignUpScreenNames";
+import SignUpScreenVehicleInfo from "./screens/SignUpScreenVehicleInfo";
 import SignUpScreenCredentials from "./screens/SignUpScreenCredentials";
 import PasswordResetScreen from "./screens/PasswordResetScreen";
 import PhoneRegisterScreen from "./screens/PhoneRegisterScreen";
@@ -84,6 +85,8 @@ const App = () => {
                                 <RentACarOwnerScreens />
                             ) : userType === "ToursCompany" ? (
                                 <TourScreens />
+                            ) : userType === "FreightRider" ? (
+                                <FreightScreens />
                             ) : userType === "Driver" ? (
                                 <DriverScreens />
                             ) : (
@@ -152,6 +155,26 @@ const TourScreens = () => {
                 <Stack.Screen name="AddTourMainScreen" component={AddTourMain} />
                 <Stack.Screen name="AddTourFareScreen" component={AddTourFare} />
                 <Stack.Screen name="AddTourCompanyScreen" component={AddTourCompany} />
+            </Stack.Navigator>
+        </NavigationContainer>
+    );
+};
+
+const FreightScreens = () => {
+    return (
+        <NavigationContainer>
+            <Stack.Navigator
+                initialRouteName={auth.currentUser !== null ? "Home" : "Login"}
+                screenOptions={{ headerShown: false, animationEnabled: false }}
+            >
+                <Stack.Screen name="HomeScreen" component={DrawerNavigation} />
+                <Stack.Screen name="Login" component={LoginScreen} />
+                <Stack.Screen name="SignUpScreenNames" component={SignUpScreenNames} />
+                <Stack.Screen name="SignUpScreenVehicleInfo" component={SignUpScreenVehicleInfo} />
+                <Stack.Screen name="SignUpScreenCredentials" component={SignUpScreenCredentials} />
+                <Stack.Screen name="PasswordReset" component={PasswordResetScreen} />
+                <Stack.Screen name="PhoneRegisterScreen" component={PhoneRegisterScreen} />
+                <Stack.Screen name="OTPVerificationScreen" component={OTPVerificationScreen} />
             </Stack.Navigator>
         </NavigationContainer>
     );

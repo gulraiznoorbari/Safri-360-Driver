@@ -8,6 +8,7 @@ import { useSelector, useDispatch } from "react-redux";
 
 import { setRentACarUser } from "../../../store/slices/rentACarSlice";
 import { setTourUser } from "../../../store/slices/tourSlice";
+import { setFreightRider } from "../../../store/slices/freightRiderSlice";
 import { selectUserType } from "../../../store/slices/userTypeSlice";
 import ErrorMessage from "../../../components/ErrorMessage";
 import KeyboardAvoidingWrapper from "../../../components/KeyboardAvoidingWrapper";
@@ -66,7 +67,9 @@ const ChangePhoneNumberScreen = ({ navigation }) => {
         const fullNumber = "+" + (countryCode?.countryCallingCode || 1) + (value || "").replace(/[^\d/]/g, "");
         userType === "RentACarOwner"
             ? dispatch(setRentACarUser({ phoneNumber: fullNumber }))
-            : userType === "ToursCompany" && dispatch(setTourUser({ phoneNumber: fullNumber }));
+            : userType === "ToursCompany"
+            ? dispatch(setTourUser({ phoneNumber: fullNumber }))
+            : userType === "FreightRider" && dispatch(setFreightRider({ phoneNumber: fullNumber }));
         setTimeout(() => {
             navigation.navigate("OTPVerificationScreen");
         }, 500);
