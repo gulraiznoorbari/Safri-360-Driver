@@ -24,7 +24,7 @@ const HomeMap = ({ initialPosition }) => {
         onValue(driversRef, (snapshot) => {
             if (snapshot.exists()) {
                 const driversData = snapshot.val();
-                matchingDrivers = [];
+                let matchingDrivers = [];
                 const driversArray = Object.values(driversData);
                 driversArray.forEach((driver) => {
                     if (driver.RentACarUID === user.uid) {
