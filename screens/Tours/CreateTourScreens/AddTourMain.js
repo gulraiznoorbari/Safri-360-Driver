@@ -12,7 +12,6 @@ import PrimaryButton from "../../../components/Buttons/PrimaryButton";
 import DateRangePicker from "../../../components/DateRangePicker";
 import TimePicker from "../../../components/TimePicker";
 import moment from "moment";
-import { GeoFire } from "geofire";
 
 const AddTourMain = ({ navigation }) => {
     const user = useSelector(selectTourUser);
@@ -65,7 +64,6 @@ const AddTourMain = ({ navigation }) => {
     };
 
     const handleSubmit = () => {
-        const geoFire = new GeoFire(ref(dbRealtime, "GeoTourPickupLocations"));
         const toursRef = ref(dbRealtime, "Tours/" + user.uid + "/Tours/");
         const tourRef = push(toursRef);
         update(tourRef, {
@@ -81,9 +79,6 @@ const AddTourMain = ({ navigation }) => {
             tourBookingStatus: "Open",
         })
             .then(() => {
-                geoFire.set(tourRef.key.toString(), [tourPickup.latitude, tourPickup.longitude]).then(() => {
-                    console.log("Provided key has been added to GeoFire");
-                });
                 setTimeout(() => {
                     navigation.navigate("AddTourFareScreen", { tourRefKey: tourRef.key.toString() });
                 }, 200);
