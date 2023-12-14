@@ -61,7 +61,7 @@ const HomeScreen = ({ navigation }) => {
                         longitudeDelta: LONGITUDE_DELTA,
                     });
                     geoFire
-                        .set(rentACarUser.uid, [position.coords.latitude, position.coords.longitude])
+                        .set(rentACarUser.uid.toString(), [position.coords.latitude, position.coords.longitude])
                         .then(() => {
                             dispatch(setOrigin({ ...extractCoordinates(position) }));
                             moveCameraToCenter(mapRef, position.coords);

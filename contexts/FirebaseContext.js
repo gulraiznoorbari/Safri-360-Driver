@@ -37,8 +37,6 @@ export function FirebaseProvider({ children }) {
             let prevState;
             const unsubscribe = onAuthStateChanged(auth, (user) => {
                 setCurrentUser(user);
-                console.log("User: ", user);
-                console.log("Authstate Changed!");
                 if (user) {
                     prevState = prevState || user;
                     console.log("User is signed in!");
@@ -88,11 +86,44 @@ export function FirebaseProvider({ children }) {
         signInWithEmailAndPassword(auth, email, password)
             .then((credential) => {
                 userType === "RentACarOwner"
-                    ? (dispatch(setRentACarUser({ isLoggedIn: true })), console.log("User signed In Successfully!"))
+                    ? (dispatch(
+                          setRentACarUser({
+                              uid: credential.user.uid,
+                              userName: credential.user.displayName,
+                              email: credential.user.email,
+                              phoneNumber: credential.user.phoneNumber,
+                              photoURL: credential.user.photoURL,
+                              phoneNumberVerified: credential.user.phoneNumberVerified,
+                              isLoggedIn: true,
+                          }),
+                      ),
+                      console.log("User signed In Successfully!"))
                     : userType === "ToursCompany"
-                    ? (dispatch(setTourUser({ isLoggedIn: true })), console.log("User signed In Successfully!"))
+                    ? (dispatch(
+                          setTourUser({
+                              uid: credential.user.uid,
+                              userName: credential.user.displayName,
+                              email: credential.user.email,
+                              phoneNumber: credential.user.phoneNumber,
+                              photoURL: credential.user.photoURL,
+                              phoneNumberVerified: credential.user.phoneNumberVerified,
+                              isLoggedIn: true,
+                          }),
+                      ),
+                      console.log("User signed In Successfully!"))
                     : userType === "FreightRider" &&
-                      (dispatch(setFreightRider({ isLoggedIn: true })), console.log("User signed In Successfully!"));
+                      (dispatch(
+                          setFreightRider({
+                              uid: credential.user.uid,
+                              userName: credential.user.displayName,
+                              email: credential.user.email,
+                              phoneNumber: credential.user.phoneNumber,
+                              photoURL: credential.user.photoURL,
+                              phoneNumberVerified: credential.user.phoneNumberVerified,
+                              isLoggedIn: true,
+                          }),
+                      ),
+                      console.log("User signed In Successfully!"));
                 if (typeof onSuccess === "function") return onSuccess(credential);
             })
             .catch((error) => {
