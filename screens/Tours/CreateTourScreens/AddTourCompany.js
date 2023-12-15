@@ -13,6 +13,7 @@ import ClearableInput from "../../../components/ClearableInput";
 import InputField from "../../../components/InputField";
 import PrimaryButton from "../../../components/Buttons/PrimaryButton";
 import TourAddSuccessModal from "./TourAddSuccessModal";
+import ErrorMessage from "../../../components/ErrorMessage";
 import KeyboardAvoidingWrapper from "../../../components/KeyboardAvoidingWrapper";
 
 const AddTourCompany = ({ navigation, route }) => {
@@ -24,6 +25,7 @@ const AddTourCompany = ({ navigation, route }) => {
     const [isFocus, setIsFocus] = useState(false);
     const [codes, setCodes] = useState([]);
     const [countryCode, setCountryCode] = useState(null);
+    const [errorMessage, setErrorMessage] = useState(null);
     const [tourAdded, setTourAdded] = useState(false);
 
     const inputRef = useRef();
@@ -184,6 +186,8 @@ const AddTourCompany = ({ navigation, route }) => {
                         />
                     </View>
                 </View>
+
+                {errorMessage && <ErrorMessage errorMessage={errorMessage} />}
 
                 <TourAddSuccessModal isTourAdded={tourAdded} />
                 <PrimaryButton

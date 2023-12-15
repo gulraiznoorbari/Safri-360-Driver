@@ -64,6 +64,7 @@ const CustomDrawer = (props) => {
     };
 
     const handleSignOut = () => {
+        userType === "Driver" && dispatch(resetDriver());
         // userType === "Driver" &&
         //     driver.pinCode &&
         //     update(ref(dbRealtime, "Drivers/" + driver.pinCode), { status: "Offline" })
