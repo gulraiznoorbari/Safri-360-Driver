@@ -230,17 +230,6 @@ const DriverHomeScreen = ({ navigation }) => {
                                         <>
                                             <Marker
                                                 coordinate={{
-                                                    latitude: driver.rideData.destination.latitude,
-                                                    longitude: driver.rideData.destination.longitude,
-                                                }}
-                                                pinColor="#007ACC"
-                                            >
-                                                <Callout style={styles.callout}>
-                                                    <Text>{driver.rideData.destination.locationName}</Text>
-                                                </Callout>
-                                            </Marker>
-                                            <Marker
-                                                coordinate={{
                                                     latitude: driver.rideData.origin.latitude,
                                                     longitude: driver.rideData.origin.longitude,
                                                 }}
@@ -248,6 +237,17 @@ const DriverHomeScreen = ({ navigation }) => {
                                             >
                                                 <Callout style={styles.callout}>
                                                     <Text>{driver.rideData.origin.locationName}</Text>
+                                                </Callout>
+                                            </Marker>
+                                            <Marker
+                                                coordinate={{
+                                                    latitude: driver.rideData.destination.latitude,
+                                                    longitude: driver.rideData.destination.longitude,
+                                                }}
+                                                pinColor="#007ACC"
+                                            >
+                                                <Callout style={styles.callout}>
+                                                    <Text>{driver.rideData.destination.locationName}</Text>
                                                 </Callout>
                                             </Marker>
                                             <MapViewDirections
@@ -267,7 +267,7 @@ const DriverHomeScreen = ({ navigation }) => {
                                             />
                                         </>
                                     )}
-                                    {origin && !driver.rideAssigned && (
+                                    {origin && (!driver.rideAssigned || driver.rideCompleted || !driver.rideData) && (
                                         <Marker coordinate={origin} pinColor="#A7E92F" />
                                     )}
                                 </MapView>

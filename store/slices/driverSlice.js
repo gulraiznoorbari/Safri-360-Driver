@@ -12,6 +12,9 @@ const initialState = {
         isLoggedIn: false,
         rideData: null,
         rideAssigned: false,
+        driverArrived: false,
+        rideStarted: false,
+        rideCompleted: false,
     },
 };
 
