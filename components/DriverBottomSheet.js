@@ -47,8 +47,8 @@ const DriverBottomSheet = () => {
     };
 
     const arrivedButton = () => {
-        const rideRef = ref(dbRealtime, "Rides/" + driver.rideData.rideID);
-        update(rideRef, {
+        const driverRef = ref(dbRealtime, "Drivers/" + driver.pinCode);
+        update(driverRef, {
             status: "arrived",
         })
             .then(() => {
