@@ -54,7 +54,7 @@ const styles = StyleSheet.create({
         overflow: "hidden",
     },
     modalHeader: {
-        backgroundColor: "#000",
+        backgroundColor: "#222",
         paddingVertical: 20,
         paddingHorizontal: 20,
     },
@@ -76,13 +76,12 @@ const styles = StyleSheet.create({
         height: 100,
     },
     linkText: {
-        color: "#A7E92F",
-        paddingVertical: 20,
+        color: "gray",
+        paddingBottom: 20,
         textAlign: "center",
         fontSize: 18,
         fontWeight: "500",
         fontFamily: "SatoshiMedium",
-        textDecorationLine: "underline",
     },
     loadingContainer: {
         flex: 1,
