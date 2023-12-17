@@ -125,7 +125,10 @@ const ToursAnalyticsScreen = ({ navigation }) => {
                     </Card.Title>
                     <Card.Divider />
                     <Text style={styles.cardText}>
-                        {tours.reduce((total, tour) => total + tour.tourSeats - tour.tourSeatsLeft, 0)}
+                        {tours.reduce(
+                            (total, tour) => total + (parseInt(tour.tourSeats) - parseInt(tour.tourSeatsLeft)),
+                            0,
+                        )}
                     </Text>
                 </Card>
                 <Card containerStyle={styles.cardContainer}>
