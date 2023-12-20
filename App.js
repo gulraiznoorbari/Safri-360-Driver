@@ -3,6 +3,7 @@ import { useState, useEffect, createRef } from "react";
 import { ActivityIndicator, StatusBar } from "react-native";
 import { SafeAreaProvider } from "react-native-safe-area-context";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
+import FlashMessage from "react-native-flash-message";
 import { useReduxDevToolsExtension } from "@react-navigation/devtools";
 import { NavigationContainer } from "@react-navigation/native";
 import { createStackNavigator } from "@react-navigation/stack";
@@ -81,6 +82,7 @@ const App = () => {
                     <FontLoader>
                         <SafeAreaProvider>
                             <StatusBar barStyle="default" animated={true} />
+                            <FlashMessage position="top" />
                             {userType === "RentACarOwner" ? (
                                 <RentACarOwnerScreens />
                             ) : userType === "ToursCompany" ? (
