@@ -69,25 +69,26 @@ const AddCar = ({ navigation }) => {
     };
 
     const handleSubmit = () => {
+        const REGISTRATION_NUMBER_REGEX = /^[A-Z]{2,3}-[0-9]{1,4}$/;
+        if (!carRegistrationNumber.match(REGISTRATION_NUMBER_REGEX)) {
+            showError("Invalid Input Format!", "Please enter a valid registration number.");
+            setCarRegistrationNumber("");
+            return;
+        }
         AddCarToDB();
     };
 
     const validateRegistrationNumberText = (input) => {
-        const REGISTRATION_NUMBER_REGEX = /^[A-Z]{2,3}-[0-9]{1,4}$/;
         const formattedInput = input
             .toUpperCase()
             .replace(/[^A-Z0-9-]/g, "")
             .replace(/-+/g, "-")
             .replace(/^([A-Z]{2,3})(\d{1,4})$/, "$1-$2");
-
-        if (!formattedInput.match(REGISTRATION_NUMBER_REGEX)) {
-            console.log("Invalid Registration Number");
-        }
         setCarRegistrationNumber(formattedInput);
     };
 
     const validateCarYearChangeText = (input) => {
-        const YEAR_REGEX = /^[0-9]{4}$/;
+        const YEAR_REGEX = /^[0-9]*$/;
         const formattedInput = input.replace(/[^0-9]/g, "");
 
         if (!formattedInput.match(YEAR_REGEX)) {
