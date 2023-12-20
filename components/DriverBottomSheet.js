@@ -110,7 +110,7 @@ const DriverBottomSheet = () => {
             <BottomSheetView style={styles.container}>
                 {loading && driver.rideAssigned ? (
                     <View style={styles.loadingContainer}>
-                        <Skeleton animation="pulse" width="90%" height="50" skeletonStyle={styles.skeletonStyle} />
+                        <Skeleton animation="pulse" width="100%" height="50" skeletonStyle={styles.skeletonStyle} />
                     </View>
                 ) : !loading && driver.rideAssigned ? (
                     <>
@@ -195,9 +195,8 @@ const DriverBottomSheet = () => {
                         </View>
                     </>
                 ) : (
-                    !loading &&
                     !driver.rideAssigned && (
-                        <View style={styles.infoContainer}>
+                        <View style={styles.noRideContainer}>
                             <Text style={styles.noRideText}>No ride assigned yet.</Text>
                         </View>
                     )
@@ -272,12 +271,16 @@ const styles = StyleSheet.create({
         color: "#333",
         textAlign: "left",
     },
+    noRideContainer: {
+        justifyContent: "center",
+        alignItems: "center",
+    },
     noRideText: {
-        fontSize: 15,
+        fontSize: 18,
         fontFamily: "SatoshiBold",
         fontWeight: "600",
         textAlign: "center",
-        marginVertical: 2,
+        marginTop: 20,
     },
     iconContainer: {
         borderRadius: 50,
