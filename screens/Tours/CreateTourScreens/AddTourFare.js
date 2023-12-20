@@ -7,6 +7,7 @@ import { ref, update } from "firebase/database";
 import { dbRealtime } from "../../../firebase/config";
 import { selectTourUser } from "../../../store/slices/tourSlice";
 import ClearableInput from "../../../components/ClearableInput";
+import { showError } from "../../../utils/ErrorHandlers";
 import PrimaryButton from "../../../components/Buttons/PrimaryButton";
 import KeyboardAvoidingWrapper from "../../../components/KeyboardAvoidingWrapper";
 
@@ -33,6 +34,15 @@ const AddTourFare = ({ navigation, route }) => {
             },
         });
     }, [navigation]);
+
+    const validateNumericInput = (input) => {
+        const regex = /^[0-9]+$/;
+        if (regex.test(input)) {
+            return true;
+        } else {
+            showError("Invalid Input Format!", "Please enter a valid number.");
+        }
+    };
 
     const handleAddTour = () => {
         const tourRef = ref(dbRealtime, "Tours/" + user.uid + "/Tours/" + tourRefKey);
@@ -62,8 +72,10 @@ const AddTourFare = ({ navigation, route }) => {
                     placeholder="10, 15, 20, etc."
                     value={tourSeats}
                     setValue={setTourSeats}
+                    onChangeCallback={(input) => (validateNumericInput(input) ? setTourSeats(input) : setTourSeats(""))}
                     KeyboardType={"numeric"}
                     autoComplete={"off"}
+                    maxLength={3}
                     textContentType={"none"}
                 />
                 <ClearableInput
@@ -71,8 +83,10 @@ const AddTourFare = ({ navigation, route }) => {
                     placeholder="Total Tour Fare"
                     value={tourFare}
                     setValue={setTourFare}
+                    onChangeCallback={(input) => (validateNumericInput(input) ? setTourFare(input) : setTourFare(""))}
                     KeyboardType={"numeric"}
                     autoComplete={"off"}
+                    maxLength={5}
                     textContentType={"none"}
                 />
                 <ClearableInput

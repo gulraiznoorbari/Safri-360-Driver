@@ -5,6 +5,7 @@ import { useSelector } from "react-redux";
 import { ref, set } from "firebase/database";
 
 import { dbRealtime } from "../../../../firebase/config";
+import { showError } from "../../../../utils/ErrorHandlers";
 import { selectRentACarUser } from "../../../../store/slices/rentACarSlice";
 import KeyboardAvoidingWrapper from "../../../../components/KeyboardAvoidingWrapper";
 import ClearableInput from "../../../../components/ClearableInput";
@@ -71,7 +72,7 @@ const AddCar = ({ navigation }) => {
         AddCarToDB();
     };
 
-    const handleChangeText = (input) => {
+    const validateRegistrationNumberText = (input) => {
         const REGISTRATION_NUMBER_REGEX = /^[A-Z]{2,3}-[0-9]{1,4}$/;
         const formattedInput = input
             .toUpperCase()
@@ -83,6 +84,17 @@ const AddCar = ({ navigation }) => {
             console.log("Invalid Registration Number");
         }
         setCarRegistrationNumber(formattedInput);
+    };
+
+    const validateCarYearChangeText = (input) => {
+        const YEAR_REGEX = /^[0-9]{4}$/;
+        const formattedInput = input.replace(/[^0-9]/g, "");
+
+        if (!formattedInput.match(YEAR_REGEX)) {
+            showError("Invalid Input Format!", "Please enter a valid year.");
+            setCarYear("");
+        }
+        setCarYear(formattedInput);
     };
 
     return (
@@ -112,6 +124,7 @@ const AddCar = ({ navigation }) => {
                     maxLength={4}
                     value={carYear}
                     setValue={setCarYear}
+                    onChangeCallback={(input) => validateCarYearChangeText(input)}
                     hideInput={false}
                     autoComplete={"name"}
                     KeyboardType={"numeric"}
@@ -142,7 +155,7 @@ const AddCar = ({ navigation }) => {
                     maxLength={8}
                     value={carRegistrationNumber}
                     setValue={setCarRegistrationNumber}
-                    onChangeCallback={(input) => handleChangeText(input)}
+                    onChangeCallback={(input) => validateRegistrationNumberText(input)}
                     hideInput={false}
                     autoComplete={"name"}
                 />
