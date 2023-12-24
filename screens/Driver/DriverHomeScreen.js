@@ -211,7 +211,7 @@ const DriverHomeScreen = ({ navigation }) => {
             {driver.isOnline ? (
                 <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
                     <>
-                        <DrawerMenuButton action={() => openDrawerMenu()} />
+                        <DrawerMenuButton action={openDrawerMenu} />
                         <View style={styles.mainContainer}>
                             <View style={styles.mapContainer}>
                                 <MapView
