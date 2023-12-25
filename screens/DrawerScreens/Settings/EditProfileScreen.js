@@ -8,14 +8,14 @@ import { uploadBytes, getDownloadURL, ref } from "firebase/storage";
 import * as ImagePicker from "expo-image-picker";
 import { useSelector, useDispatch } from "react-redux";
 
-import { useFirebase } from "../../../contexts/FirebaseContext";
-import { storage, dbRealtime } from "../../../firebase/config";
-import { selectUserType } from "../../../store/slices/userTypeSlice";
-import { setRentACarUser, selectRentACarUser } from "../../../store/slices/rentACarSlice";
-import { setTourUser, selectTourUser } from "../../../store/slices/tourSlice";
-import { setFreightRider, selectFreightRider } from "../../../store/slices/freightRiderSlice";
-import KeyboardAvoidingWrapper from "../../../components/KeyboardAvoidingWrapper";
-import ClearableInput from "../../../components/ClearableInput";
+import { useFirebase } from "@contexts/FirebaseContext";
+import { storage, dbRealtime } from "@firebase/config";
+import { selectUserType } from "@store/slices/userTypeSlice";
+import { setRentACarUser, selectRentACarUser } from "@store/slices/rentACarSlice";
+import { setTourUser, selectTourUser } from "@store/slices/tourSlice";
+import { setFreightRider, selectFreightRider } from "@store/slices/freightRiderSlice";
+import KeyboardAvoidingWrapper from "@components/KeyboardAvoidingWrapper";
+import ClearableInput from "@components/ClearableInput";
 
 const EditProfileScreen = ({ navigation }) => {
     const userType = useSelector(selectUserType);

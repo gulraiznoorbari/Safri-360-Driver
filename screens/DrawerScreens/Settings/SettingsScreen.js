@@ -4,12 +4,12 @@ import { useSelector } from "react-redux";
 import { Button } from "react-native-elements";
 import Ionicons from "react-native-vector-icons/Ionicons";
 
-import { selectUserType } from "../../../store/slices/userTypeSlice";
-import { selectRentACarUser } from "../../../store/slices/rentACarSlice";
-import { selectTourUser } from "../../../store/slices/tourSlice";
-import { selectFreightRider } from "../../../store/slices/freightRiderSlice";
-import { humanPhoneNumber } from "../../../utils/humanPhoneNumber";
-import MenuOptionButton from "../../../components/Buttons/MenuOptionButton";
+import { selectUserType } from "@store/slices/userTypeSlice";
+import { selectRentACarUser } from "@store/slices/rentACarSlice";
+import { selectTourUser } from "@store/slices/tourSlice";
+import { selectFreightRider } from "@store/slices/freightRiderSlice";
+import { humanPhoneNumber } from "@utils/humanPhoneNumber";
+import MenuOptionButton from "@components/Buttons/MenuOptionButton";
 
 const SettingsScreen = () => {
     const userType = useSelector(selectUserType);

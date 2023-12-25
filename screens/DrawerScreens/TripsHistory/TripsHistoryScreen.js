@@ -3,8 +3,8 @@ import { StyleSheet, View, Text, FlatList } from "react-native";
 import { ref, onValue } from "firebase/database";
 import { useSelector } from "react-redux";
 
-import { selectRentACarUser } from "../../../store/slices/rentACarSlice";
-import { dbRealtime } from "../../../firebase/config";
+import { selectRentACarUser } from "@store/slices/rentACarSlice";
+import { dbRealtime } from "@firebase/config";
 import TripHistoryCard from "./TripHistoryCard";
 
 const TripsHistoryScreen = () => {

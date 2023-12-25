@@ -4,13 +4,13 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import { useSelector } from "react-redux";
 import { ref, push, update } from "firebase/database";
 
-import { dbRealtime } from "../../../firebase/config";
-import { selectTourUser } from "../../../store/slices/tourSlice";
-import ClearableInput from "../../../components/ClearableInput";
-import PlacesAutocomplete from "../../../components/PlacesAutocomplete";
-import PrimaryButton from "../../../components/Buttons/PrimaryButton";
-import DateRangePicker from "../../../components/DateRangePicker";
-import TimePicker from "../../../components/TimePicker";
+import { dbRealtime } from "@firebase/config";
+import { selectTourUser } from "@store/slices/tourSlice";
+import ClearableInput from "@components/ClearableInput";
+import PlacesAutocomplete from "@components/PlacesAutocomplete";
+import PrimaryButton from "@components/Buttons/PrimaryButton";
+import DateRangePicker from "@components/Tours/DateRangePicker";
+import TimePicker from "@components/Tours/TimePicker";
 import moment from "moment";
 
 const AddTourMain = ({ navigation }) => {

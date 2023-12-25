@@ -26,7 +26,7 @@ import { setCurrentUserLocation, selectCurrentUserLocation } from "../../store/s
 import DrawerMenuButton from "../../components/Buttons/DrawerMenuButton";
 import LocateUserButton from "../../components/Buttons/LocateUserButton";
 import { moveCameraToCenter } from "../../utils/moveCameraToCenter";
-import DriverBottomSheet from "../../components/DriverBottomSheet";
+import DriverBottomSheet from "../../components/Driver/DriverBottomSheet";
 
 const { width, height } = Dimensions.get("window");
 const ASPECT_RATIO = width / height;

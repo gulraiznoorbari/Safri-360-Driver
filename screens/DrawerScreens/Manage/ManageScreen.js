@@ -1,5 +1,5 @@
 import { StyleSheet, Text, View, Image, TouchableOpacity } from "react-native";
-import { CarIcon, DriverIcon } from "../../../assets";
+import { CarIcon, DriverIcon } from "@assets";
 
 const ManageScreen = ({ navigation }) => {
     return (

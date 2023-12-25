@@ -15,7 +15,7 @@ const TourAddSuccessModal = ({ isTourAdded }) => {
                             </View>
                             <View style={styles.modalBody}>
                                 <Lottie
-                                    source={require("../../../assets/animations/check-animation.json")}
+                                    source={require("@assets/animations/check-animation.json")}
                                     autoPlay={true}
                                     loop={false}
                                     style={styles.lottie}

@@ -12,8 +12,8 @@ import { setOrigin } from "../store/slices/navigationSlice";
 import { selectRentACarUser } from "../store/slices/rentACarSlice";
 import DrawerMenuButton from "../components/Buttons/DrawerMenuButton";
 import HomeMap from "../components/HomeMap";
-import RideRequestCards from "../components/Cards/RideRequestCards";
-import AvailableDriversList from "../components/AvailableDriversList";
+import RideRequestCards from "../components/RentACar/RideRequestCards";
+import AvailableDriversList from "../components/RentACar/AvailableDriversList";
 
 const { width, height } = Dimensions.get("window");
 const ASPECT_RATIO = width / height;

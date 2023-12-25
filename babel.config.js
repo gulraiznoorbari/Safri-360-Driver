@@ -4,6 +4,21 @@ module.exports = function (api) {
         presets: ["babel-preset-expo"],
         plugins: [
             [
+                "module-resolver",
+                {
+                    root: ["./"],
+                    alias: {
+                        "@assets": "./assets",
+                        "@screens": "./screens",
+                        "@components": "./components",
+                        "@firebase": "./firebase",
+                        "@contexts": "./contexts",
+                        "@store": "./store",
+                        "@utils": "./utils",
+                    },
+                },
+            ],
+            [
                 "module:react-native-dotenv",
                 {
                     envName: "APP_ENV",

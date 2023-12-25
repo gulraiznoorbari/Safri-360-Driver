@@ -7,8 +7,8 @@ import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityI
 import { ref, remove } from "firebase/database";
 import { useSelector } from "react-redux";
 
-import { dbRealtime } from "../../../../firebase/config";
-import { selectRentACarUser } from "../../../../store/slices/rentACarSlice";
+import { dbRealtime } from "@firebase/config";
+import { selectRentACarUser } from "@store/slices/rentACarSlice";
 
 const CarsDetailScreen = ({ route, navigation }) => {
     const { data } = route.params;

@@ -4,12 +4,12 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import { useSelector } from "react-redux";
 import { ref, update } from "firebase/database";
 
-import { dbRealtime } from "../../../firebase/config";
-import { selectTourUser } from "../../../store/slices/tourSlice";
-import ClearableInput from "../../../components/ClearableInput";
-import { showError } from "../../../utils/ErrorHandlers";
-import PrimaryButton from "../../../components/Buttons/PrimaryButton";
-import KeyboardAvoidingWrapper from "../../../components/KeyboardAvoidingWrapper";
+import { dbRealtime } from "@firebase/config";
+import { selectTourUser } from "@store/slices/tourSlice";
+import ClearableInput from "@components/ClearableInput";
+import { showError } from "@utils/ErrorHandlers";
+import PrimaryButton from "@components/Buttons/PrimaryButton";
+import KeyboardAvoidingWrapper from "@components/KeyboardAvoidingWrapper";
 
 const AddTourFare = ({ navigation, route }) => {
     const { tourRefKey } = route.params;

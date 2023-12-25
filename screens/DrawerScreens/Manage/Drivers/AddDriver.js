@@ -8,12 +8,12 @@ import { useSelector } from "react-redux";
 const countryCodes = require("country-codes-list");
 import SmsAndroid from "react-native-get-sms-android";
 
-import KeyboardAvoidingWrapper from "../../../../components/KeyboardAvoidingWrapper";
-import { dbRealtime } from "../../../../firebase/config";
-import { selectRentACarUser } from "../../../../store/slices/rentACarSlice";
-import InputField from "../../../../components/InputField";
-import ErrorMessage from "../../../../components/ErrorMessage";
-import PrimaryButton from "../../../../components/Buttons/PrimaryButton";
+import KeyboardAvoidingWrapper from "@components/KeyboardAvoidingWrapper";
+import { dbRealtime } from "@firebase/config";
+import { selectRentACarUser } from "@store/slices/rentACarSlice";
+import InputField from "@components/InputField";
+import ErrorMessage from "@components/ErrorMessage";
+import PrimaryButton from "@components/Buttons/PrimaryButton";
 
 const AddDriver = ({ navigation }) => {
     const user = useSelector(selectRentACarUser);
@@ -122,6 +122,10 @@ const AddDriver = ({ navigation }) => {
             phoneNumber: fullNumber,
             RentACarUID: user.uid,
             pinCode: pin,
+            ratings: {
+                rating: 0,
+                totalRatings: 0,
+            },
             status: "offline",
         })
             .then(async () => {

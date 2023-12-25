@@ -7,14 +7,14 @@ const countryCodes = require("country-codes-list");
 import { ref, update } from "firebase/database";
 import { useSelector } from "react-redux";
 
-import { dbRealtime } from "../../../firebase/config";
-import { selectTourUser } from "../../../store/slices/tourSlice";
-import ClearableInput from "../../../components/ClearableInput";
-import InputField from "../../../components/InputField";
-import PrimaryButton from "../../../components/Buttons/PrimaryButton";
+import { dbRealtime } from "@firebase/config";
+import { selectTourUser } from "@store/slices/tourSlice";
+import ClearableInput from "@components/ClearableInput";
+import InputField from "@components/InputField";
+import PrimaryButton from "@components/Buttons/PrimaryButton";
 import TourAddSuccessModal from "./TourAddSuccessModal";
-import ErrorMessage from "../../../components/ErrorMessage";
-import KeyboardAvoidingWrapper from "../../../components/KeyboardAvoidingWrapper";
+import ErrorMessage from "@components/ErrorMessage";
+import KeyboardAvoidingWrapper from "@components/KeyboardAvoidingWrapper";
 
 const AddTourCompany = ({ navigation, route }) => {
     const { tourRefKey } = route.params;

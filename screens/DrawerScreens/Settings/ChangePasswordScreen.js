@@ -1,12 +1,12 @@
 import { useLayoutEffect, useState } from "react";
 import { StyleSheet } from "react-native";
-
-import KeyboardAvoidingWrapper from "../../../components/KeyboardAvoidingWrapper";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { useFirebase } from "../../../contexts/FirebaseContext";
-import ClearableInput from "../../../components/ClearableInput";
-import ErrorMessage from "../../../components/ErrorMessage";
-import PrimaryButton from "../../../components/Buttons/PrimaryButton";
+
+import KeyboardAvoidingWrapper from "@components/KeyboardAvoidingWrapper";
+import { useFirebase } from "@contexts/FirebaseContext";
+import ClearableInput from "@components/ClearableInput";
+import ErrorMessage from "@components/ErrorMessage";
+import PrimaryButton from "@components/Buttons/PrimaryButton";
 
 const ChangePasswordScreen = ({ navigation }) => {
     const { updateUserPassword } = useFirebase();

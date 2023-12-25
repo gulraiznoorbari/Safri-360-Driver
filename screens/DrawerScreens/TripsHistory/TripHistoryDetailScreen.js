@@ -6,9 +6,9 @@ import AntDesign from "react-native-vector-icons/AntDesign";
 import moment from "moment";
 import { ref, onValue } from "firebase/database";
 
-import { dbRealtime } from "../../../firebase/config";
-import { LicensePlateIcon } from "../../../assets";
-import { humanPhoneNumber } from "../../../utils/humanPhoneNumber";
+import { dbRealtime } from "@firebase/config";
+import { LicensePlateIcon } from "@assets";
+import { humanPhoneNumber } from "@utils/humanPhoneNumber";
 
 const TripHistoryDetailScreen = ({ route, navigation }) => {
     const { data } = route.params;

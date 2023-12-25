@@ -6,14 +6,14 @@ import { Dropdown } from "react-native-element-dropdown";
 const countryCodes = require("country-codes-list");
 import { useSelector, useDispatch } from "react-redux";
 
-import { setRentACarUser } from "../../../store/slices/rentACarSlice";
-import { setTourUser } from "../../../store/slices/tourSlice";
-import { setFreightRider } from "../../../store/slices/freightRiderSlice";
-import { selectUserType } from "../../../store/slices/userTypeSlice";
-import ErrorMessage from "../../../components/ErrorMessage";
-import KeyboardAvoidingWrapper from "../../../components/KeyboardAvoidingWrapper";
-import InputField from "../../../components/InputField";
-import PrimaryButton from "../../../components/Buttons/PrimaryButton";
+import { setRentACarUser } from "@store/slices/rentACarSlice";
+import { setTourUser } from "@store/slices/tourSlice";
+import { setFreightRider } from "@store/slices/freightRiderSlice";
+import { selectUserType } from "@store/slices/userTypeSlice";
+import ErrorMessage from "@components/ErrorMessage";
+import KeyboardAvoidingWrapper from "@components/KeyboardAvoidingWrapper";
+import InputField from "@components/InputField";
+import PrimaryButton from "@components/Buttons/PrimaryButton";
 
 const ChangePhoneNumberScreen = ({ navigation }) => {
     const dispatch = useDispatch();

@@ -7,10 +7,11 @@ import BottomSheet, { BottomSheetView, useBottomSheetSpringConfigs } from "@gorh
 import Ionicons from "react-native-vector-icons/Ionicons";
 import { ref, onValue, update } from "firebase/database";
 
-import { dbRealtime } from "../firebase/config";
-import { humanPhoneNumber } from "../utils/humanPhoneNumber";
-import { selectDriver, setDriver } from "../store/slices/driverSlice";
-import PrimaryButton from "./Buttons/PrimaryButton";
+import { dbRealtime } from "../../firebase/config";
+import { humanPhoneNumber } from "../../utils/humanPhoneNumber";
+import { selectDriver, setDriver } from "../../store/slices/driverSlice";
+import { selectRentACarUser } from "../../store/slices/rentACarSlice";
+import PrimaryButton from "../Buttons/PrimaryButton";
 
 const DriverBottomSheet = () => {
     const [rideCustomerInfo, setRideCustomerInfo] = useState({});
@@ -20,6 +21,7 @@ const DriverBottomSheet = () => {
     const dispatch = useDispatch();
     const bottomSheetRef = useRef();
     const driver = useSelector(selectDriver);
+    const rentACarUser = useSelector(selectRentACarUser);
 
     const snapPoints = useMemo(() => ["15%", "64%"], []);
 
@@ -46,6 +48,10 @@ const DriverBottomSheet = () => {
         Linking.openURL(`tel:${phoneNumber}`);
     };
 
+    /**
+     * The `arrivedButton` function updates the status of a driver to "arrived" in a real-time database
+     * and dispatches an action to set the driver's `driverArrived` property to `true`.
+     */
     const arrivedButton = () => {
         const driverRef = ref(dbRealtime, "Drivers/" + driver.pinCode);
         update(driverRef, {
@@ -60,6 +66,10 @@ const DriverBottomSheet = () => {
             });
     };
 
+    /**
+     * The `startRideButton` function updates the status of a ride to "ongoing" in a real-time database
+     * and dispatches an action to set the driver's `driverArrived` to false and `rideStarted` to true.
+     */
     const startRideButton = () => {
         const rideRef = ref(dbRealtime, "Rides/" + driver.rideData.rideID);
         update(rideRef, {
@@ -74,26 +84,40 @@ const DriverBottomSheet = () => {
             });
     };
 
-    const endRideButton = () => {
-        const rideRef = ref(dbRealtime, "Rides/" + driver.rideData.rideID);
-        update(rideRef, {
-            status: "completed",
-        })
-            .then(() => {
-                dispatch(
-                    setDriver({
-                        rideCompleted: true,
-                        rideData: null,
-                        rideAssigned: false,
-                        driverArrived: false,
-                        rideStarted: false,
-                    }),
-                );
-                console.log("Ended");
-            })
-            .catch((error) => {
-                console.log(error);
-            });
+    /**
+     * The `endRideButton` function updates the status of a ride to "completed", updates the driver's
+     * status to "Online", updates the car's status to "Idle", and logs "Ended" to the console.
+     */
+    const getRideRef = (rideID) => ref(dbRealtime, "Rides/" + rideID);
+    const getDriverRef = (pinCode) => ref(dbRealtime, "Drivers/" + pinCode);
+    const getCarRef = (uid, registrationNumber) => ref(dbRealtime, "Rent A Car/" + uid + "/Cars/" + registrationNumber);
+
+    const updateRideStatus = async (rideRef, status) => update(rideRef, { status: status });
+    const updateDriverStatus = async (driverRef, status) => update(driverRef, { status: status });
+    const updateCarStatus = async (carRef, status) => update(carRef, { status: status });
+
+    const endRideButton = async () => {
+        try {
+            const rideRef = getRideRef(driver.rideData.rideID);
+            const driverRef = getDriverRef(driver.pinCode);
+            const carRef = getCarRef(rentACarUser.uid, driver.rideData.selectedCar.registrationNumber);
+
+            await updateRideStatus(rideRef, "completed");
+            dispatch(
+                setDriver({
+                    rideCompleted: true,
+                    rideData: null,
+                    rideAssigned: false,
+                    driverArrived: false,
+                    rideStarted: false,
+                }),
+            );
+            await updateDriverStatus(driverRef, "Online");
+            await updateCarStatus(carRef, "Idle");
+            console.log("Ride Ended");
+        } catch (error) {
+            console.log(error);
+        }
     };
 
     return (
@@ -130,27 +154,15 @@ const DriverBottomSheet = () => {
                         </View>
 
                         {!driver.rideStarted && driver.driverArrived ? (
-                            <PrimaryButton
-                                text={"Start Ride"}
-                                action={() => startRideButton()}
-                                buttonStyle={styles.button}
-                            />
+                            <PrimaryButton text={"Start Ride"} action={startRideButton} buttonStyle={styles.button} />
                         ) : driver.rideStarted && !driver.driverArrived ? (
-                            <PrimaryButton
-                                text={"End Ride"}
-                                action={() => endRideButton()}
-                                buttonStyle={styles.button}
-                            />
+                            <PrimaryButton text={"End Ride"} action={endRideButton} buttonStyle={styles.button} />
                         ) : driver.rideCompleted ? (
                             <View style={styles.infoContainer}>
                                 <Text style={styles.noRideText}>Ride Completed.</Text>
                             </View>
                         ) : (
-                            <PrimaryButton
-                                text={"I Have Arrived"}
-                                action={() => arrivedButton()}
-                                buttonStyle={styles.button}
-                            />
+                            <PrimaryButton text={"I Have Arrived"} action={arrivedButton} buttonStyle={styles.button} />
                         )}
 
                         <Divider style={{ width: "100%", marginVertical: 12 }} />

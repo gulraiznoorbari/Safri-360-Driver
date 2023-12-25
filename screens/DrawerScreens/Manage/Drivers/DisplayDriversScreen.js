@@ -5,8 +5,8 @@ import Ionicons from "react-native-vector-icons/Ionicons";
 import { ref, onValue } from "firebase/database";
 import { useSelector } from "react-redux";
 
-import { dbRealtime } from "../../../../firebase/config";
-import { selectRentACarUser } from "../../../../store/slices/rentACarSlice";
+import { dbRealtime } from "@firebase/config";
+import { selectRentACarUser } from "@store/slices/rentACarSlice";
 import DriverDetailCard from "./DriverDetailCard";
 
 const DisplayDriversScreen = ({ navigation }) => {
