@@ -7,10 +7,10 @@ import BottomSheet, { BottomSheetView, useBottomSheetSpringConfigs } from "@gorh
 import Ionicons from "react-native-vector-icons/Ionicons";
 import { ref, onValue, update } from "firebase/database";
 
-import { dbRealtime } from "../../firebase/config";
-import { humanPhoneNumber } from "../../utils/humanPhoneNumber";
-import { selectDriver, setDriver } from "../../store/slices/driverSlice";
-import { selectRentACarUser } from "../../store/slices/rentACarSlice";
+import { dbRealtime } from "@firebase/config";
+import { humanPhoneNumber } from "@utils/humanPhoneNumber";
+import { selectDriver, setDriver } from "@store/slices/driverSlice";
+import { selectRentACarUser } from "@store/slices/rentACarSlice";
 import PrimaryButton from "../Buttons/PrimaryButton";
 
 const DriverBottomSheet = () => {

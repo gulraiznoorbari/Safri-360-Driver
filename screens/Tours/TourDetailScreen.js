@@ -6,10 +6,10 @@ import moment from "moment";
 import { ref, onValue, remove, update } from "firebase/database";
 import { useSelector } from "react-redux";
 
-import { dbRealtime } from "../../firebase/config";
-import { selectTourUser } from "../../store/slices/tourSlice";
-import { humanPhoneNumber } from "../../utils/humanPhoneNumber";
-import { formatCurrencyWithCommas } from "../../utils/formatCurrencyValue";
+import { dbRealtime } from "@firebase/config";
+import { selectTourUser } from "@store/slices/tourSlice";
+import { humanPhoneNumber } from "@utils/humanPhoneNumber";
+import { formatCurrencyWithCommas } from "@utils/formatCurrencyValue";
 
 const TourDetailScreen = ({ route, navigation }) => {
     const { data } = route.params;

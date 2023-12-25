@@ -18,16 +18,16 @@ import LottieView from "lottie-react-native";
 import Ionicons from "react-native-vector-icons/Ionicons";
 import SmsAndroid from "react-native-get-sms-android";
 
-import { humanPhoneNumber } from "../../utils/humanPhoneNumber";
-import { dbRealtime } from "../../firebase/config";
-import { MapIcon } from "../../assets";
+import { humanPhoneNumber } from "@utils/humanPhoneNumber";
+import { dbRealtime } from "@firebase/config";
+import { MapIcon } from "@assets";
 import {
     selectRentACarUser,
     setLoading,
     selectLoading,
     setDriverAssigned,
     selectDriverAssigned,
-} from "../../store/slices/rentACarSlice";
+} from "@store/slices/rentACarSlice";
 import DisplayStarRatings from "../Driver/DisplayStarRatings";
 
 const AvailableDriversList = ({ isModalVisible, setModalVisible, selectedRide }) => {
@@ -205,7 +205,7 @@ const AvailableDriversList = ({ isModalVisible, setModalVisible, selectedRide })
                 ) : !loading && driverAssigned ? (
                     <View style={styles.loadingContainer}>
                         <LottieView
-                            source={require("../../assets/animations/check-animation.json")}
+                            source={require("@assets/animations/check-animation.json")}
                             autoPlay={true}
                             loop={false}
                             style={styles.lottieAnimation}

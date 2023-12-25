@@ -4,7 +4,7 @@ import { useNavigation } from "@react-navigation/native";
 import Ionicons from "react-native-vector-icons/Ionicons";
 import moment from "moment";
 
-import { formatCurrencyWithCommas } from "../../utils/formatCurrencyValue";
+import { formatCurrencyWithCommas } from "@utils/formatCurrencyValue";
 
 const TourDetailCard = ({ data }) => {
     const navigation = useNavigation();

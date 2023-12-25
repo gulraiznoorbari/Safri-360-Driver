@@ -18,15 +18,15 @@ import Geolocation from "react-native-geolocation-service";
 import MapView, { PROVIDER_GOOGLE, Marker, Callout } from "react-native-maps";
 import MapViewDirections from "react-native-maps-directions";
 
-import { dbRealtime } from "../../firebase/config";
-import { useMapContext } from "../../contexts/MapContext";
-import { requestLocationPermission } from "../../utils/requestLocation";
-import { selectFreightRider, setFreightRider } from "../../store/slices/freightRiderSlice";
-import { setOrigin, selectOrigin, setDestination } from "../../store/slices/navigationSlice";
-import { setCurrentUserLocation, selectCurrentUserLocation } from "../../store/slices/locationSlice";
-import { moveCameraToCenter } from "../../utils/moveCameraToCenter";
-import DrawerMenuButton from "../../components/Buttons/DrawerMenuButton";
-import LocateUserButton from "../../components/Buttons/LocateUserButton";
+import { dbRealtime } from "@firebase/config";
+import { useMapContext } from "@contexts/MapContext";
+import { requestLocationPermission } from "@utils/requestLocation";
+import { selectFreightRider, setFreightRider } from "@store/slices/freightRiderSlice";
+import { setOrigin, selectOrigin, setDestination } from "@store/slices/navigationSlice";
+import { setCurrentUserLocation, selectCurrentUserLocation } from "@store/slices/locationSlice";
+import { moveCameraToCenter } from "@utils/moveCameraToCenter";
+import DrawerMenuButton from "@components/Buttons/DrawerMenuButton";
+import LocateUserButton from "@components/Buttons/LocateUserButton";
 
 const { width, height } = Dimensions.get("window");
 const ASPECT_RATIO = width / height;

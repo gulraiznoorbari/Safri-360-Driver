@@ -1,8 +1,8 @@
 import { StyleSheet, TouchableOpacity } from "react-native";
 import MaterialIcons from "react-native-vector-icons/MaterialIcons";
 
-import { useMapContext } from "../../contexts/MapContext";
-import { moveCameraToCenter } from "../../utils/moveCameraToCenter";
+import { useMapContext } from "@contexts/MapContext";
+import { moveCameraToCenter } from "@utils/moveCameraToCenter";
 
 const LocateUserButton = ({ userPosition }) => {
     const { mapRef } = useMapContext();
