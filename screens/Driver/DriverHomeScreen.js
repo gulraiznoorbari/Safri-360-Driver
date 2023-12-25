@@ -58,7 +58,19 @@ const DriverHomeScreen = ({ navigation }) => {
     useEffect(() => {
         dispatch(setOrigin(null));
         dispatch(setDestination(null));
-        if (driver.isOnline) getLocation();
+        if (driver.isOnline) {
+            getLocation();
+            const driverRef = ref(dbRealtime, "Drivers/" + driverPIN);
+            get(driverRef).then((snapshot) => {
+                const driverData = snapshot.val();
+                dispatch(
+                    setDriver({
+                        rating: parseInt(driverData.ratings.rating),
+                        totalRatings: parseInt(driverData.ratings.totalRatings),
+                    }),
+                );
+            });
+        }
 
         BackHandler.addEventListener("hardwareBackPress", restrictGoingBack);
         return () => {

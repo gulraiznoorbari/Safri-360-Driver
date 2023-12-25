@@ -7,6 +7,8 @@ const initialState = {
         lastName: null,
         phoneNumber: null,
         pinCode: null,
+        rating: 0,
+        totalRatings: 0,
         status: null,
         isOnline: false,
         isLoggedIn: false,

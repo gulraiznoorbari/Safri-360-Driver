@@ -13,6 +13,7 @@ import { selectRentACarUser, resetRentACarUser } from "../store/slices/rentACarS
 import { selectTourUser, resetTourUser } from "../store/slices/tourSlice";
 import { setDriver, selectDriver, resetDriver } from "../store/slices/driverSlice";
 import { selectFreightRider, setFreightRider } from "../store/slices/freightRiderSlice";
+import DisplayStarRatings from "../components/Driver/DisplayStarRatings";
 
 const CustomDrawer = (props) => {
     const { logout } = useFirebase();
@@ -112,6 +113,7 @@ const CustomDrawer = (props) => {
                     userType === "Driver" && (
                         <View style={{ padding: 20 }}>
                             <Text style={styles.userName}>{driver.firstName || "User Name"}</Text>
+                            <DisplayStarRatings rating={driver.rating} totalRatings={driver.totalRatings} />
                         </View>
                     )
                 )}

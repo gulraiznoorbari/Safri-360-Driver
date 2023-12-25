@@ -15,12 +15,12 @@ import { ref, onValue, get, update } from "firebase/database";
 import { Divider } from "react-native-elements";
 import Modal from "react-native-modal";
 import LottieView from "lottie-react-native";
-import { MapIcon } from "../../assets";
 import Ionicons from "react-native-vector-icons/Ionicons";
 import SmsAndroid from "react-native-get-sms-android";
 
 import { humanPhoneNumber } from "../../utils/humanPhoneNumber";
 import { dbRealtime } from "../../firebase/config";
+import { MapIcon } from "../../assets";
 import {
     selectRentACarUser,
     setLoading,
@@ -28,6 +28,7 @@ import {
     setDriverAssigned,
     selectDriverAssigned,
 } from "../../store/slices/rentACarSlice";
+import DisplayStarRatings from "../Driver/DisplayStarRatings";
 
 const AvailableDriversList = ({ isModalVisible, setModalVisible, selectedRide }) => {
     const [drivers, setDrivers] = useState([]);
@@ -173,6 +174,7 @@ const AvailableDriversList = ({ isModalVisible, setModalVisible, selectedRide })
                 <Text style={styles.driverName}>
                     {item.firstName} {item.lastName}
                 </Text>
+                <DisplayStarRatings rating={item.ratings.rating} totalRatings={item.ratings.totalRatings} />
                 <Text style={styles.driverPhoneNumber}>{humanPhoneNumber(item.phoneNumber)}</Text>
                 <TouchableOpacity style={styles.assignDriverButton} onPress={() => handlePress(item)}>
                     <Text style={styles.assignDriverButtonText}>Assign</Text>
