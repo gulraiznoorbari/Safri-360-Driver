@@ -2,8 +2,7 @@ import { useState, useEffect } from "react";
 import { StyleSheet, View, Alert, BackHandler, Dimensions } from "react-native";
 import { useDispatch, useSelector } from "react-redux";
 import Geolocation from "react-native-geolocation-service";
-import { GeoFire } from "geofire";
-import { ref } from "firebase/database";
+import { ref, update } from "firebase/database";
 
 import { dbRealtime } from "../firebase/config";
 import { useMapContext } from "../contexts/MapContext";
@@ -50,7 +49,6 @@ const HomeScreen = ({ navigation }) => {
     };
 
     const getLocation = async () => {
-        const geoFire = new GeoFire(ref(dbRealtime, "GeoRentACarLocations"));
         const hasLocationPermission = await requestLocationPermission();
         if (hasLocationPermission) {
             Geolocation.getCurrentPosition(
@@ -60,14 +58,19 @@ const HomeScreen = ({ navigation }) => {
                         latitudeDelta: LATITUDE_DELTA,
                         longitudeDelta: LONGITUDE_DELTA,
                     });
-                    geoFire
-                        .set(rentACarUser.uid.toString(), [position.coords.latitude, position.coords.longitude])
+                    const userRef = ref(dbRealtime, "Rent A Car/" + rentACarUser.uid);
+                    update(userRef, {
+                        location: {
+                            latitude: position.coords.latitude,
+                            longitude: position.coords.longitude,
+                        },
+                    })
                         .then(() => {
-                            dispatch(setOrigin({ ...extractCoordinates(position) }));
+                            dispatch(setOrigin(extractCoordinates(position)));
                             moveCameraToCenter(mapRef, position.coords);
                         })
                         .catch((error) => {
-                            console.log("Error: " + error);
+                            console.log(error);
                         });
                 },
                 (error) => {
