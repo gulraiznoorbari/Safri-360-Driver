@@ -12,10 +12,10 @@ import { selectUserType } from "../store/slices/userTypeSlice";
 import { useFirebase } from "../contexts/FirebaseContext";
 import { dbRealtime } from "../firebase/config";
 import PrimaryButton from "../components/Buttons/PrimaryButton";
-import ErrorMessage from "../components/ErrorMessage";
 import ClearableInput from "../components/ClearableInput";
 import KeyboardAvoidingWrapper from "../components/KeyboardAvoidingWrapper";
 import TransparentButton from "../components/Buttons/TransparentButton";
+import { showError } from "../utils/ErrorHandlers";
 
 const SignUpScreenCredentials = ({ navigation }) => {
     const dispatch = useDispatch();
@@ -27,11 +27,6 @@ const SignUpScreenCredentials = ({ navigation }) => {
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [confirmPassword, setConfirmPassword] = useState("");
-
-    const [emailError, setEmailError] = useState("");
-    const [passwordError, setPasswordError] = useState("");
-    const [confirmPasswordError, setConfirmPasswordError] = useState("");
-    const [errMessage, setErrMessage] = useState("");
 
     const { signUp } = useFirebase();
 
@@ -142,50 +137,42 @@ const SignUpScreenCredentials = ({ navigation }) => {
     };
 
     const handleSignup = () => {
-        setEmailError("");
-        setPasswordError("");
-        setConfirmPasswordError("");
-
-        let isValid = true;
-
         if (!validateEmail(email)) {
-            setEmailError("Invalid email address");
-            isValid = false;
+            showError("Invalid Email Address", "Please try again with a valid email address.");
+            return;
         }
         if (password.length < 6) {
-            setPasswordError("Password should be at least 6 characters");
-            isValid = false;
+            showError("Invalid Password", "Password should be at least 6 characters.");
+            return;
         }
         if (password !== confirmPassword) {
-            setConfirmPasswordError("Passwords do not match");
-            isValid = false;
+            showError("Passwords do not match", "Please try again.");
+            return;
         }
-        if (isValid) {
-            const onSuccess = (credential) => {
-                const user = credential.user;
-                userType === "RentACarOwner"
-                    ? AddRentACarToDB(user)
-                    : userType === "ToursCompany"
-                    ? AddToursToDB(user)
-                    : userType === "FreightRider" && AddFreightRiderToDB(user);
-                navigation.navigate("PhoneRegisterScreen");
-            };
-            const onError = (error) => {
-                if (error.code === "auth/email-already-in-use") {
-                    setErrMessage("That email address is already in use");
-                } else {
-                    console.log(error);
-                    setErrMessage("Something went wrong, try again.");
-                }
-            };
+        const onSuccess = (credential) => {
+            const user = credential.user;
             userType === "RentACarOwner"
-                ? dispatch(setRentACarUser({ email: email, photoURL: DEFAULT_PROFILE_IMAGE }))
+                ? AddRentACarToDB(user)
                 : userType === "ToursCompany"
-                ? dispatch(setTourUser({ email: email, photoURL: DEFAULT_PROFILE_IMAGE }))
-                : userType === "FreightRider" &&
-                  dispatch(setFreightRider({ email: email, photoURL: DEFAULT_PROFILE_IMAGE }));
-            signUp(email, password, onSuccess, onError);
-        }
+                ? AddToursToDB(user)
+                : userType === "FreightRider" && AddFreightRiderToDB(user);
+            navigation.navigate("PhoneRegisterScreen");
+        };
+        const onError = (error) => {
+            if (error.code === "auth/email-already-in-use") {
+                showError("Email already in use", "Please try again with a different email address.");
+            } else {
+                console.log(error);
+                showError("Something went wrong", "Please try again.");
+            }
+        };
+        userType === "RentACarOwner"
+            ? dispatch(setRentACarUser({ email: email, photoURL: DEFAULT_PROFILE_IMAGE }))
+            : userType === "ToursCompany"
+            ? dispatch(setTourUser({ email: email, photoURL: DEFAULT_PROFILE_IMAGE }))
+            : userType === "FreightRider" &&
+              dispatch(setFreightRider({ email: email, photoURL: DEFAULT_PROFILE_IMAGE }));
+        signUp(email, password, onSuccess, onError);
     };
 
     return (
@@ -203,7 +190,6 @@ const SignUpScreenCredentials = ({ navigation }) => {
                     autoComplete={"email"}
                     textContentType={"emailAddress"}
                 />
-                {emailError && <ErrorMessage errorMessage={emailError} />}
                 <ClearableInput
                     label={"Password"}
                     placeholder={"Enter Password"}
@@ -213,7 +199,6 @@ const SignUpScreenCredentials = ({ navigation }) => {
                     autoComplete={"password"}
                     textContentType={"password"}
                 />
-                {passwordError && <ErrorMessage errorMessage={passwordError} />}
                 <ClearableInput
                     label={"Confirm Password"}
                     placeholder={"Re-enter Password"}
@@ -223,8 +208,6 @@ const SignUpScreenCredentials = ({ navigation }) => {
                     autoComplete={"password"}
                     textContentType={"password"}
                 />
-                {confirmPasswordError && <ErrorMessage errorMessage={confirmPasswordError} />}
-                {errMessage && <ErrorMessage errorMessage={errMessage} />}
                 <PrimaryButton
                     text={"Next"}
                     action={() => handleSignup()}

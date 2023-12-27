@@ -13,8 +13,8 @@ import ClearableInput from "@components/ClearableInput";
 import InputField from "@components/InputField";
 import PrimaryButton from "@components/Buttons/PrimaryButton";
 import TourAddSuccessModal from "./TourAddSuccessModal";
-import ErrorMessage from "@components/ErrorMessage";
 import KeyboardAvoidingWrapper from "@components/KeyboardAvoidingWrapper";
+import { showError } from "@utils/ErrorHandlers";
 
 const AddTourCompany = ({ navigation, route }) => {
     const { tourRefKey } = route.params;
@@ -25,7 +25,6 @@ const AddTourCompany = ({ navigation, route }) => {
     const [isFocus, setIsFocus] = useState(false);
     const [codes, setCodes] = useState([]);
     const [countryCode, setCountryCode] = useState(null);
-    const [errorMessage, setErrorMessage] = useState(null);
     const [tourAdded, setTourAdded] = useState(false);
 
     const inputRef = useRef();
@@ -69,7 +68,8 @@ const AddTourCompany = ({ navigation, route }) => {
     const handleSubmit = () => {
         const error = validateNumber();
         if (error) {
-            return setErrorMessage(error);
+            showError("Invalid Phone Number", "Please enter a valid phone number.");
+            return;
         }
         const fullNumber = "+" + countryCode?.countryCallingCode + (companyPhoneNumber || "").replace(/[^\d/]/g, "");
         const tourRef = ref(dbRealtime, "Tours/" + user.uid + "/Tours/" + tourRefKey);
@@ -186,8 +186,6 @@ const AddTourCompany = ({ navigation, route }) => {
                         />
                     </View>
                 </View>
-
-                {errorMessage && <ErrorMessage errorMessage={errorMessage} />}
 
                 <TourAddSuccessModal isTourAdded={tourAdded} />
                 <PrimaryButton

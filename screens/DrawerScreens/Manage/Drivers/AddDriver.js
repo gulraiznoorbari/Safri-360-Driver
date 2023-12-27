@@ -12,8 +12,8 @@ import KeyboardAvoidingWrapper from "@components/KeyboardAvoidingWrapper";
 import { dbRealtime } from "@firebase/config";
 import { selectRentACarUser } from "@store/slices/rentACarSlice";
 import InputField from "@components/InputField";
-import ErrorMessage from "@components/ErrorMessage";
 import PrimaryButton from "@components/Buttons/PrimaryButton";
+import { showError, showSuccess } from "@utils/ErrorHandlers";
 
 const AddDriver = ({ navigation }) => {
     const user = useSelector(selectRentACarUser);
@@ -22,7 +22,6 @@ const AddDriver = ({ navigation }) => {
     const [isFocus, setIsFocus] = useState(false);
     const [codes, setCodes] = useState([]);
     const [countryCode, setCountryCode] = useState(null);
-    const [errorMessage, setErrorMessage] = useState("");
 
     const inputRef = useRef();
     const prevValue = useRef();
@@ -48,7 +47,6 @@ const AddDriver = ({ navigation }) => {
     }, []);
 
     useEffect(() => {
-        setErrorMessage("");
         const initialValue = codes.filter((code) => code.countryCode === "PK") || [];
         setCountryCode(initialValue[0]);
     }, [codes]);
@@ -71,7 +69,10 @@ const AddDriver = ({ navigation }) => {
 
     const validateNumber = () => {
         const phoneNum = (phoneNumber || "").replace(/[^\d/]/g, "");
-        if (phoneNum.length < 10) return "Invalid phone number";
+        if (phoneNum.length < 10) {
+            showError("Invalid Phone Number", "Please enter a valid phone number.");
+            return false;
+        }
     };
 
     const handleChangeText = (input) => {
@@ -101,7 +102,6 @@ const AddDriver = ({ navigation }) => {
         }
         prevValue.current = text;
         setPhoneNumber(text);
-        setErrorMessage("");
     };
 
     const generateRandomPIN = () => {
@@ -138,12 +138,13 @@ const AddDriver = ({ navigation }) => {
                         fullNumber,
                         `Your PIN is ${pin}. Please use this PIN to login to the app.`,
                         (fail) => {
+                            showError("Error Sending SMS", "There was an error sending the SMS. Please try again!");
                             console.log("Failed with this error: " + fail);
                         },
                         (success) => {
-                            ToastAndroid.show(
+                            showSuccess(
+                                "Login PIN Sent!",
                                 "The driver has been sent a login PIN to the provided phone number.",
-                                ToastAndroid.SHORT,
                             );
                             console.log("SMS status: ", success);
                         },
@@ -151,14 +152,14 @@ const AddDriver = ({ navigation }) => {
                 }
             })
             .catch((error) => {
+                showError("Something went wrong!", "Please try again later.");
                 console.log("Error adding driver to DB: ", error);
             });
     };
 
     const handleSubmit = () => {
-        const error = validateNumber();
-        if (error) {
-            return setErrorMessage(error);
+        if (!validateNumber()) {
+            return;
         }
         AddDriverToDB();
         setPhoneNumber("");
@@ -233,7 +234,6 @@ const AddDriver = ({ navigation }) => {
                         />
                     </View>
                 </View>
-                {errorMessage && <ErrorMessage errorMessage={errorMessage} />}
 
                 <PrimaryButton
                     text="Send Login PIN"

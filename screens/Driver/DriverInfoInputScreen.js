@@ -9,7 +9,7 @@ import { dbRealtime } from "@firebase/config";
 import { setDriver, selectDriver } from "@store/slices/driverSlice";
 import ClearableInput from "@components/ClearableInput";
 import PrimaryButton from "@components/Buttons/PrimaryButton";
-import ErrorMessage from "@components/ErrorMessage";
+import { showError } from "@utils/ErrorHandlers";
 
 const DriverInfoInputScreen = ({ navigation }) => {
     const driver = useSelector(selectDriver);
@@ -18,11 +18,9 @@ const DriverInfoInputScreen = ({ navigation }) => {
     const [firstName, setFirstName] = useState("");
     const [lastName, setLastName] = useState("");
     const [cnic, setCNIC] = useState("");
-    const [errorMessage, setErrorMessage] = useState("");
     const driverPIN = driver.pinCode;
 
     useEffect(() => {
-        setErrorMessage("");
         BackHandler.addEventListener("hardwareBackPress", restrictGoingBack);
         return () => {
             BackHandler.removeEventListener("hardwareBackPress", restrictGoingBack);
@@ -43,7 +41,8 @@ const DriverInfoInputScreen = ({ navigation }) => {
     const validateCNIC = () => {
         const CNIC_REGEX = /^\d{5}-\d{7}-\d{1}$/;
         if (!CNIC_REGEX.test(cnic)) {
-            return "Invalid CNIC";
+            showError("Invalid CNIC", "Please enter a valid CNIC.");
+            return false;
         }
     };
 
@@ -54,9 +53,8 @@ const DriverInfoInputScreen = ({ navigation }) => {
     };
 
     const handleSubmit = () => {
-        const error = validateCNIC();
-        if (error) {
-            return setErrorMessage(error);
+        if (!validateCNIC()) {
+            return;
         }
         const driverRef = ref(dbRealtime, "Drivers/" + driverPIN);
         update(driverRef, {
@@ -70,7 +68,9 @@ const DriverInfoInputScreen = ({ navigation }) => {
                 handleClear();
             })
             .catch((error) => {
-                setErrorMessage("ERROR: ", error.message);
+                showError("Something went wrong!", "Please try again later.");
+                // console.log(error);
+                return;
             });
     };
 
@@ -125,8 +125,6 @@ const DriverInfoInputScreen = ({ navigation }) => {
                     KeyboardType={"numeric"}
                     textContentType={"none"}
                 />
-
-                {errorMessage && <ErrorMessage errorMessage={errorMessage} />}
 
                 <PrimaryButton
                     text={"Next"}

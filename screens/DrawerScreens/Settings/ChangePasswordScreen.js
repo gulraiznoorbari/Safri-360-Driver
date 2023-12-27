@@ -5,12 +5,11 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import KeyboardAvoidingWrapper from "@components/KeyboardAvoidingWrapper";
 import { useFirebase } from "@contexts/FirebaseContext";
 import ClearableInput from "@components/ClearableInput";
-import ErrorMessage from "@components/ErrorMessage";
 import PrimaryButton from "@components/Buttons/PrimaryButton";
+import { showError } from "@utils/ErrorHandlers";
 
 const ChangePasswordScreen = ({ navigation }) => {
     const { updateUserPassword } = useFirebase();
-    const [errMessage, setErrMessage] = useState("");
     const [oldPassword, setOldPassword] = useState("");
     const [newPassword, setNewPassword] = useState("");
     const [confirmNewPassword, setConfirmNewPassword] = useState("");
@@ -33,11 +32,11 @@ const ChangePasswordScreen = ({ navigation }) => {
 
     const handleResetPassword = () => {
         if (!oldPassword || !newPassword || !confirmNewPassword) {
-            setErrMessage("All fields are required!");
+            showError("All fields are required!", "Please fill all the fields.");
             return;
         }
         if (newPassword !== confirmNewPassword) {
-            setErrMessage("Passwords do not match!");
+            showError("Passwords do not match!", "Please enter the same password in both fields.");
             return;
         }
         if (oldPassword && newPassword && confirmNewPassword) {
@@ -51,8 +50,9 @@ const ChangePasswordScreen = ({ navigation }) => {
                 }, 100);
             };
             const onError = (error) => {
-                console.log("Error updating password: ", error);
-                setErrMessage(error.code);
+                showError("Something went wrong!", " Please try again later.");
+                // console.log(error);
+                return;
             };
             updateUserPassword(oldPassword, newPassword, onSuccess, onError);
         }
@@ -90,8 +90,6 @@ const ChangePasswordScreen = ({ navigation }) => {
                     autoComplete={"password"}
                     textContentType={"password"}
                 />
-
-                {errMessage && <ErrorMessage message={errMessage} marginVertical={10} />}
 
                 <PrimaryButton
                     text={"Update"}

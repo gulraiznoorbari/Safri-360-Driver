@@ -13,8 +13,8 @@ import { setUserType } from "@store/slices/userTypeSlice";
 import { setDriver } from "@store/slices/driverSlice";
 import ClearableInput from "@components/ClearableInput";
 import InputField from "@components/InputField";
-import ErrorMessage from "@components/ErrorMessage";
 import PrimaryButton from "@components/Buttons/PrimaryButton";
+import { showError } from "@utils/ErrorHandlers";
 
 const DriverLoginScreen = ({ navigation }) => {
     const dispatch = useDispatch();
@@ -24,7 +24,6 @@ const DriverLoginScreen = ({ navigation }) => {
     const [isFocus, setIsFocus] = useState(false);
     const [codes, setCodes] = useState([]);
     const [countryCode, setCountryCode] = useState(null);
-    const [errorMessage, setErrorMessage] = useState("");
 
     const inputRef = useRef();
     const prevValue = useRef();
@@ -38,14 +37,16 @@ const DriverLoginScreen = ({ navigation }) => {
     }, []);
 
     useEffect(() => {
-        setErrorMessage("");
         const initialValue = codes.filter((code) => code.countryCode === "PK") || [];
         setCountryCode(initialValue[0]);
     }, [codes]);
 
     const validateNumber = () => {
         const phoneNum = (phoneNumber || "").replace(/[^\d/]/g, "");
-        if (phoneNum.length < 10) return "Invalid phone number";
+        if (phoneNum.length < 10) {
+            showError("Invalid phone number!", "Please try again.");
+            return false;
+        }
     };
 
     const handleClear = () => {
@@ -59,18 +60,20 @@ const DriverLoginScreen = ({ navigation }) => {
     };
 
     const handleSubmit = () => {
-        const error = validateNumber();
-        if (error) {
-            return setErrorMessage(error);
+        if (!validateNumber()) {
+            return;
         }
         const fullNumber = "+" + countryCode?.countryCallingCode + (phoneNumber || "").replace(/[^\d/]/g, "");
         const NoDriverFound =
-            "No driver found!\nPlease contact the affiliated Rent A Car owner to register as a driver and receive your login PIN.";
+            "\nPlease contact the affiliated Rent A Car owner to register as a driver and receive your login PIN.";
         const pinCodeRef = ref(dbRealtime, "Drivers");
         get(pinCodeRef)
             .then((snapshot) => {
                 const data = snapshot.val();
-                if (!data) setErrorMessage(NoDriverFound);
+                if (!data) {
+                    showError("No driver found!", NoDriverFound);
+                    return;
+                }
                 let driverFound = false;
                 let pinCodeFound = false;
                 let phoneNumberFound = false;
@@ -95,11 +98,15 @@ const DriverLoginScreen = ({ navigation }) => {
                         }
                     }
                 }
-                if (!driverFound) setErrorMessage(NoDriverFound);
-                if (driverFound && !pinCodeFound) setErrorMessage("Invalid PIN Code!");
-                if (driverFound && pinCodeFound && !phoneNumberFound) setErrorMessage("Invalid Phone Number!");
+                if (!driverFound) showError("No driver found!", NoDriverFound);
+                if (driverFound && !pinCodeFound) showError("Invalid PIN Code!", "Please try again.");
+                if (driverFound && pinCodeFound && !phoneNumberFound)
+                    showError("Invalid phone number!", "Please try again.");
             })
-            .catch((error) => setErrorMessage(error.message));
+            .catch((error) => {
+                showError("Something went wrong!", "Please try again later.");
+                return;
+            });
     };
 
     const handleChangeText = (input) => {
@@ -129,7 +136,6 @@ const DriverLoginScreen = ({ navigation }) => {
         }
         prevValue.current = text;
         setPhoneNumber(text);
-        setErrorMessage("");
     };
 
     const dropDownItem = (item, index) =>
@@ -206,7 +212,6 @@ const DriverLoginScreen = ({ navigation }) => {
                     maxLength={4}
                     KeyboardType={"numeric"}
                 />
-                {errorMessage && <ErrorMessage errorMessage={errorMessage} />}
 
                 <PrimaryButton text="Login" action={() => handleSubmit()} disabled={!(phoneNumber && pinCode)} />
             </SafeAreaView>

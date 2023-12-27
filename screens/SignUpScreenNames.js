@@ -12,7 +12,6 @@ import { useFirebase } from "../contexts/FirebaseContext";
 import KeyboardAvoidingWrapper from "../components/KeyboardAvoidingWrapper";
 import PrimaryButton from "../components/Buttons/PrimaryButton";
 import TransparentButton from "../components/Buttons/TransparentButton";
-import ErrorMessage from "../components/ErrorMessage";
 import ClearableInput from "../components/ClearableInput";
 
 const SignUpScreenNames = ({ navigation }) => {
@@ -23,11 +22,6 @@ const SignUpScreenNames = ({ navigation }) => {
     const [lastName, setLastName] = useState("");
     const [companyName, setCompanyName] = useState("");
     const [cnic, setCNIC] = useState("");
-
-    const [firstNameError, setFirstNameError] = useState("");
-    const [lastNameError, setLastNameError] = useState("");
-    const [cnicError, setCNICError] = useState("");
-    const [companyNameError, setCompanyNameError] = useState("");
 
     const { updateUserProfile } = useFirebase();
 
@@ -67,11 +61,6 @@ const SignUpScreenNames = ({ navigation }) => {
     };
 
     const handleSubmit = () => {
-        // Clear previous errors
-        setFirstNameError("");
-        setLastNameError("");
-        userType === "FreightRider" ? setCNICError("") : setCompanyNameError("");
-
         userType === "RentACarOwner"
             ? dispatch(
                   setRentACarUser({
@@ -126,8 +115,6 @@ const SignUpScreenNames = ({ navigation }) => {
                     autoComplete={"name"}
                     textContentType={"name"}
                 />
-                {firstNameError && <ErrorMessage errorMessage={firstNameError} />}
-
                 <ClearableInput
                     label={"Last Name"}
                     placeholder={"Enter Last Name"}
@@ -137,8 +124,6 @@ const SignUpScreenNames = ({ navigation }) => {
                     autoComplete={"name"}
                     textContentType={"name"}
                 />
-                {lastNameError && <ErrorMessage errorMessage={lastNameError} />}
-
                 {userType === "FreightRider" ? (
                     <ClearableInput
                         label={"CNIC"}
@@ -163,10 +148,6 @@ const SignUpScreenNames = ({ navigation }) => {
                         textContentType={"organizationName"}
                     />
                 )}
-                {userType === "FreightRider"
-                    ? cnicError && <ErrorMessage errorMessage={cnicError} />
-                    : companyNameError && <ErrorMessage errorMessage={companyNameError} />}
-
                 <PrimaryButton
                     text={"Continue"}
                     action={() => handleSubmit()}

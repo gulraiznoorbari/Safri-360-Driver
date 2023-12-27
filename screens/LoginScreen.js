@@ -8,15 +8,13 @@ import KeyboardAvoidingWrapper from "../components/KeyboardAvoidingWrapper";
 import { useFirebase } from "../contexts/FirebaseContext";
 import { setUserType } from "../store/slices/userTypeSlice";
 import ClearableInput from "../components/ClearableInput";
-import ErrorMessage from "../components/ErrorMessage";
 import PrimaryButton from "../components/Buttons/PrimaryButton";
 import TransparentButton from "../components/Buttons/TransparentButton";
+import { showError } from "../utils/ErrorHandlers";
 
 const LoginScreen = ({ navigation }) => {
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
-    const [emailErrMessage, setEmailErrMessage] = useState("");
-    const [passwordErrMessage, setPasswordErrMessage] = useState("");
 
     const { signIn } = useFirebase();
     const dispatch = useDispatch();
@@ -24,7 +22,6 @@ const LoginScreen = ({ navigation }) => {
     useEffect(() => {
         const unsubscribe = navigation.addListener("focus", () => {
             resetInputFields();
-            resetErrorMessages();
         });
         return unsubscribe;
     }, [navigation]);
@@ -36,24 +33,18 @@ const LoginScreen = ({ navigation }) => {
         };
     }, []);
 
-    const resetErrorMessages = () => {
-        setEmailErrMessage("");
-        setPasswordErrMessage("");
-    };
-
     const resetInputFields = () => {
         setEmail("");
         setPassword("");
     };
 
     const handleLogin = () => {
-        resetErrorMessages();
         if (!email) {
-            setEmailErrMessage("Email address is required!");
+            showError("Email Address Required", "Please enter your email address.");
             return;
         }
         if (!password) {
-            setPasswordErrMessage("Password is required!");
+            showError("Password Required", "Please enter your password.");
             return;
         }
         if (email && password) {
@@ -64,18 +55,17 @@ const LoginScreen = ({ navigation }) => {
             };
             const onError = (error) => {
                 if (error.code === "auth/invalid-email") {
-                    setEmailErrMessage("Email address is invalid!");
-                    setPasswordErrMessage("");
+                    showError("Invalid Email Address", "Please enter a valid email address.");
+                    return;
                 } else if (error.code === "auth/wrong-password") {
-                    setPasswordErrMessage("Wrong password");
-                    setEmailErrMessage("");
+                    showError("Wrong Password", "Please enter the correct password.");
+                    return;
                 } else if (error.code === "auth/user-not-found") {
-                    setEmailErrMessage("User not Found.");
-                    setPasswordErrMessage("");
+                    showError("User Not Found", "Please enter a valid email address.");
+                    return;
                 } else {
-                    console.log(error);
-                    setEmailErrMessage("User not Found.");
-                    setPasswordErrMessage("");
+                    showError("Something went wrong.", "Please try again.");
+                    return;
                 }
             };
             signIn(email, password, onSuccess, onError);
@@ -103,8 +93,6 @@ const LoginScreen = ({ navigation }) => {
                     autoComplete={"email"}
                     textContentType={"emailAddress"}
                 />
-                {emailErrMessage && <ErrorMessage errorMessage={emailErrMessage} />}
-
                 <ClearableInput
                     label={"Password"}
                     placeholder={"Enter Password"}
@@ -114,7 +102,6 @@ const LoginScreen = ({ navigation }) => {
                     autoComplete={"password"}
                     textContentType={"password"}
                 />
-                {passwordErrMessage && <ErrorMessage errorMessage={passwordErrMessage} />}
 
                 <Link to="/PasswordReset" style={styles.linkTextContainer}>
                     <Text style={styles.linkText}>Forgot Password?</Text>

@@ -8,7 +8,7 @@ import KeyboardAvoidingWrapper from "../components/KeyboardAvoidingWrapper";
 import { setFreightRider } from "../store/slices/freightRiderSlice";
 import ClearableInput from "../components/ClearableInput";
 import PrimaryButton from "../components/Buttons/PrimaryButton";
-import ErrorMessage from "../components/ErrorMessage";
+import { showError } from "../utils/ErrorHandlers";
 
 const SignUpScreenVehicleInfo = ({ navigation }) => {
     const dispatch = useDispatch();
@@ -16,10 +16,6 @@ const SignUpScreenVehicleInfo = ({ navigation }) => {
     const [vehicleType, setVehicleType] = useState("");
     const [carAverage, setCarAverage] = useState("");
     const [carRegistrationNumber, setCarRegistrationNumber] = useState("");
-
-    const [vehicleTypeError, setVehicleTypeError] = useState("");
-    const [carAverageError, setCarAverageError] = useState("");
-    const [carRegistrationNumberError, setCarRegistrationNumberError] = useState("");
 
     const vehicles = [
         { label: "Loader Rickshaw", value: "loaderRickshaw" },
@@ -55,21 +51,27 @@ const SignUpScreenVehicleInfo = ({ navigation }) => {
     };
 
     const handleSubmit = () => {
-        setCarAverageError("");
-        setCarRegistrationNumberError("");
-        setVehicleTypeError("");
-
         if (!vehicleType) {
-            return setVehicleTypeError("Please select a vehicle type");
+            showError("Input Missing", "Please select a Vehicle Type.");
+            return;
         }
         if (!carAverage) {
-            return setCarAverageError("Please enter car average");
+            showError("Input Missing", "Please enter Car Average.");
+            return;
         }
         if (!carRegistrationNumber) {
-            return setCarRegistrationNumberError("Please enter car registration number");
+            showError("Input Missing", "Please enter Car Registration Number");
+            return;
         }
-        dispatch(setFreightRider({ vehicleInfo: { vehicleType, carAverage, carRegistrationNumber } }));
-
+        dispatch(
+            setFreightRider({
+                vehicleInfo: {
+                    vehicleType: vehicleType,
+                    carAverage: carAverage,
+                    carRegistrationNumber: carRegistrationNumber,
+                },
+            }),
+        );
         navigation.navigate("SignUpScreenCredentials");
     };
 
@@ -94,8 +96,6 @@ const SignUpScreenVehicleInfo = ({ navigation }) => {
                     placeholderStyle={styles.placeholderStyle}
                     selectedTextStyle={styles.selectedTextStyle}
                 />
-                {vehicleTypeError && <ErrorMessage errorMessage={vehicleTypeError} />}
-
                 <ClearableInput
                     label={"Vehicle Average (km/l)"}
                     placeholder={"5, 10, etc"}
@@ -106,8 +106,6 @@ const SignUpScreenVehicleInfo = ({ navigation }) => {
                     autoComplete={"name"}
                     KeyboardType={"numeric"}
                 />
-                {carAverageError && <ErrorMessage errorMessage={carAverageError} />}
-
                 <ClearableInput
                     label={"Vehicle Registraion Number"}
                     placeholder={"ABC-1234"}
@@ -118,8 +116,6 @@ const SignUpScreenVehicleInfo = ({ navigation }) => {
                     hideInput={false}
                     autoComplete={"name"}
                 />
-                {carRegistrationNumberError && <ErrorMessage errorMessage={carRegistrationNumberError} />}
-
                 <PrimaryButton
                     text={"Continue"}
                     action={() => handleSubmit()}

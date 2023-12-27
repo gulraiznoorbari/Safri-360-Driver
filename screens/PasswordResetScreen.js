@@ -4,14 +4,13 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import { TouchableWithoutFeedback } from "react-native-gesture-handler";
 
 import { useFirebase } from "../contexts/FirebaseContext";
-import ErrorMessage from "../components/ErrorMessage";
 import PrimaryButton from "../components/Buttons/PrimaryButton";
 import ClearableInput from "../components/ClearableInput";
 import TransparentButton from "../components/Buttons/TransparentButton";
+import { showError } from "../utils/ErrorHandlers";
 
 const PasswordResetScreen = ({ navigation }) => {
     const { sendPasswordResetMail, currentUser } = useFirebase();
-    const [errMessage, setErrMessage] = useState("");
     const [email, setEmail] = useState(currentUser ? currentUser.email : "");
 
     useLayoutEffect(() => {
@@ -32,7 +31,7 @@ const PasswordResetScreen = ({ navigation }) => {
 
     const handleResetPassword = () => {
         if (!email) {
-            setErrMessage("Email address is required!");
+            showError("Email Address Required", "Email address is required!");
             return;
         }
         if (email) {
@@ -41,8 +40,8 @@ const PasswordResetScreen = ({ navigation }) => {
                 navigation.navigate("Login");
             };
             const onError = (error) => {
-                console.log("Error sending password reset email: ", error);
-                setErrMessage(error.code);
+                showError("Error", "Error sending password reset email!");
+                return;
             };
             sendPasswordResetMail(email, onSuccess, onError);
         }
@@ -65,7 +64,6 @@ const PasswordResetScreen = ({ navigation }) => {
                     autoComplete={"email"}
                     textContentType={"emailAddress"}
                 />
-                {errMessage && <ErrorMessage message={errMessage} marginVertical={10} />}
 
                 <PrimaryButton text={"Reset Password"} action={() => handleResetPassword()} disabled={!email} />
                 <TransparentButton

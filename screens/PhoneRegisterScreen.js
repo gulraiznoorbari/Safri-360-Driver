@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from "react";
-import { StyleSheet, BackHandler, Alert, View, Text } from "react-native";
+import { StyleSheet, BackHandler, View, Text } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Icon } from "react-native-elements";
 import { Dropdown } from "react-native-element-dropdown";
@@ -12,8 +12,8 @@ import { setFreightRider } from "../store/slices/freightRiderSlice";
 import { selectUserType } from "../store/slices/userTypeSlice";
 import InputField from "../components/InputField";
 import PrimaryButton from "../components/Buttons/PrimaryButton";
-import ErrorMessage from "../components/ErrorMessage";
 import KeyboardAvoidingWrapper from "../components/KeyboardAvoidingWrapper";
+import { showError } from "../utils/ErrorHandlers";
 
 const PhoneRegisterScreen = ({ navigation }) => {
     const dispatch = useDispatch();
@@ -23,7 +23,6 @@ const PhoneRegisterScreen = ({ navigation }) => {
     const [value, setValue] = useState(null);
     const [codes, setCodes] = useState([]);
     const [countryCode, setCountryCode] = useState(null);
-    const [errorMessage, setErrorMessage] = useState("");
 
     const inputRef = useRef();
     const prevValue = useRef();
@@ -37,20 +36,21 @@ const PhoneRegisterScreen = ({ navigation }) => {
     }, []);
 
     useEffect(() => {
-        setErrorMessage("");
         const initialValue = codes.filter((code) => code.countryCode === "PK") || [];
         setCountryCode(initialValue[0]);
     }, [codes]);
 
     const validateNumber = () => {
         const phoneNumber = (value || "").replace(/[^\d/]/g, "");
-        if (phoneNumber.length < 10) return "Invalid phone number";
+        if (phoneNumber.length < 10) {
+            showError("Invalid Phone Number", "Please enter a valid phone number.");
+            return false;
+        }
     };
 
     const handleSubmit = () => {
-        const error = validateNumber();
-        if (error) {
-            return setErrorMessage(error);
+        if (!validateNumber()) {
+            return;
         }
         const fullNumber = "+" + (countryCode?.countryCallingCode || 1) + (value || "").replace(/[^\d/]/g, "");
         userType === "RentACarOwner"
@@ -90,7 +90,6 @@ const PhoneRegisterScreen = ({ navigation }) => {
         }
         prevValue.current = text;
         setValue(text);
-        setErrorMessage("");
     };
 
     const dropDownItem = (item, index) =>
@@ -168,7 +167,6 @@ const PhoneRegisterScreen = ({ navigation }) => {
                         />
                     </View>
                 </View>
-                {errorMessage && <ErrorMessage errorMessage={errorMessage} />}
 
                 <PrimaryButton text={"Next"} action={() => handleSubmit()} disabled={!(value?.length > 10)} />
             </SafeAreaView>
