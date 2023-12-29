@@ -11,9 +11,8 @@ import {
 import ReactNativeAsyncStorage from "@react-native-async-storage/async-storage";
 import { initializeApp } from "firebase/app";
 import { initializeAuth, getReactNativePersistence } from "firebase/auth";
-import { ref, getDatabase } from "firebase/database";
+import { getDatabase } from "firebase/database";
 import { getStorage } from "firebase/storage";
-import { GeoFire } from "geofire";
 
 const firebaseConfig = {
     apiKey: FIREBASE_API_KEY,
@@ -32,9 +31,6 @@ export const auth = initializeAuth(app, {
 });
 export const dbRealtime = getDatabase(app);
 export const storage = getStorage(app);
-
-const refDB = ref(dbRealtime, "ActiveDrivers");
-export const geoFire = new GeoFire(refDB);
 
 auth.useDeviceLanguage();
 

@@ -7,7 +7,7 @@ const countryCodes = require("country-codes-list");
 import { ref, update } from "firebase/database";
 import { useSelector } from "react-redux";
 
-import { dbRealtime } from "@firebase/config";
+import { dbRealtime } from "../../../firebase/config";
 import { selectTourUser } from "@store/slices/tourSlice";
 import ClearableInput from "@components/ClearableInput";
 import InputField from "@components/InputField";

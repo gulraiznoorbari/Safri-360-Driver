@@ -4,7 +4,7 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import { useSelector } from "react-redux";
 import { ref, set } from "firebase/database";
 
-import { dbRealtime } from "@firebase/config";
+import { dbRealtime } from "../../../../firebase/config";
 import { showError } from "@utils/ErrorHandlers";
 import { selectRentACarUser } from "@store/slices/rentACarSlice";
 import KeyboardAvoidingWrapper from "@components/KeyboardAvoidingWrapper";

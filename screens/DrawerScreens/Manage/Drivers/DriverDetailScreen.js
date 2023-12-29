@@ -6,7 +6,7 @@ import FontAwesome from "react-native-vector-icons/FontAwesome";
 import { ref, remove, get } from "firebase/database";
 import { useSelector } from "react-redux";
 
-import { dbRealtime } from "@firebase/config";
+import { dbRealtime } from "../../../../firebase/config";
 import { selectRentACarUser } from "@store/slices/rentACarSlice";
 
 const DriverDetailScreen = ({ route, navigation }) => {

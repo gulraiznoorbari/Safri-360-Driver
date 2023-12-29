@@ -6,7 +6,7 @@ import moment from "moment";
 import { ref, onValue, remove, update } from "firebase/database";
 import { useSelector } from "react-redux";
 
-import { dbRealtime } from "@firebase/config";
+import { dbRealtime } from "../../firebase/config";
 import { selectTourUser } from "@store/slices/tourSlice";
 import { humanPhoneNumber } from "@utils/humanPhoneNumber";
 import { formatCurrencyWithCommas } from "@utils/formatCurrencyValue";

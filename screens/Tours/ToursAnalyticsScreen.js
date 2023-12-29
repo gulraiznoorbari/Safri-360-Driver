@@ -6,7 +6,7 @@ import { Card } from "react-native-elements";
 import { ref, onValue } from "firebase/database";
 import moment from "moment";
 
-import { dbRealtime } from "@firebase/config";
+import { dbRealtime } from "../../firebase/config";
 import { selectTourUser } from "@store/slices/tourSlice";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { formatCurrencyWithCommas } from "@utils/formatCurrencyValue";

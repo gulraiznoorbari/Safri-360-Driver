@@ -18,8 +18,8 @@ import LottieView from "lottie-react-native";
 import Ionicons from "react-native-vector-icons/Ionicons";
 import SmsAndroid from "react-native-get-sms-android";
 
+import { dbRealtime } from "../../firebase/config";
 import { humanPhoneNumber } from "@utils/humanPhoneNumber";
-import { dbRealtime } from "@firebase/config";
 import { MapIcon } from "@assets";
 import {
     selectRentACarUser,

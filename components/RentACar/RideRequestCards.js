@@ -16,6 +16,7 @@ import { Card } from "react-native-elements";
 import { ref, onValue } from "firebase/database";
 import { useSelector, useDispatch } from "react-redux";
 
+import { dbRealtime } from "../../firebase/config";
 import { humanPhoneNumber } from "@utils/humanPhoneNumber";
 import {
     selectRentACarUser,
@@ -23,7 +24,6 @@ import {
     selectDriverAssigned,
     setDriverAssigned,
 } from "@store/slices/rentACarSlice";
-import { dbRealtime } from "@firebase/config";
 
 const { width } = Dimensions.get("window");
 

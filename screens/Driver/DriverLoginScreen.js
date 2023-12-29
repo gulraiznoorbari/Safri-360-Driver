@@ -7,8 +7,8 @@ const countryCodes = require("country-codes-list");
 import { get, ref } from "firebase/database";
 import { useDispatch } from "react-redux";
 
+import { dbRealtime } from "../../firebase/config";
 import KeyboardAvoidingWrapper from "@components/KeyboardAvoidingWrapper";
-import { dbRealtime } from "@firebase/config";
 import { setUserType } from "@store/slices/userTypeSlice";
 import { setDriver } from "@store/slices/driverSlice";
 import ClearableInput from "@components/ClearableInput";

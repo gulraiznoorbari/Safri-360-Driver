@@ -8,8 +8,8 @@ import { uploadBytes, getDownloadURL, ref } from "firebase/storage";
 import * as ImagePicker from "expo-image-picker";
 import { useSelector, useDispatch } from "react-redux";
 
+import { dbRealtime } from "../../../firebase/config";
 import { useFirebase } from "@contexts/FirebaseContext";
-import { storage, dbRealtime } from "@firebase/config";
 import { selectUserType } from "@store/slices/userTypeSlice";
 import { setRentACarUser, selectRentACarUser } from "@store/slices/rentACarSlice";
 import { setTourUser, selectTourUser } from "@store/slices/tourSlice";

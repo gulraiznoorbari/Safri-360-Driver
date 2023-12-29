@@ -17,7 +17,7 @@ import Geolocation from "react-native-geolocation-service";
 import MapView, { PROVIDER_GOOGLE, Marker, Callout } from "react-native-maps";
 import MapViewDirections from "react-native-maps-directions";
 
-import { dbRealtime } from "@firebase/config";
+import { dbRealtime } from "../../firebase/config";
 import { useMapContext } from "@contexts/MapContext";
 import { requestLocationPermission } from "@utils/requestLocation";
 import { selectDriver, setDriver } from "@store/slices/driverSlice";
@@ -71,14 +71,6 @@ const DriverHomeScreen = ({ navigation }) => {
                 );
             });
         }
-
-        BackHandler.addEventListener("hardwareBackPress", restrictGoingBack);
-        return () => {
-            BackHandler.removeEventListener("hardwareBackPress", restrictGoingBack);
-        };
-    }, []);
-
-    useEffect(() => {
         if (currentUserLocation) {
             const driverRef = ref(dbRealtime, "Drivers/" + driverPIN);
             onValue(driverRef, (snapshot) => {
@@ -92,6 +84,11 @@ const DriverHomeScreen = ({ navigation }) => {
                 }
             });
         }
+
+        BackHandler.addEventListener("hardwareBackPress", restrictGoingBack);
+        return () => {
+            BackHandler.removeEventListener("hardwareBackPress", restrictGoingBack);
+        };
     }, []);
 
     useEffect(() => {

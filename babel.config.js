@@ -11,7 +11,6 @@ module.exports = function (api) {
                         "@assets": "./assets",
                         "@screens": "./screens",
                         "@components": "./components",
-                        "@firebase": "./firebase",
                         "@contexts": "./contexts",
                         "@store": "./store",
                         "@utils": "./utils",
