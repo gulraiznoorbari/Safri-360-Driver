@@ -73,7 +73,6 @@
     "devDependencies": {
         "@babel/core": "^7.20.0",
         "@babel/eslint-parser": "^7.22.15",
-        "@faker-js/faker": "^8.2.0",
         "@redux-devtools/cli": "^3.0.2",
         "babel-plugin-module-resolver": "^5.0.0",
         "eslint": "^8.52.0",
