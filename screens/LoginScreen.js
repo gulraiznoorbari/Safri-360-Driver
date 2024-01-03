@@ -1,22 +1,29 @@
 import { useEffect, useState } from "react";
-import { View, StyleSheet, Text, BackHandler } from "react-native";
+import { View, StyleSheet, Text, ActivityIndicator, BackHandler } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Link } from "@react-navigation/native";
-import { useDispatch } from "react-redux";
+import { ref, get } from "firebase/database";
+import { useDispatch, useSelector } from "react-redux";
 
 import KeyboardAvoidingWrapper from "../components/KeyboardAvoidingWrapper";
+import { dbRealtime } from "../firebase/config";
 import { useFirebase } from "../contexts/FirebaseContext";
-import { setUserType } from "../store/slices/userTypeSlice";
+import { setUserType, selectUserType } from "../store/slices/userTypeSlice";
+import { setRentACarUser } from "../store/slices/rentACarSlice";
+import { setTourUser } from "../store/slices/tourSlice";
+import { setFreightRider } from "../store/slices/freightRiderSlice";
 import ClearableInput from "../components/ClearableInput";
 import PrimaryButton from "../components/Buttons/PrimaryButton";
 import TransparentButton from "../components/Buttons/TransparentButton";
 import { showError } from "../utils/ErrorHandlers";
 
 const LoginScreen = ({ navigation }) => {
+    const [loading, setLoading] = useState(false);
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
 
-    const { signIn } = useFirebase();
+    const { signIn, updateUserProfile } = useFirebase();
+    const userType = useSelector(selectUserType);
     const dispatch = useDispatch();
 
     useEffect(() => {
@@ -39,6 +46,7 @@ const LoginScreen = ({ navigation }) => {
     };
 
     const handleLogin = () => {
+        setLoading(true);
         if (!email) {
             showError("Email Address Required", "Please enter your email address.");
             return;
@@ -49,9 +57,101 @@ const LoginScreen = ({ navigation }) => {
         }
         if (email && password) {
             const onSuccess = (credential) => {
-                const user = credential.user;
-                console.log("User: ", user);
-                navigation.navigate("HomeScreen");
+                userType === "RentACarOwner"
+                    ? get(ref(dbRealtime, "Rent A Car/" + credential.user.uid))
+                          .then((snapshot) => {
+                              const rentACarData = snapshot.val();
+                              dispatch(
+                                  setRentACarUser({
+                                      uid: credential.user.uid,
+                                      firstName: rentACarData.firstName,
+                                      lastName: rentACarData.lastName,
+                                      companyName: rentACarData.companyName,
+                                      userName: rentACarData.firstName,
+                                      email: rentACarData.email,
+                                      phoneNumber: rentACarData.phoneNumber,
+                                      photoURL: rentACarData.photoURL,
+                                      phoneNumberVerified: rentACarData.phoneNumber ? true : false,
+                                      isLoggedIn: true,
+                                      lastLoginAt: credential.user.metadata.lastSignInTime,
+                                  }),
+                              );
+                              updateUserProfile({
+                                  displayName: rentACarData.firstName,
+                                  photoURL: rentACarData.photoURL,
+                                  phoneNumber: rentACarData.phoneNumber,
+                                  phoneNumberVerified: rentACarData.phoneNumber ? true : false,
+                              });
+                              setTimeout(() => {
+                                  navigation.navigate("HomeScreen");
+                              }, 500);
+                          })
+                          .finally(() => setLoading(false))
+                    : userType === "ToursCompany"
+                    ? get(ref(dbRealtime, "Tours/" + credential.user.uid))
+                          .then((snapshot) => {
+                              const tourData = snapshot.val();
+                              dispatch(
+                                  setTourUser({
+                                      uid: credential.user.uid,
+                                      firstName: tourData.firstName,
+                                      lastName: tourData.lastName,
+                                      companyName: tourData.companyName,
+                                      userName: tourData.firstName,
+                                      email: tourData.email,
+                                      phoneNumber: tourData.phoneNumber,
+                                      photoURL: tourData.photoURL,
+                                      phoneNumberVerified: tourData.phoneNumber ? true : false,
+                                      isLoggedIn: true,
+                                      lastLoginAt: credential.user.metadata.lastSignInTime,
+                                  }),
+                              );
+                              updateUserProfile({
+                                  displayName: tourData.firstName,
+                                  photoURL: tourData.photoURL,
+                                  phoneNumber: tourData.phoneNumber,
+                                  phoneNumberVerified: tourData.phoneNumber ? true : false,
+                              });
+                              setTimeout(() => {
+                                  navigation.navigate("HomeScreen");
+                              }, 500);
+                          })
+                          .finally(() => setLoading(false))
+                    : userType === "FreightRider" &&
+                      get(ref(dbRealtime, "Freight Riders/" + credential.user.uid))
+                          .then((snapshot) => {
+                              const freightRiderData = snapshot.val();
+                              dispatch(
+                                  setFreightRider({
+                                      uid: credential.user.uid,
+                                      CNIC: freightRiderData.CNIC,
+                                      firstName: freightRiderData.firstName,
+                                      lastName: freightRiderData.lastName,
+                                      userName: freightRiderData.firstName,
+                                      email: freightRiderData.email,
+                                      phoneNumber: freightRiderData.phoneNumber,
+                                      photoURL: freightRiderData.photoURL,
+                                      phoneNumberVerified: freightRiderData.phoneNumber ? true : false,
+                                      isLoggedIn: true,
+                                      lastLoginAt: credential.user.metadata.lastSignInTime,
+                                      vehicleInfo: {
+                                          vehicleType: freightRiderData.vehicleType,
+                                          vehicleAverage: freightRiderData.carAverage,
+                                          vehicleRegistrationNumber: freightRiderData.carRegistrationNumber,
+                                      },
+                                  }),
+                              );
+                              updateUserProfile({
+                                  displayName: freightRiderData.firstName,
+                                  photoURL: freightRiderData.photoURL,
+                                  phoneNumber: freightRiderData.phoneNumber,
+                                  phoneNumberVerified: freightRiderData.phoneNumber ? true : false,
+                              });
+                              setTimeout(() => {
+                                  navigation.navigate("HomeScreen");
+                              }, 500);
+                          })
+                          .finally(() => setLoading(false));
             };
             const onError = (error) => {
                 if (error.code === "auth/invalid-email") {
@@ -80,6 +180,13 @@ const LoginScreen = ({ navigation }) => {
     return (
         <KeyboardAvoidingWrapper>
             <SafeAreaView>
+                {loading && (
+                    <ActivityIndicator
+                        style={{ flex: 1, justifyContent: "center", alignItems: "center" }}
+                        size="large"
+                        color="#000"
+                    />
+                )}
                 <View style={styles.headingContainer}>
                     <Text style={styles.headingText}>Login</Text>
                 </View>

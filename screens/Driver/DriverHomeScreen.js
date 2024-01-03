@@ -78,8 +78,10 @@ const DriverHomeScreen = ({ navigation }) => {
                 if (driverData.status === "booked") {
                     const assignedRideRef = ref(dbRealtime, "Rides/" + driverData.assignedRideID);
                     get(assignedRideRef).then((snapshot) => {
-                        const rideData = snapshot.val();
-                        dispatch(setDriver({ rideData: rideData, rideAssigned: true }));
+                        if (snapshot.exists()) {
+                            const rideData = snapshot.val();
+                            dispatch(setDriver({ rideData: rideData, rideAssigned: true }));
+                        }
                     });
                 }
             });
@@ -90,6 +92,28 @@ const DriverHomeScreen = ({ navigation }) => {
             BackHandler.removeEventListener("hardwareBackPress", restrictGoingBack);
         };
     }, []);
+
+    useEffect(() => {
+        if (driver.rideAssigned && currentUserLocation) {
+            const driverRef = ref(dbRealtime, "Drivers/" + driverPIN);
+            onValue(driverRef, (snapshot) => {
+                const driverData = snapshot.val();
+                if (
+                    driverData.status === "booked" ||
+                    driverData.status === "arrived" ||
+                    driverData.status === "ongoing"
+                ) {
+                    const assignedRideRef = ref(dbRealtime, "Rides/" + driverData.assignedRideID);
+                    get(assignedRideRef).then((snapshot) => {
+                        if (snapshot.exists()) {
+                            const rideData = snapshot.val();
+                            dispatch(setDriver({ rideData: rideData, rideAssigned: true }));
+                        }
+                    });
+                }
+            });
+        }
+    }, [driver.rideAssigned]);
 
     useEffect(() => {
         if (driverPIN && !driver.rideAssigned) {

@@ -7,7 +7,7 @@ import BottomSheet, { BottomSheetView, useBottomSheetSpringConfigs } from "@gorh
 import Ionicons from "react-native-vector-icons/Ionicons";
 import { ref, onValue, update } from "firebase/database";
 
-import { dbRealtime } from "@firebase/config";
+import { dbRealtime } from "../../firebase/config";
 import { humanPhoneNumber } from "@utils/humanPhoneNumber";
 import { selectDriver, setDriver } from "@store/slices/driverSlice";
 import { selectRentACarUser } from "@store/slices/rentACarSlice";
@@ -16,7 +16,6 @@ import PrimaryButton from "../Buttons/PrimaryButton";
 const DriverBottomSheet = () => {
     const [rideCustomerInfo, setRideCustomerInfo] = useState({});
     const [loading, setLoading] = useState(true);
-    const [rideStarted, setRideStarted] = useState(false);
 
     const dispatch = useDispatch();
     const bottomSheetRef = useRef();
@@ -155,11 +154,11 @@ const DriverBottomSheet = () => {
 
                         {!driver.rideStarted && driver.driverArrived ? (
                             <PrimaryButton text={"Start Ride"} action={startRideButton} buttonStyle={styles.button} />
-                        ) : driver.rideStarted && !driver.driverArrived ? (
+                        ) : driver.rideStarted && !driver.driverArrived && !driver.rideCompleted ? (
                             <PrimaryButton text={"End Ride"} action={endRideButton} buttonStyle={styles.button} />
                         ) : driver.rideCompleted ? (
                             <View style={styles.infoContainer}>
-                                <Text style={styles.noRideText}>Ride Completed.</Text>
+                                <Text style={styles.rideCompletedText}>Ride Completed.</Text>
                             </View>
                         ) : (
                             <PrimaryButton text={"I Have Arrived"} action={arrivedButton} buttonStyle={styles.button} />
@@ -282,6 +281,13 @@ const styles = StyleSheet.create({
         fontWeight: "600",
         color: "#333",
         textAlign: "left",
+    },
+    rideCompletedText: {
+        fontSize: 18,
+        fontFamily: "SatoshiBold",
+        fontWeight: "600",
+        textAlign: "center",
+        marginTop: 20,
     },
     noRideContainer: {
         justifyContent: "center",

@@ -34,15 +34,10 @@ export function FirebaseProvider({ children }) {
 
     useEffect(() => {
         if (userType === "RentACarOwner" || userType === "ToursCompany" || userType === "FreightRider") {
-            let prevState;
             const unsubscribe = onAuthStateChanged(auth, (user) => {
                 setCurrentUser(user);
-                if (user) {
-                    prevState = prevState || user;
-                    console.log("User is signed in!");
-                }
             });
-            return () => unsubscribe();
+            return unsubscribe();
         }
     }, [userType]);
 
@@ -85,45 +80,7 @@ export function FirebaseProvider({ children }) {
     const signIn = (email, password, onSuccess, onError) => {
         signInWithEmailAndPassword(auth, email, password)
             .then((credential) => {
-                userType === "RentACarOwner"
-                    ? (dispatch(
-                          setRentACarUser({
-                              uid: credential.user.uid,
-                              userName: credential.user.displayName,
-                              email: credential.user.email,
-                              phoneNumber: credential.user.phoneNumber,
-                              photoURL: credential.user.photoURL,
-                              phoneNumberVerified: credential.user.phoneNumberVerified,
-                              isLoggedIn: true,
-                          }),
-                      ),
-                      console.log("User signed In Successfully!"))
-                    : userType === "ToursCompany"
-                    ? (dispatch(
-                          setTourUser({
-                              uid: credential.user.uid,
-                              userName: credential.user.displayName,
-                              email: credential.user.email,
-                              phoneNumber: credential.user.phoneNumber,
-                              photoURL: credential.user.photoURL,
-                              phoneNumberVerified: credential.user.phoneNumberVerified,
-                              isLoggedIn: true,
-                          }),
-                      ),
-                      console.log("User signed In Successfully!"))
-                    : userType === "FreightRider" &&
-                      (dispatch(
-                          setFreightRider({
-                              uid: credential.user.uid,
-                              userName: credential.user.displayName,
-                              email: credential.user.email,
-                              phoneNumber: credential.user.phoneNumber,
-                              photoURL: credential.user.photoURL,
-                              phoneNumberVerified: credential.user.phoneNumberVerified,
-                              isLoggedIn: true,
-                          }),
-                      ),
-                      console.log("User signed In Successfully!"));
+                console.log("User signed in successfully!");
                 if (typeof onSuccess === "function") return onSuccess(credential);
             })
             .catch((error) => {
@@ -164,7 +121,6 @@ export function FirebaseProvider({ children }) {
     };
 
     const sendPasswordResetMail = (email, onSuccess, onError) => {
-        console.log("\nSending Password Reset Email...");
         sendPasswordResetEmail(auth, email)
             .then(() => {
                 console.log("Password Reset Email was sent successfully!");
@@ -178,10 +134,9 @@ export function FirebaseProvider({ children }) {
 
     const updateUserProfile = (updateData) => {
         if (!currentUser) return;
-        console.log("\nUpdating User Profile...");
         updateProfile(currentUser, updateData)
             .then(() => {
-                console.log("\nUser Profile Updated successfully\n");
+                console.log("\nUser Profile Updated successfully!");
             })
             .catch((error) => {
                 console.log("\nUser Profile Update Error!!!", error);
@@ -213,7 +168,7 @@ export function FirebaseProvider({ children }) {
                 console.log("User logged out successfully!");
             })
             .catch((error) => {
-                console.log("Oops...Aomething went wrong while logging Out: ", error);
+                console.log("Oops...Something went wrong while logging Out: ", error);
             });
     };
 
