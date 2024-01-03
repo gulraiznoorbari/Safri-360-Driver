@@ -73,7 +73,7 @@
     "devDependencies": {
         "@babel/core": "^7.20.0",
         "@babel/eslint-parser": "^7.22.15",
-        "@redux-devtools/cli": "^3.0.2",
+        "@redux-devtools/cli": "^4.0.0",
         "babel-plugin-module-resolver": "^5.0.0",
         "eslint": "^8.52.0",
         "eslint-plugin-import": "^2.28.1",
