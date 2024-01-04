@@ -32,7 +32,7 @@ const FreightBottomSheet = () => {
 
     useEffect(() => {
         if (freightRider.rideAssigned && freightRider.rideData.customerID) {
-            const userRef = ref(dbRealtime, "Users/" + freightRider.customerID);
+            const userRef = ref(dbRealtime, "Users/" + freightRider.rideData.customerID);
             onValue(userRef, (snapshot) => {
                 const userData = snapshot.val();
                 setRideCustomerInfo({ userName: userData.userName, phoneNumber: userData.phoneNumber });
@@ -40,20 +40,6 @@ const FreightBottomSheet = () => {
             });
         }
     }, [freightRider.rideAssigned]);
-
-    const startRideButton = () => {
-        const rideRef = ref(dbRealtime, "FreightRequests/" + freightRider.rideData.id);
-        update(rideRef, {
-            status: "ongoing",
-        })
-            .then(() => {
-                dispatch(setFreightRider({ riderArrived: false, rideStarted: true }));
-                console.log("Started");
-            })
-            .catch((error) => {
-                console.log(error);
-            });
-    };
 
     const arrivedButton = () => {
         const rideRef = ref(dbRealtime, "FreightRequests/" + freightRider.rideData.id);
@@ -63,6 +49,20 @@ const FreightBottomSheet = () => {
             .then(() => {
                 dispatch(setFreightRider({ riderArrived: true }));
                 console.log("Arrived");
+            })
+            .catch((error) => {
+                console.log(error);
+            });
+    };
+
+    const startRideButton = () => {
+        const rideRef = ref(dbRealtime, "FreightRequests/" + freightRider.rideData.id);
+        update(rideRef, {
+            status: "ongoing",
+        })
+            .then(() => {
+                dispatch(setFreightRider({ riderArrived: false, rideStarted: true }));
+                console.log("Started");
             })
             .catch((error) => {
                 console.log(error);
@@ -134,10 +134,16 @@ const FreightBottomSheet = () => {
                             <PrimaryButton text={"End Ride"} action={endRideButton} buttonStyle={styles.button} />
                         ) : freightRider.rideCompleted ? (
                             <View style={styles.infoContainer}>
-                                <Text style={styles.rideCompletedText}>Ride Completed</Text>
+                                <Text style={styles.rideCompletedText}>Ride Completed!</Text>
                             </View>
                         ) : (
-                            <PrimaryButton text={"I have Arrived"} action={arrivedButton} buttonStyle={styles.button} />
+                            freightRider.riderArrived && (
+                                <PrimaryButton
+                                    text={"I have Arrived"}
+                                    action={arrivedButton}
+                                    buttonStyle={styles.button}
+                                />
+                            )
                         )}
 
                         <Divider style={{ width: "100%", marginVertical: 12 }} />
