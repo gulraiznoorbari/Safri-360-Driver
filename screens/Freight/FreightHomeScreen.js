@@ -225,8 +225,8 @@ const FreightHomeScreen = ({ navigation }) => {
                                         <>
                                             <Marker
                                                 coordinate={{
-                                                    latitude: freightRider.rideData.origin.latitude,
-                                                    longitude: freightRider.rideData.origin.longitude,
+                                                    latitude: freightRider?.rideData?.origin.latitude,
+                                                    longitude: freightRider?.rideData?.origin.longitude,
                                                 }}
                                                 pinColor="red"
                                             >
@@ -236,8 +236,8 @@ const FreightHomeScreen = ({ navigation }) => {
                                             </Marker>
                                             <Marker
                                                 coordinate={{
-                                                    latitude: freightRider.rideData.destination.latitude,
-                                                    longitude: freightRider.rideData.destination.longitude,
+                                                    latitude: freightRider?.rideData?.destination.latitude,
+                                                    longitude: freightRider?.rideData?.destination.longitude,
                                                 }}
                                                 pinColor="#007ACC"
                                             >
@@ -247,12 +247,12 @@ const FreightHomeScreen = ({ navigation }) => {
                                             </Marker>
                                             <MapViewDirections
                                                 origin={{
-                                                    latitude: freightRider.rideData.origin.latitude,
-                                                    longitude: freightRider.rideData.origin.longitude,
+                                                    latitude: freightRider?.rideData?.origin.latitude,
+                                                    longitude: freightRider?.rideData?.origin.longitude,
                                                 }}
                                                 destination={{
-                                                    latitude: freightRider.rideData.destination.latitude,
-                                                    longitude: freightRider.rideData.destination.longitude,
+                                                    latitude: freightRider?.rideData?.destination.latitude,
+                                                    longitude: freightRider?.rideData?.destination.longitude,
                                                 }}
                                                 apikey={GOOGLE_MAPS_API_KEY}
                                                 strokeWidth={2}
