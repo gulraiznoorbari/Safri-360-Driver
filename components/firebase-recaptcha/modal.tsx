@@ -1,8 +1,8 @@
 import * as React from "react";
 import { ActivityIndicator, Button, Modal, SafeAreaView, StyleSheet, Text, View } from "react-native";
-import { CodedError } from "expo-modules-core";
 
 import { FirebaseAuthApplicationVerifier, FirebaseRecaptcha } from ".";
+import { CustomError } from "./types";
 
 interface Props
     extends Omit<
@@ -100,7 +100,9 @@ export class FirebaseRecaptchaVerifierModal
     private onError = () => {
         const { reject } = this.state;
         if (reject) {
-            reject(new CodedError("ERR_FIREBASE_RECAPTCHA_ERROR", "Failed to load reCAPTCHA"));
+            const err = new Error("Failed to load reCAPTCHA") as CustomError;
+            err["code"] = "ERR_FIREBASE_RECAPTCHA_ERROR";
+            reject(err);
         }
         this.setState({
             visible: false,
@@ -124,7 +126,9 @@ export class FirebaseRecaptchaVerifierModal
     cancel = () => {
         const { reject } = this.state;
         if (reject) {
-            reject(new CodedError("ERR_FIREBASE_RECAPTCHA_CANCEL", "Cancelled by user"));
+            const err = new Error("Cancelled by user") as CustomError;
+            err["code"] = "ERR_FIREBASE_RECAPTCHA_CANCEL";
+            reject(err);
         }
         this.setState({
             visible: false,
@@ -171,10 +175,7 @@ export class FirebaseRecaptchaVerifierModal
                             <Text style={styles.title}>{title}</Text>
                             {/* <View style={styles.cancel}>
                                 <Button
-                                    title={
-                                        cancelLabel ||
-                                        FirebaseRecaptchaVerifierModal.defaultProps.cancelLabel
-                                    }
+                                    title={cancelLabel || FirebaseRecaptchaVerifierModal.defaultProps.cancelLabel}
                                     onPress={this.cancel}
                                 />
                             </View> */}

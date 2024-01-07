@@ -1,6 +1,6 @@
 import * as React from "react";
 import { WebView } from "react-native-webview";
-import { CodedError } from "expo-modules-core";
+import { CustomError } from "./types";
 import { FirebaseOptions } from "firebase/app";
 
 export interface FirebaseAuthApplicationVerifier {
@@ -131,17 +131,14 @@ function getWebviewSource(
 
 function validateFirebaseConfig(firebaseConfig?: FirebaseOptions) {
     if (!firebaseConfig) {
-        throw new CodedError(
-            "ERR_FIREBASE_RECAPTCHA_CONFIG",
-            `Missing firebase web configuration. Please set the "expo.web.config.firebase" field in "app.json" or use the "firebaseConfig" prop.`,
-        );
+        const err = new Error("Missing firebase web configuration.") as CustomError;
+        err["code"] = "ERR_FIREBASE_RECAPTCHA_CONFIG";
+        throw err;
     }
     const { authDomain } = firebaseConfig;
     if (!authDomain) {
-        throw new CodedError(
-            "ERR_FIREBASE_RECAPTCHA_CONFIG",
-            `Missing "authDomain" in firebase web configuration.`,
-        );
+        const err = new Error('Missing "authDomain" in firebase web configuration.') as CustomError;
+        err["code"] = "ERR_FIREBASE_RECAPTCHA_CONFIG";
     }
 }
 
