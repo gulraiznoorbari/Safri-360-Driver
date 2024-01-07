@@ -43,13 +43,14 @@ const PhoneRegisterScreen = ({ navigation }) => {
     const validateNumber = () => {
         const phoneNumber = (value || "").replace(/[^\d/]/g, "");
         if (phoneNumber.length < 10) {
-            showError("Invalid Phone Number", "Please enter a valid phone number.");
             return false;
         }
+        return true;
     };
 
     const handleSubmit = () => {
         if (!validateNumber()) {
+            showError("Invalid Phone Number", "Please enter a valid phone number.");
             return;
         }
         const fullNumber = "+" + (countryCode?.countryCallingCode || 1) + (value || "").replace(/[^\d/]/g, "");

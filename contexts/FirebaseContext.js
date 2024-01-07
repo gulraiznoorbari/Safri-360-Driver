@@ -37,7 +37,7 @@ export function FirebaseProvider({ children }) {
             const unsubscribe = onAuthStateChanged(auth, (user) => {
                 setCurrentUser(user);
             });
-            return unsubscribe();
+            return () => unsubscribe();
         }
     }, [userType]);
 
