@@ -85,7 +85,7 @@ const SettingsScreen = () => {
                     title="Support"
                     buttonStyle={styles.button}
                     titleStyle={styles.buttonText}
-                    onPress={() => {}}
+                    onPress={() => openExternalWebpage("https://safritravels.com/contact/")}
                 />
             </View>
         </View>

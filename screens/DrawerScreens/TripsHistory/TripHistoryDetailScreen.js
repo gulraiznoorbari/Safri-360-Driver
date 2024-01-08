@@ -1,5 +1,5 @@
 import { useLayoutEffect, useEffect, useState } from "react";
-import { StyleSheet, Text, View, Image, ScrollView } from "react-native";
+import { StyleSheet, Text, View, Image, ScrollView, Linking } from "react-native";
 import { Button, Divider } from "react-native-elements";
 import Ionicons from "react-native-vector-icons/Ionicons";
 import AntDesign from "react-native-vector-icons/AntDesign";
@@ -42,6 +42,10 @@ const TripHistoryDetailScreen = ({ route, navigation }) => {
             });
         });
     }, []);
+
+    const linkToSupport = () => {
+        Linking.openURL("https://safritravels.com/contact/");
+    };
 
     return (
         <ScrollView contentContainerStyle={styles.container} showsVerticalScrollIndicator={false}>
@@ -133,7 +137,7 @@ const TripHistoryDetailScreen = ({ route, navigation }) => {
                     title="Support"
                     buttonStyle={styles.button}
                     titleStyle={styles.buttonText}
-                    onPress={() => {}}
+                    onPress={linkToSupport}
                 />
             </View>
         </ScrollView>

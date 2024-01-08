@@ -1,5 +1,5 @@
 import { useLayoutEffect } from "react";
-import { Alert, ToastAndroid, StyleSheet, Text, View, TouchableOpacity } from "react-native";
+import { Alert, ToastAndroid, StyleSheet, Text, View, TouchableOpacity, Linking } from "react-native";
 import { Button } from "react-native-elements";
 import Ionicons from "react-native-vector-icons/Ionicons";
 import FontAwesome from "react-native-vector-icons/FontAwesome";
@@ -62,6 +62,10 @@ const DriverDetailScreen = ({ route, navigation }) => {
             });
     };
 
+    const linkToSupport = () => {
+        Linking.openURL("https://safritravels.com/contact/");
+    };
+
     return (
         <View style={styles.container}>
             <View style={styles.content}>
@@ -104,7 +108,7 @@ const DriverDetailScreen = ({ route, navigation }) => {
                     title="Support"
                     buttonStyle={styles.button}
                     titleStyle={styles.buttonText}
-                    onPress={() => {}}
+                    onPress={linkToSupport}
                 />
             </View>
         </View>
