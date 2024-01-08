@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef } from "react";
 import { StyleSheet, View, Text, TextInput, Pressable, BackHandler, Alert } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { PhoneAuthProvider, linkWithCredential } from "firebase/auth";
+import { PhoneAuthProvider, linkWithCredential, getAuth, onAuthStateChanged } from "firebase/auth";
 import { ref, set, child } from "firebase/database";
 import { useDispatch, useSelector } from "react-redux";
 
@@ -19,7 +19,7 @@ import { showError } from "../utils/ErrorHandlers";
 
 const OTPVerificationScreen = ({ navigation }) => {
     const CODE_LENGTH = 6;
-    const { sendPhoneVerificationCode, currentUser, updateUserProfile } = useFirebase();
+    const { sendPhoneVerificationCode, updateUserProfile } = useFirebase();
     const dispatch = useDispatch();
     const rentACarUser = useSelector(selectRentACarUser);
     const toursUser = useSelector(selectTourUser);
@@ -32,6 +32,7 @@ const OTPVerificationScreen = ({ navigation }) => {
             ? toursUser.phoneNumber
             : userType === "FreightRider" && freightRider.phoneNumber;
 
+    const [currentUser, setCurrentUser] = useState(null);
     const [code, setCode] = useState([...Array(CODE_LENGTH)]);
     const [verificationId, setVerificationId] = useState();
     const [verificationSent, setVerificationSent] = useState(false);
@@ -52,6 +53,9 @@ const OTPVerificationScreen = ({ navigation }) => {
         if (!verificationSent) {
             sendVerificationCode();
         }
+        onAuthStateChanged(getAuth(), (user) => {
+            setCurrentUser(user);
+        });
         BackHandler.addEventListener("hardwareBackPress", restrictGoingBack);
         return () => {
             BackHandler.removeEventListener("hardwareBackPress", restrictGoingBack);
