@@ -3,15 +3,15 @@ import Ionicons from "react-native-vector-icons/Ionicons";
 import { createDrawerNavigator } from "@react-navigation/drawer";
 import { useSelector } from "react-redux";
 
-import { selectUserType } from "../store/slices/userTypeSlice";
-import HomeScreen from "../screens/HomeScreen";
-import ToursHomeScreen from "../screens/Tours/ToursHomeScreen";
-import ToursAnalyticsScreen from "../screens/Tours/ToursAnalyticsScreen";
-import DriverHomeScreen from "../screens/Driver/DriverHomeScreen";
-import TripsHistoryScreen from "../screens/DrawerScreens/TripsHistory/TripsHistoryScreen";
-import SettingsScreen from "../screens/DrawerScreens/Settings/SettingsScreen";
-import ManageScreen from "../screens/DrawerScreens/Manage/ManageScreen";
-import FreightHomeScreen from "../screens/Freight/FreightHomeScreen";
+import { selectUserType } from "@store/slices/userTypeSlice";
+import HomeScreen from "@screens/HomeScreen";
+import ToursHomeScreen from "@screens/Tours/ToursHomeScreen";
+import ToursAnalyticsScreen from "@screens/Tours/ToursAnalyticsScreen";
+import DriverHomeScreen from "@screens/Driver/DriverHomeScreen";
+import TripsHistoryScreen from "@screens/DrawerScreens/TripsHistory/TripsHistoryScreen";
+import SettingsScreen from "@screens/DrawerScreens/Settings/SettingsScreen";
+import ManageScreen from "@screens/DrawerScreens/Manage/ManageScreen";
+import FreightHomeScreen from "@screens/Freight/FreightHomeScreen";
 import CustomDrawer from "./CustomDrawer";
 
 const Drawer = createDrawerNavigator();

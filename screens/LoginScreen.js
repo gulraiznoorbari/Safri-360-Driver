@@ -5,17 +5,17 @@ import { Link } from "@react-navigation/native";
 import { ref, get } from "firebase/database";
 import { useDispatch, useSelector } from "react-redux";
 
-import KeyboardAvoidingWrapper from "../components/KeyboardAvoidingWrapper";
+import KeyboardAvoidingWrapper from "@components/KeyboardAvoidingWrapper";
 import { dbRealtime } from "../firebase/config";
-import { useFirebase } from "../contexts/FirebaseContext";
-import { setUserType, selectUserType } from "../store/slices/userTypeSlice";
-import { setRentACarUser } from "../store/slices/rentACarSlice";
-import { setTourUser } from "../store/slices/tourSlice";
-import { setFreightRider } from "../store/slices/freightRiderSlice";
-import ClearableInput from "../components/ClearableInput";
-import PrimaryButton from "../components/Buttons/PrimaryButton";
-import TransparentButton from "../components/Buttons/TransparentButton";
-import { showError } from "../utils/ErrorHandlers";
+import { useFirebase } from "@contexts/FirebaseContext";
+import { setUserType, selectUserType } from "@store/slices/userTypeSlice";
+import { setRentACarUser } from "@store/slices/rentACarSlice";
+import { setTourUser } from "@store/slices/tourSlice";
+import { setFreightRider } from "@store/slices/freightRiderSlice";
+import ClearableInput from "@components/ClearableInput";
+import PrimaryButton from "@components/Buttons/PrimaryButton";
+import TransparentButton from "@components/Buttons/TransparentButton";
+import { showError } from "@utils/ErrorHandlers";
 
 const LoginScreen = ({ navigation }) => {
     const [loading, setLoading] = useState(false);

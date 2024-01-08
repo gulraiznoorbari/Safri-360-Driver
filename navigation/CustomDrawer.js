@@ -7,13 +7,13 @@ import { useSelector, useDispatch } from "react-redux";
 import { update, ref } from "firebase/database";
 
 import { dbRealtime } from "../firebase/config";
-import { useFirebase } from "../contexts/FirebaseContext";
-import { selectUserType } from "../store/slices/userTypeSlice";
-import { selectRentACarUser, resetRentACarUser } from "../store/slices/rentACarSlice";
-import { selectTourUser, resetTourUser } from "../store/slices/tourSlice";
-import { setDriver, selectDriver, resetDriver } from "../store/slices/driverSlice";
-import { selectFreightRider, setFreightRider } from "../store/slices/freightRiderSlice";
-import DisplayStarRatings from "../components/Driver/DisplayStarRatings";
+import { useFirebase } from "@contexts/FirebaseContext";
+import { selectUserType } from "@store/slices/userTypeSlice";
+import { selectRentACarUser, resetRentACarUser } from "@store/slices/rentACarSlice";
+import { selectTourUser, resetTourUser } from "@store/slices/tourSlice";
+import { setDriver, selectDriver, resetDriver } from "@store/slices/driverSlice";
+import { selectFreightRider, setFreightRider } from "@store/slices/freightRiderSlice";
+import DisplayStarRatings from "@components/Driver/DisplayStarRatings";
 
 const CustomDrawer = (props) => {
     const { logout } = useFirebase();

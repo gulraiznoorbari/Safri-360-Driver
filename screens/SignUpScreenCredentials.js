@@ -5,17 +5,17 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import { ref, set, push } from "firebase/database";
 import { useDispatch, useSelector } from "react-redux";
 
-import { setRentACarUser, selectRentACarUser } from "../store/slices/rentACarSlice";
-import { setTourUser, selectTourUser } from "../store/slices/tourSlice";
-import { setFreightRider, selectFreightRider } from "../store/slices/freightRiderSlice";
-import { selectUserType } from "../store/slices/userTypeSlice";
-import { useFirebase } from "../contexts/FirebaseContext";
+import { setRentACarUser, selectRentACarUser } from "@store/slices/rentACarSlice";
+import { setTourUser, selectTourUser } from "@store/slices/tourSlice";
+import { setFreightRider, selectFreightRider } from "@store/slices/freightRiderSlice";
+import { selectUserType } from "@store/slices/userTypeSlice";
+import { useFirebase } from "@contexts/FirebaseContext";
 import { dbRealtime } from "../firebase/config";
-import PrimaryButton from "../components/Buttons/PrimaryButton";
-import ClearableInput from "../components/ClearableInput";
-import KeyboardAvoidingWrapper from "../components/KeyboardAvoidingWrapper";
-import TransparentButton from "../components/Buttons/TransparentButton";
-import { showError } from "../utils/ErrorHandlers";
+import PrimaryButton from "@components/Buttons/PrimaryButton";
+import ClearableInput from "@components/ClearableInput";
+import KeyboardAvoidingWrapper from "@components/KeyboardAvoidingWrapper";
+import TransparentButton from "@components/Buttons/TransparentButton";
+import { showError } from "@utils/ErrorHandlers";
 
 const SignUpScreenCredentials = ({ navigation }) => {
     const dispatch = useDispatch();

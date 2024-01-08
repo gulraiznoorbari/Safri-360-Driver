@@ -6,14 +6,14 @@ import { Dropdown } from "react-native-element-dropdown";
 const countryCodes = require("country-codes-list");
 import { useSelector, useDispatch } from "react-redux";
 
-import { setRentACarUser } from "../store/slices/rentACarSlice";
-import { setTourUser } from "../store/slices/tourSlice";
-import { setFreightRider } from "../store/slices/freightRiderSlice";
-import { selectUserType } from "../store/slices/userTypeSlice";
-import InputField from "../components/InputField";
-import PrimaryButton from "../components/Buttons/PrimaryButton";
-import KeyboardAvoidingWrapper from "../components/KeyboardAvoidingWrapper";
-import { showError } from "../utils/ErrorHandlers";
+import { setRentACarUser } from "@store/slices/rentACarSlice";
+import { setTourUser } from "@store/slices/tourSlice";
+import { setFreightRider } from "@store/slices/freightRiderSlice";
+import { selectUserType } from "@store/slices/userTypeSlice";
+import InputField from "@components/InputField";
+import PrimaryButton from "@components/Buttons/PrimaryButton";
+import KeyboardAvoidingWrapper from "@components/KeyboardAvoidingWrapper";
+import { showError } from "@utils/ErrorHandlers";
 
 const PhoneRegisterScreen = ({ navigation }) => {
     const dispatch = useDispatch();

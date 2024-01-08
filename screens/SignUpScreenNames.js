@@ -4,15 +4,15 @@ import { StyleSheet, Text, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useSelector, useDispatch } from "react-redux";
 
-import { setRentACarUser, resetRentACarUser } from "../store/slices/rentACarSlice";
-import { setTourUser, resetTourUser } from "../store/slices/tourSlice";
-import { setFreightRider, resetFreightRider } from "../store/slices/freightRiderSlice";
-import { selectUserType } from "../store/slices/userTypeSlice";
-import { useFirebase } from "../contexts/FirebaseContext";
-import KeyboardAvoidingWrapper from "../components/KeyboardAvoidingWrapper";
-import PrimaryButton from "../components/Buttons/PrimaryButton";
-import TransparentButton from "../components/Buttons/TransparentButton";
-import ClearableInput from "../components/ClearableInput";
+import { setRentACarUser, resetRentACarUser } from "@store/slices/rentACarSlice";
+import { setTourUser, resetTourUser } from "@store/slices/tourSlice";
+import { setFreightRider, resetFreightRider } from "@store/slices/freightRiderSlice";
+import { selectUserType } from "@store/slices/userTypeSlice";
+import { useFirebase } from "@contexts/FirebaseContext";
+import KeyboardAvoidingWrapper from "@components/KeyboardAvoidingWrapper";
+import PrimaryButton from "@components/Buttons/PrimaryButton";
+import TransparentButton from "@components/Buttons/TransparentButton";
+import ClearableInput from "@components/ClearableInput";
 
 const SignUpScreenNames = ({ navigation }) => {
     const userType = useSelector(selectUserType);

@@ -5,15 +5,15 @@ import Geolocation from "react-native-geolocation-service";
 import { ref, update } from "firebase/database";
 
 import { dbRealtime } from "../firebase/config";
-import { useMapContext } from "../contexts/MapContext";
-import { requestLocationPermission } from "../utils/requestLocation";
-import { moveCameraToCenter } from "../utils/moveCameraToCenter";
-import { setOrigin } from "../store/slices/navigationSlice";
-import { selectRentACarUser } from "../store/slices/rentACarSlice";
-import DrawerMenuButton from "../components/Buttons/DrawerMenuButton";
-import HomeMap from "../components/HomeMap";
-import RideRequestCards from "../components/RentACar/RideRequestCards";
-import AvailableDriversList from "../components/RentACar/AvailableDriversList";
+import { useMapContext } from "@contexts/MapContext";
+import { requestLocationPermission } from "@utils/requestLocation";
+import { moveCameraToCenter } from "@utils/moveCameraToCenter";
+import { setOrigin } from "@store/slices/navigationSlice";
+import { selectRentACarUser } from "@store/slices/rentACarSlice";
+import DrawerMenuButton from "@components/Buttons/DrawerMenuButton";
+import HomeMap from "@components/HomeMap";
+import RideRequestCards from "@components/RentACar/RideRequestCards";
+import AvailableDriversList from "@components/RentACar/AvailableDriversList";
 
 const { width, height } = Dimensions.get("window");
 const ASPECT_RATIO = width / height;

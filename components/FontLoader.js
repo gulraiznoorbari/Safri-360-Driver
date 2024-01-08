@@ -6,11 +6,11 @@ const FontLoader = ({ children }) => {
 
     const loadFont = async () => {
         await Font.loadAsync({
-            Satoshi: require("../assets/fonts/Satoshi-Regular.otf"),
-            SatoshiMedium: require("../assets/fonts/Satoshi-Medium.otf"),
-            SatoshiLight: require("../assets/fonts/Satoshi-Light.otf"),
-            SatoshiBlack: require("../assets/fonts/Satoshi-Black.otf"),
-            SatoshiBold: require("../assets/fonts/Satoshi-Bold.otf"),
+            Satoshi: require("@assets/fonts/Satoshi-Regular.otf"),
+            SatoshiMedium: require("@assets/fonts/Satoshi-Medium.otf"),
+            SatoshiLight: require("@assets/fonts/Satoshi-Light.otf"),
+            SatoshiBlack: require("@assets/fonts/Satoshi-Black.otf"),
+            SatoshiBold: require("@assets/fonts/Satoshi-Bold.otf"),
         });
         setFontLoaded(true);
     };

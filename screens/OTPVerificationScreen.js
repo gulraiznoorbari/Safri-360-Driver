@@ -5,17 +5,17 @@ import { PhoneAuthProvider, linkWithCredential, getAuth, onAuthStateChanged } fr
 import { ref, set, child } from "firebase/database";
 import { useDispatch, useSelector } from "react-redux";
 
-import { FirebaseRecaptchaVerifierModal } from "../components/firebase-recaptcha/modal";
-import { useFirebase } from "../contexts/FirebaseContext";
+import { FirebaseRecaptchaVerifierModal } from "@components/firebase-recaptcha/modal";
+import { useFirebase } from "@contexts/FirebaseContext";
 import firebaseConfig, { dbRealtime } from "../firebase/config";
-import { selectRentACarUser, setRentACarUser } from "../store/slices/rentACarSlice";
-import { selectTourUser, setTourUser } from "../store/slices/tourSlice";
-import { selectFreightRider, setFreightRider } from "../store/slices/freightRiderSlice";
-import { selectUserType } from "../store/slices/userTypeSlice";
-import { humanPhoneNumber } from "../utils/humanPhoneNumber";
-import KeyboardAvoidingWrapper from "../components/KeyboardAvoidingWrapper";
-import PrimaryButton from "../components/Buttons/PrimaryButton";
-import { showError } from "../utils/ErrorHandlers";
+import { selectRentACarUser, setRentACarUser } from "@store/slices/rentACarSlice";
+import { selectTourUser, setTourUser } from "@store/slices/tourSlice";
+import { selectFreightRider, setFreightRider } from "@store/slices/freightRiderSlice";
+import { selectUserType } from "@store/slices/userTypeSlice";
+import { humanPhoneNumber } from "@utils/humanPhoneNumber";
+import KeyboardAvoidingWrapper from "@components/KeyboardAvoidingWrapper";
+import PrimaryButton from "@components/Buttons/PrimaryButton";
+import { showError } from "@utils/ErrorHandlers";
 
 const OTPVerificationScreen = ({ navigation }) => {
     const CODE_LENGTH = 6;

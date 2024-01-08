@@ -6,10 +6,10 @@ import { useSelector } from "react-redux";
 import { ref, onValue } from "firebase/database";
 
 import { dbRealtime } from "../firebase/config";
-import { useMapContext } from "../contexts/MapContext";
-import { selectRentACarUser } from "../store/slices/rentACarSlice";
-import { selectOrigin } from "../store/slices/navigationSlice";
-import { humanPhoneNumber } from "../utils/humanPhoneNumber";
+import { useMapContext } from "@contexts/MapContext";
+import { selectRentACarUser } from "@store/slices/rentACarSlice";
+import { selectOrigin } from "@store/slices/navigationSlice";
+import { humanPhoneNumber } from "@utils/humanPhoneNumber";
 import LocateUserButton from "./Buttons/LocateUserButton";
 
 const HomeMap = ({ initialPosition }) => {

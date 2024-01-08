@@ -3,11 +3,11 @@ import { StyleSheet, Text, Keyboard } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { TouchableWithoutFeedback } from "react-native-gesture-handler";
 
-import { useFirebase } from "../contexts/FirebaseContext";
-import PrimaryButton from "../components/Buttons/PrimaryButton";
-import ClearableInput from "../components/ClearableInput";
-import TransparentButton from "../components/Buttons/TransparentButton";
-import { showError } from "../utils/ErrorHandlers";
+import { useFirebase } from "@contexts/FirebaseContext";
+import PrimaryButton from "@components/Buttons/PrimaryButton";
+import ClearableInput from "@components/ClearableInput";
+import TransparentButton from "@components/Buttons/TransparentButton";
+import { showError } from "@utils/ErrorHandlers";
 
 const PasswordResetScreen = ({ navigation }) => {
     const { sendPasswordResetMail, currentUser } = useFirebase();

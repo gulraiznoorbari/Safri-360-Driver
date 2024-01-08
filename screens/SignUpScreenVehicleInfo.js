@@ -4,11 +4,11 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import { Dropdown } from "react-native-element-dropdown";
 import { useDispatch } from "react-redux";
 
-import KeyboardAvoidingWrapper from "../components/KeyboardAvoidingWrapper";
-import { setFreightRider } from "../store/slices/freightRiderSlice";
-import ClearableInput from "../components/ClearableInput";
-import PrimaryButton from "../components/Buttons/PrimaryButton";
-import { showError } from "../utils/ErrorHandlers";
+import KeyboardAvoidingWrapper from "@components/KeyboardAvoidingWrapper";
+import { setFreightRider } from "@store/slices/freightRiderSlice";
+import ClearableInput from "@components/ClearableInput";
+import PrimaryButton from "@components/Buttons/PrimaryButton";
+import { showError } from "@utils/ErrorHandlers";
 
 const SignUpScreenVehicleInfo = ({ navigation }) => {
     const dispatch = useDispatch();
