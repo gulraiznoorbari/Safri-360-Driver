@@ -18,51 +18,27 @@ const WelcomeScreen = () => {
                 <Text style={styles.subHeading}>Get Started as a</Text>
                 <PrimaryButton
                     text="Freight Rider"
-                    action={() => {
-                        dispatch(setUserType("FreightRider"));
-                    }}
+                    action={() => dispatch(setUserType("FreightRider"))}
                     disabled={false}
-                    buttonStyle={{
-                        backgroundColor: "#A7E92F",
-                        padding: 17,
-                        borderRadius: 10,
-                    }}
+                    buttonStyle={styles.buttonStyle}
                 />
                 <PrimaryButton
-                    text="Tour Company"
-                    action={() => {
-                        dispatch(setUserType("ToursCompany"));
-                    }}
+                    text="Tours Company"
+                    action={() => dispatch(setUserType("ToursCompany"))}
                     disabled={false}
-                    buttonStyle={{
-                        backgroundColor: "#A7E92F",
-                        padding: 17,
-                        borderRadius: 10,
-                    }}
+                    buttonStyle={styles.buttonStyle}
                 />
                 <PrimaryButton
                     text="Rent A Car Owner"
-                    action={() => {
-                        dispatch(setUserType("RentACarOwner"));
-                    }}
+                    action={() => dispatch(setUserType("RentACarOwner"))}
                     disabled={false}
-                    buttonStyle={{
-                        backgroundColor: "#A7E92F",
-                        padding: 17,
-                        borderRadius: 10,
-                    }}
+                    buttonStyle={styles.buttonStyle}
                 />
                 <PrimaryButton
                     text="Driver"
-                    action={() => {
-                        dispatch(setUserType("Driver"));
-                    }}
+                    action={() => dispatch(setUserType("Driver"))}
                     disabled={false}
-                    buttonStyle={{
-                        backgroundColor: "#A7E92F",
-                        padding: 17,
-                        borderRadius: 10,
-                    }}
+                    buttonStyle={styles.buttonStyle}
                 />
             </View>
         </View>
@@ -103,6 +79,11 @@ const styles = StyleSheet.create({
         fontSize: 18,
         fontFamily: "Satoshi",
         textAlign: "center",
+    },
+    buttonStyle: {
+        backgroundColor: "#A7E92F",
+        padding: 17,
+        borderRadius: 10,
     },
 });
 
