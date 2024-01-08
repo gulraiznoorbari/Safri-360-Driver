@@ -35,12 +35,13 @@ const MenuOptionButton = ({ profileImage, userDataText, userDataHeader, navScree
 
     return (
         <Pressable onPress={handlePress} style={styles.menuItemContainer}>
-            {profileImage &&
-                (profileImage ? (
-                    <Image source={{ uri: profileImage }} style={styles.profileImage} />
-                ) : (
-                    <Image source={{ uri: DEFAULT_PROFILE_IMAGE }} style={styles.profileImage} />
-                ))}
+            {profileImage && (
+                <Image
+                    source={{ uri: profileImage ? profileImage : DEFAULT_PROFILE_IMAGE }}
+                    style={styles.profileImage}
+                />
+            )}
+
             <View style={styles.menuItemOptionsContainer}>
                 <Text style={styles.userDataHeader}>{userDataHeader}</Text>
                 {userDataText && <Text style={styles.userDataText}>{userDataText}</Text>}
